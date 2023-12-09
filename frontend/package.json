@@ -2,7 +2,6 @@
 	"name": "react",
 	"version": "1.0.0",
 	"description": "Базовый проект на React",
-	"main": "index.js",
 	"scripts": {
 		"build": "webpack --config ./webpackConfig/webpack.prod.js --node-env=production",
 		"start": "webpack serve --open --config ./webpackConfig/webpack.dev.js --node-env=development",
