@@ -1,0 +1,16 @@
+﻿@import '@app/app.scss';
+
+.signup{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  & form {
+    width: 100%;
+    max-width: 800px;
+  }
+  &__link-title{
+    color: $blue-color;
+    text-decoration: none;
+    font-size: 16px;
+  }
+}

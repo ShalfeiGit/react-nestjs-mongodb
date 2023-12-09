@@ -41,7 +41,7 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			title: 'React Startup',
+			title: 'Startup',
 			template: './src/vendor/index.html'
 		}),
 		new MiniCssExtractPlugin({

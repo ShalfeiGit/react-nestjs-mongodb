@@ -1,7 +1,8 @@
 ﻿import React from 'react'
+import { NavLink } from 'react-router-dom'
 import { Form, Input, Button, Typography } from 'antd'
 
-import '@app/pages/register/register.scss'
+import '@app/pages/signup/signup.scss'
 
 const {Title} = Typography
 
@@ -30,19 +31,22 @@ const tailFormItemLayout = {
 	},
 }
 
-const Register: React.FC = () => {
+const SignUp: React.FC = () => {
 
 	const handleSubmitForm = () => {
 
 	}
 
 	return (
-		<div className='register'>
-			<Title style={{padding: 30}}>Registration</Title>
+		<div className='signup'>
+			<Title className={'signup__text'} >Sign Up</Title>
+			<NavLink 
+				to={'signup'} 
+				className={'signin__link-title'}
+			>Have an account?</NavLink>
 			<Form
-				name="register"
+				name="signup"
 				{...formItemLayout}
-				style={{width: '100%', maxWidth:800}}
 				initialValues={{ remember: true }}
 				onFinish={handleSubmitForm}
 				autoComplete="off"
@@ -50,26 +54,34 @@ const Register: React.FC = () => {
 				<Form.Item
 					label="Username"
 					name="username"
-					rules={[{ required: true, message: 'Please input your username!' }]}
+					rules={[{ required: true, message: 'Please, input username' }]}
 				>
-					<Input />
+					<Input placeholder='Input username'/>
+				</Form.Item>
+
+				<Form.Item
+					label="Email"
+					name="email"
+					rules={[{ required: true, message: 'Please, input email' }]}
+				>
+					<Input placeholder='Input email'/>
 				</Form.Item>
 
 				<Form.Item
 					label="Password"
 					name="password"
-					rules={[{ required: true, message: 'Please input your password!' }]}
+					rules={[{ required: true, message: 'Please, input password' }]}
 				>
-					<Input.Password />
+					<Input.Password placeholder='Input password'/>
 				</Form.Item>
 
 				<Form.Item {...tailFormItemLayout} >
 					<Button type="primary" htmlType="submit">
-					Submit
+						Submit
 					</Button>
 				</Form.Item>
 			</Form>
 		</div>
 	)}
 
-export default Register
+export default SignUp

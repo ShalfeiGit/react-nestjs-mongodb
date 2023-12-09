@@ -15,11 +15,11 @@ const Menu: React.FC = () => {
 	}
 
 	const handleShowSignInModal = () => {
-		navigate('/login')
+		navigate('/signin')
 	}
 
 	const handleShowSignUpModal = () => {
-		navigate('/register')
+		navigate('/signup')
 	}
 
 	return (
@@ -29,7 +29,7 @@ const Menu: React.FC = () => {
 				<Col span={3}>
 					<Button className={'menu__button'} type="link" onClick={handleRedirectHome}>
 						<RocketTwoTone />
-						<Text>React Startup</Text>
+						<Text>Startup</Text>
 					</Button>
 				</Col>
 				<Col span={3}></Col>

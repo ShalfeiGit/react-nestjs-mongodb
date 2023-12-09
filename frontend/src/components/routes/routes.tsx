@@ -6,8 +6,8 @@ import Layout from '@app/pages/layout/Layout'
 import Home from '@app/pages/home/Home'
 import Article from '@app/pages/article/Article'
 import ErrorPage from '@app/pages/error/ErrorPage'
-import Login from '@app/pages/login/Login'
-import Register from '@app/pages/register/Register'
+import SignIn from '@app/pages/signin/SignIn'
+import SingUp from '@app/pages/signup/SignUp'
 
 const router = createBrowserRouter([
 	{
@@ -20,12 +20,12 @@ const router = createBrowserRouter([
 				Component: Home
 			},
 			{
-				path: 'login',
-				Component: Login
+				path: 'signin',
+				Component: SignIn
 			},
 			{
-				path: 'register',
-				Component: Register 
+				path: 'signup',
+				Component: SingUp 
 			},
 			{
 				path: 'articles/:slug',
