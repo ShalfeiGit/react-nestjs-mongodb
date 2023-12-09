@@ -2,7 +2,7 @@
 
 const makeRequest = ({ method, url, data = null, responseType = 'json' }: AxiosRequestConfig) => {
 	const axiosInstance = axios.create({
-		baseURL: 'http://localhost:3000/api/',
+		baseURL: '/api/',
 		timeout: 1000,
 		headers: { Authorization: 'AUTH_TOKEN' }
 	})

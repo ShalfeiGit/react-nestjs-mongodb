@@ -49,9 +49,12 @@ module.exports = {
 		})
 	],
 	optimization: {
-		removeAvailableModules: false,
-		removeEmptyChunks: false,
+		removeAvailableModules: true,
+		removeEmptyChunks: true,
 		splitChunks: false,
 		usedExports: true
-	}
+	},
+	performance: {
+		hints: false,
+ }
 }

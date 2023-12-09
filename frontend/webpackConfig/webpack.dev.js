@@ -12,7 +12,7 @@ module.exports = merge(common, {
 	},
 	devtool: 'inline-source-map',
 	devServer: {
-		static: '../build',
+		static: '../dist',
 		hot: true,
 		historyApiFallback: true, 
 	},
