@@ -1,0 +1,13 @@
+﻿@import '@app/app.scss';
+
+.menu{
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 22px;
+  &__button, &__button .ant-typography{
+    font-weight: bold;
+    font-size: 22px;
+    color: $blue-color;
+  }
+}

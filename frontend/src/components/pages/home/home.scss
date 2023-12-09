@@ -1,0 +1,21 @@
+﻿@import '@app/app.scss';
+
+.home {
+  background-color: $blue-color;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  
+  &__title .ant-typography{
+    display: flex;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: bold;
+    color: $white-color;
+  }
+  &__content, &__content .ant-typography{
+    display: flex;
+    justify-content: center;
+    font-size: 28px;
+    color: $white-color;
+  }
+}
