@@ -25,7 +25,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'signup',
-				Component: SingUp 
+				Component: SingUp
 			},
 			{
 				path: 'articles/:slug',
