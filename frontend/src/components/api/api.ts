@@ -7,12 +7,16 @@ const makeRequest = ({ method, url, data = null, responseType = 'json' }: AxiosR
 		headers: { Authorization: 'AUTH_TOKEN' }
 	})
 
-	axiosInstance.request({
+	return axiosInstance.request({
 		method,
 		url,
 		responseType,
 		data
 	})
+
+}
+export interface IResponse<T> {
+	data: T
 }
 
 export default makeRequest

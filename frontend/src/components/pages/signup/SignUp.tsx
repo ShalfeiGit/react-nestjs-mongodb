@@ -2,8 +2,9 @@
 import { NavLink } from 'react-router-dom'
 import { Form, Input, Button, Typography } from 'antd'
 
-import makeRequest from '@app/api/api'
 import '@app/pages/signup/signup.scss'
+import { useAppDispatch } from '@app/store/store'
+import { loadUserAction } from '@app/store/slices/userSlice'
 
 const { Title } = Typography
 
@@ -32,11 +33,9 @@ const tailFormItemLayout = {
 }
 
 const SignUp: React.FC = () => {
+	const dispatch = useAppDispatch()
 	const handleSubmitForm = () => {
-		makeRequest({
-			method: 'get',
-			url: 'login'
-		})
+		dispatch(loadUserAction())
 	}
 
 	return (
