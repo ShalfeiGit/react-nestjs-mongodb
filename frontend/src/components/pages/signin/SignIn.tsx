@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom'
 import { Form, Input, Button, Typography } from 'antd'
 
 import '@app/pages/signin/signin.scss'
+import { useAppDispatch } from '@app/store/store'
+import { signinAction } from '@app/store/slices/signinSlice'
 
 const { Title } = Typography
 
@@ -30,28 +32,73 @@ const tailFormItemLayout = {
 	}
 }
 
-const SignIn: React.FC = () => {
-	const handleSubmitForm = () => {}
+const Signin: React.FC = () => {
+	const dispatch = useAppDispatch()
+	const [form] = Form.useForm()
+	const handleSubmitForm = () => {
+		form.validateFields().then((values) => {
+			const {repeatPassword, ...data} = values
+			dispatch(signinAction(data))
+		})
+	}
+
+	const handleUsernameValidator = (rule: { required: boolean }, value: string) => {
+		if(rule?.required && (!value || !value.trim())){
+			return Promise.reject(new Error('Field must not be empty'))
+		}
+		if(value.length < 6){
+			return Promise.reject(new Error('Username length must be longer than 6 characters'))
+		}
+		if(value.search(/^[a-zA-Z0-9]+$/)){
+			return Promise.reject(new Error('Incorrect login. Use characters a-z, A-Z, 0-9'))
+		}
+		return Promise.resolve()
+	}
+
+	const handlePasswordValidator = (rule: { required: boolean }, value: string) => {
+		if(rule?.required && (!value || !value.trim())){
+			return Promise.reject(new Error('Field must not be empty'))
+		}
+		if(value.length < 6){
+			return Promise.reject(new Error('Password length must be longer than 6 characters'))
+		}
+		if(value.search(/^[a-zA-Z0-9]+$/)){
+			return Promise.reject(new Error('Incorrect password. Use characters a-z, A-Z, 0-9'))
+		}
+		return Promise.resolve()
+	}
 
 	return (
 		<div className="signin">
-			<Title level={1}>Sign In</Title>
-			<NavLink to={'signup'} className={'signin__link-title'}>
+			<Title className={'signin__text'}>Sign In</Title>
+			<NavLink to={'/signup'} className={'signin__link-title'}>
 				Need an account?
 			</NavLink>
 			<Form
+				form={form}
 				name="signin"
-				labelCol={{ span: 8 }}
 				{...formItemLayout}
 				initialValues={{ remember: true }}
 				onFinish={handleSubmitForm}
 				autoComplete="off"
 			>
-				<Form.Item label="Username" name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
+				<Form.Item 
+					hasFeedback
+					label="Username" 
+					name="username" 
+					validateDebounce={1000}
+					rules={[{ required: true, validator:handleUsernameValidator }]}
+				>
 					<Input placeholder="Input username" />
 				</Form.Item>
 
-				<Form.Item label="Password" name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
+				<Form.Item 
+					hasFeedback
+					label="Password" 
+					name="password" 
+					validateDebounce={1000}
+					rules={[{ required: true, validator: handlePasswordValidator }]}
+				>
 					<Input.Password placeholder="Input password" />
 				</Form.Item>
 
@@ -65,4 +112,4 @@ const SignIn: React.FC = () => {
 	)
 }
 
-export default SignIn
+export default Signin
