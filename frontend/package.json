@@ -7,7 +7,7 @@
 		"start": "webpack serve --open --config ./webpackConfig/webpack.dev.js --node-env=development",
 		"lint": "eslint . --fix  --max-warnings=0",
 		"format": "prettier --config .prettierrc src//**/*.ts src//**/*.tsx --write",
-		"prepare": "husky install"
+		"prepare": "cd .. && husky install frontend/.husky"
 	},
 	"keywords": [],
 	"author": "",
