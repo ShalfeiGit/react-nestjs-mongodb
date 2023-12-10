@@ -1,14 +1,16 @@
 ﻿import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 
-import userReducer from '@app/store/slices/userSlice'
+import signinReducer from '@app/store/slices/signinSlice'
+import signupReducer from '@app/store/slices/signupSlice'
 import makeRequest, { IResponse } from '@app/api/api'
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export const store = configureStore({
 	reducer: {
-		user: userReducer
+		signin: signinReducer,
+		signup: signupReducer
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
