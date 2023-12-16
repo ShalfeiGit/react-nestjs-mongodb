@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { ArticleModule } from './article/article.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -11,7 +10,6 @@ import { UserModule } from './user/user.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../../frontend/dist'),
     }),
-    ArticleModule,
     UserModule,
   ],
   controllers: [AppController],
