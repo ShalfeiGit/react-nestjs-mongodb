@@ -8,9 +8,9 @@ export const databaseProviders = [
         type: 'mongodb',
         host: 'localhost',
         port: 27017,
-        username: 'admin',
-        password: 'admin',
-        database: 'test',
+        username: 'dbUser',
+        password: 'dbUser',
+        database: 'dbReact',
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       });
