@@ -1,5 +1,5 @@
 ﻿import { Injectable, Inject } from '@nestjs/common';
-import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { createUserDto } from './dtos/createUserDto';
 import { updateUserDto } from './dtos/updateUserDto';
@@ -12,33 +12,22 @@ export class UserService {
   ) {}
 
   async getUser(username: string): Promise<User> {
-    return await this.userRepository
-      .createQueryBuilder('user')
-      .where('user.username = :username', { username })
-      .getOne();
+    return await this.userRepository.findOne({ where: { username } });
   }
 
-  async saveUser(dto: createUserDto): Promise<InsertResult> {
-    const insertResult = await this.userRepository
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values({ ...dto })
-      .execute();
-    return insertResult;
+  async saveUser(dto: createUserDto): Promise<User> {
+    return await this.userRepository.save({ ...dto });
   }
 
-  async updateUser(
-    username: string,
-    dto: updateUserDto,
-  ): Promise<UpdateResult> {
-    const updateResult = await this.userRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({ ...dto })
-      .where('user.username = :username', { username })
-      .execute();
-    return updateResult;
+  async updateUser(username: string, dto: updateUserDto): Promise<User> {
+    const property = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    return this.userRepository.save({
+      ...property,
+      ...dto,
+    });
   }
 
   async deleteUser(dto: createUserDto): Promise<DeleteResult> {

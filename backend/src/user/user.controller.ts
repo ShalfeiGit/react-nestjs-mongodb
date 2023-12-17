@@ -17,15 +17,16 @@ export class UserController {
   constructor(private readonly appService: UserService) {}
 
   @Get(':username')
-  async getUser(@Param('username') username): Promise<User> {
+  async getUser(@Param('username') username): Promise<User | string> {
     //дополнить проверкой из Passportjs
-    return await this.appService.getUser(username);
+    const response = await this.appService.getUser(username);
+    return response ?? `User ${username} not found `;
   }
 
   @Post()
   async createUser(@Body() dto: createUserDto): Promise<string> {
     const user = await this.appService.getUser(dto.username);
-    if (!user?.username) {
+    if (user?.username) {
       return `Already has ${user.username}`;
     }
     await this.appService.saveUser(dto);
@@ -40,7 +41,7 @@ export class UserController {
     //дополнить проверкой из Passportjs
     const user = await this.appService.getUser(username); //дополнить проверкой из Passportjs
     if (!user) {
-      return `User ${user.username} not found `;
+      return `User ${username} not found `;
     }
     await this.appService.updateUser(username, { ...dto });
     return `${username} was updated`;
