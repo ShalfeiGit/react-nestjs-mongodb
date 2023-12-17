@@ -1,4 +1,4 @@
-﻿import { Entity, Column, ObjectIdColumn, ObjectId } from 'typeorm';
+﻿import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserGender {
   MALE = 'male',
@@ -8,8 +8,8 @@ export enum UserGender {
 
 @Entity()
 export class User {
-  @ObjectIdColumn()
-  _id: ObjectId;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({
     type: 'varchar',

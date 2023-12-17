@@ -5,11 +5,11 @@ export const databaseProviders = [
     provide: 'DATA_SOURCE',
     useFactory: async () => {
       const dataSource = new DataSource({
-        type: 'mongodb',
+        type: 'mysql',
         host: 'localhost',
-        port: 27017,
+        port: 3306,
         username: 'dbUser',
-        password: 'dbUser',
+        password: 'dbPassword',
         database: 'dbReact',
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
