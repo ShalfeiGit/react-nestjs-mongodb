@@ -43,6 +43,18 @@ export class User {
   age: number;
 
   @Column({
+    type: 'int',
+    nullable: true,
+  })
+  age2: number;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+  })
+  age3: number;
+
+  @Column({
     type: 'enum',
     enum: UserGender,
     default: UserGender.OTHERS,
