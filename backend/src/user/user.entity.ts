@@ -25,12 +25,6 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 200,
-  })
-  hashPassword: string;
-
-  @Column({
-    type: 'varchar',
     nullable: true,
     length: 1000,
   })
@@ -48,4 +42,7 @@ export class User {
     default: UserGender.OTHERS,
   })
   gender: keyof typeof UserGender;
+
+  @Column({ default: null })
+  password: string;
 }

@@ -6,54 +6,70 @@
   Delete,
   Param,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { createUserDto } from './dtos/createUserDto';
 import { updateUserDto } from './dtos/updateUserDto';
+import { hash } from 'bcrypt';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly appService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get(':username')
   async getUser(@Param('username') username): Promise<User | string> {
     //дополнить проверкой из Passportjs
-    const response = await this.appService.getUser(username);
+    const response = await this.userService.getUser(username);
     return response ?? `User ${username} not found `;
   }
 
   @Post()
   async createUser(@Body() dto: createUserDto): Promise<string> {
-    const user = await this.appService.getUser(dto.username);
+    const user = await this.userService.getUser(dto.username);
     if (user?.username) {
       return `Already has ${user.username}`;
     }
-    await this.appService.saveUser(dto);
+    const { password, ...data } = dto;
+    const hashPassword = await hash(password, 10);
+    const entity = Object.assign(new User(), {
+      ...data,
+      password: hashPassword,
+    });
+    await this.userService.saveUser(entity);
     return `${dto.username} was created`;
   }
 
   @Patch(':username')
+  @UseGuards(AuthGuard)
   async updateUser(
     @Param('username') username,
     @Body() dto: updateUserDto,
   ): Promise<string> {
     //дополнить проверкой из Passportjs
-    const user = await this.appService.getUser(username); //дополнить проверкой из Passportjs
+    const user = await this.userService.getUser(username); //дополнить проверкой из Passportjs
     if (!user) {
       return `User ${username} not found `;
     }
-    await this.appService.updateUser(username, { ...dto });
+    const { password, ...data } = dto;
+    const hashPassword = await hash(password, 10);
+    const entity = Object.assign(new User(), {
+      ...data,
+      password: hashPassword,
+    });
+    await this.userService.updateUser(username, entity);
     return `${username} was updated`;
   }
 
   @Delete(':username')
   async deleteUser(@Param('username') username): Promise<string> {
-    const user = await this.appService.getUser(username); //дополнить проверкой из Passportjs
+    const user = await this.userService.getUser(username); //дополнить проверкой из Passportjs
     if (!user) {
-      return `User ${user.username} not found `;
+      return `User ${username} not found `;
     }
-    await this.appService.deleteUser(username);
+    await this.userService.deleteUser(username);
     return `${username} was deleted`;
   }
 }
