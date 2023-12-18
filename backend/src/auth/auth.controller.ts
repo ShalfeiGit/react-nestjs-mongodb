@@ -33,11 +33,10 @@ export class AuthController {
     response.cookie('access_token', `${accessTokenData.access_token}`, {
       httpOnly: true,
       secure: true,
+      signed: true,
+      expires: new Date(Date.now() + 24 * 3600000),
     });
-    response.cookie('refresh_token', `${accessTokenData.refresh_token}`, {
-      httpOnly: true,
-      secure: true,
-    });
+    response.set('refresh_token', `${accessTokenData.refresh_token}`);
     return user;
   }
 }

@@ -20,6 +20,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get(':username')
+  @UseGuards(AuthGuard)
   async getUser(@Param('username') username): Promise<User | string> {
     //дополнить проверкой из Passportjs
     const response = await this.userService.getUser(username);
