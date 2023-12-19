@@ -43,8 +43,7 @@ export class AuthController {
         httpOnly: true,
         secure: true,
         signed: true,
-        // expires: new Date(Date.now() + 1000),
-        expires: new Date(Date.now() + 3600000),
+        expires: new Date(Date.now() + 30 * 24 * 3600000),
       });
       response.set('refresh_token', `${accessTokenData.refresh_token}`);
       return user;
@@ -62,8 +61,7 @@ export class AuthController {
         httpOnly: true,
         secure: true,
         signed: true,
-        expires: new Date(Date.now() + 1000),
-        // expires: new Date(Date.now() + 3600000),
+        expires: new Date(Date.now() + 3600000),
       });
       response.set('refresh_token', `${accessTokenData.refresh_token}`);
       return user;
