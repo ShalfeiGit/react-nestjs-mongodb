@@ -4,22 +4,21 @@
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { verify } from 'jsonwebtoken';
+// import { JwtPayload, verify } from 'jsonwebtoken';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   async validateRequest(request): Promise<boolean> {
-    const payload = verify(
-      request.signedCookies['access_token'],
-      process.env.JWT_SECRET_SALT,
-    );
-    console.log(payload);
-    if (true) {
+    if (request.signedCookies['access_token']) {
+      // const payload = verify(
+      //   request.signedCookies['access_token'],
+      //   process.env.JWT_SECRET_SALT,
+      // );
+      // console.log((payload as JwtPayload)?.roles);
       return true;
-    } else {
-      throw new UnauthorizedException();
     }
+    throw new UnauthorizedException();
   }
 
   canActivate(

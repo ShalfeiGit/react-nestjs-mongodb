@@ -24,19 +24,49 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
     @Body() dto: loginUserDto,
   ): Promise<User> {
-    const { username, password } = dto;
-    const user = await this.userService.getUser(username);
-    if (!compare(password, password)) {
+    const { username, password, refreshToken } = dto;
+    if (!((username && password) || refreshToken)) {
       throw new BadRequestException('Username or password incorrect');
     }
-    const accessTokenData = await this.authService.signIn(username, password);
-    response.cookie('access_token', `${accessTokenData.access_token}`, {
-      httpOnly: true,
-      secure: true,
-      signed: true,
-      expires: new Date(Date.now() + 24 * 3600000),
-    });
-    response.set('refresh_token', `${accessTokenData.refresh_token}`);
-    return user;
+    let accessTokenData;
+    if (refreshToken) {
+      accessTokenData = await this.authService.updateTokens(refreshToken);
+      const user = await this.userService.getUser(accessTokenData.username);
+      if (!user) {
+        throw new BadRequestException('Username or password incorrect');
+      }
+      const hasAccess = await compare(password, user.password);
+      if (!hasAccess) {
+        throw new BadRequestException('Username or password incorrect');
+      }
+      response.cookie('access_token', `${accessTokenData.access_token}`, {
+        httpOnly: true,
+        secure: true,
+        signed: true,
+        // expires: new Date(Date.now() + 1000),
+        expires: new Date(Date.now() + 3600000),
+      });
+      response.set('refresh_token', `${accessTokenData.refresh_token}`);
+      return user;
+    } else {
+      const user = await this.userService.getUser(username);
+      if (!user) {
+        throw new BadRequestException('Username or password incorrect');
+      }
+      const hasAccess = await compare(password, user.password);
+      if (!hasAccess) {
+        throw new BadRequestException('Username or password incorrect');
+      }
+      accessTokenData = await this.authService.signIn(username, password);
+      response.cookie('access_token', `${accessTokenData.access_token}`, {
+        httpOnly: true,
+        secure: true,
+        signed: true,
+        expires: new Date(Date.now() + 1000),
+        // expires: new Date(Date.now() + 3600000),
+      });
+      response.set('refresh_token', `${accessTokenData.refresh_token}`);
+      return user;
+    }
   }
 }
