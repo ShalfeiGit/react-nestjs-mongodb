@@ -99,7 +99,7 @@ const Signin: React.FC = () => {
 					validateDebounce={1000}
 					rules={[{ required: true, validator: handlePasswordValidator }]}
 				>
-					<Input.Password placeholder="Input password" />
+					<Input.Password placeholder="Input password" autoComplete='on'/>
 				</Form.Item>
 
 				<Form.Item {...tailFormItemLayout}>

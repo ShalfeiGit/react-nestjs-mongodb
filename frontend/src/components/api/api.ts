@@ -1,19 +1,26 @@
-﻿import axios, { AxiosRequestConfig } from 'axios'
+﻿import { IResponseFailedAction, TypeResponse } from '@app/pages/layout/types'
+import axios, { AxiosRequestConfig } from 'axios'
 
-const makeRequest = ({ method, url, data = null, responseType = 'json' }: AxiosRequestConfig) => {
-	const axiosInstance = axios.create({
-		baseURL: '/api/',
-		timeout: 1000,
-		headers: { Authorization: 'AUTH_TOKEN' }
-	})
-
-	return axiosInstance.request({
+const  makeRequest = async ({ method, url, data = null, responseType = 'json', callNotification }: AxiosRequestConfig & IResponseFailedAction) => {
+	const response = await axios.request({
+		url: `http://localhost:3000/api/${url}`,
 		method,
-		url,
 		responseType,
-		data
+		data: {
+			email:'asd@asd.asd',
+			password:'1q2w3e4r',
+			username:'Valentin2'
+		}
+	}).catch(function (error) {
+		if (error?.response) {
+			callNotification({
+				type: TypeResponse.failed,
+				message: error?.response?.data?.message,
+				error: error?.response?.data?.message})
+		} 
+		return {data: {error: error?.response?.data?.message} }
 	})
-
+	return response
 }
 export interface IResponse<T> {
 	data: T

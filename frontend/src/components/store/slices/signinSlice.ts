@@ -13,7 +13,7 @@ const initialState: IInitialState<ISignIn> = {
 }
 
 export const signinAction = createAsyncThunk(
-	'user/signup',
+	'user/signin',
 	async (data: ISignIn, thunkAPI: IThunkApi<ISignIn>) => {
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'signin', data })
 		return 200 >= response.status && response.status <400 

@@ -1,1 +1,1 @@
-﻿console.log('vendors loaded')
+﻿

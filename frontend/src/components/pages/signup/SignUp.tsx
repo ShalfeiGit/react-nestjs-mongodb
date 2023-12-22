@@ -1,6 +1,7 @@
 ﻿import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { Form, Input, Button, Typography } from 'antd'
+import { useOutletContext, useNavigate } from 'react-router-dom'
 
 import '@app/pages/signup/signup.scss'
 import { useAppDispatch } from '@app/store/store'
@@ -34,11 +35,13 @@ const tailFormItemLayout = {
 
 const SignUp: React.FC = () => {
 	const dispatch = useAppDispatch()
+	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
+	const navigate = useNavigate()
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
 			const {repeatPassword, ...data} = values
-			dispatch(signupAction(data))
+			dispatch(signupAction({...data, openNotification, navigate }))
 		})
 	}
 
@@ -110,7 +113,7 @@ const SignUp: React.FC = () => {
 					label="Username" 
 					name="username" 
 					validateDebounce={1000}
-					rules={[{ required: true, validator:handleUsernameValidator }]}
+					// rules={[{ required: true, validator:handleUsernameValidator }]}
 				>
 					<Input placeholder="Input username" />
 				</Form.Item>
@@ -120,7 +123,7 @@ const SignUp: React.FC = () => {
 					label="Email" 
 					name="email" 
 					validateDebounce={1000}
-					rules={[{ required: true, validator:handleEmailValidator }]}
+					// rules={[{ required: true, validator:handleEmailValidator }]}
 				>
 					<Input placeholder="Input email" />
 				</Form.Item>
@@ -130,9 +133,9 @@ const SignUp: React.FC = () => {
 					label="Password" 
 					name="password" 
 					validateDebounce={1000}
-					rules={[{ required: true, validator: handlePasswordValidator }]}
+					// rules={[{ required: true, validator: handlePasswordValidator }]}
 				>
-					<Input.Password placeholder="Input password" />
+					<Input.Password placeholder="Input password" autoComplete='on'/>
 				</Form.Item>
 
 				<Form.Item 
@@ -140,9 +143,9 @@ const SignUp: React.FC = () => {
 					label="Repeat password" 
 					name="repeatPassword"
 					validateDebounce={1000}
-					rules={[{ required: true, validator: handleRepeatPasswordValidator }]}
+					// rules={[{ required: true, validator: handleRepeatPasswordValidator }]}
 				>
-					<Input.Password placeholder="Input password" />
+					<Input.Password placeholder="Input password" autoComplete='on'/>
 				</Form.Item>
 
 				<Form.Item {...tailFormItemLayout}>

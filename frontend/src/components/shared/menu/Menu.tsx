@@ -25,13 +25,14 @@ const Menu: React.FC = () => {
 	return (
 		<div className="menu">
 			<Row>
-				<Col span={3}></Col>
+				<Col span={1}></Col>
 				<Col span={3}>
 					<Button className={'menu__button'} type="link" onClick={handleRedirectHome}>
 						<RocketTwoTone />
 						<Text>Startup</Text>
 					</Button>
 				</Col>
+				<Col span={5}></Col>
 				<Col span={3}></Col>
 				<Col span={3}></Col>
 				<Col span={3}></Col>
@@ -43,11 +44,7 @@ const Menu: React.FC = () => {
 					<Button className={'menu__button'} type="link" title="Sign in" onClick={handleShowSignInModal}>
 						<LoginOutlined />
 					</Button>
-					<Button className={'menu__button'} type="link" title="Sign up" onClick={handleShowSignUpModal}>
-						<FormOutlined />
-					</Button>
 				</Col>
-				<Col span={3}></Col>
 			</Row>
 		</div>
 	)

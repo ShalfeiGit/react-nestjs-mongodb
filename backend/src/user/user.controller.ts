@@ -7,6 +7,7 @@
   Param,
   Body,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
@@ -28,10 +29,10 @@ export class UserController {
   }
 
   @Post()
-  async createUser(@Body() dto: createUserDto): Promise<string> {
+  async createUser(@Body() dto: createUserDto) {
     const user = await this.userService.getUser(dto.username);
     if (user?.username) {
-      return `Already has ${user.username}`;
+      throw new BadRequestException(`Already has ${user.username}`);
     }
     const { password, ...data } = dto;
     const hashPassword = await hash(password, 10);
@@ -73,4 +74,9 @@ export class UserController {
     await this.userService.deleteUser(username);
     return `${username} was deleted`;
   }
+  // @Get('errorStatus')
+  // async getUser1() {
+  //   //дополнить проверкой из Passportjs
+  //   throw new BadRequestException(`Already has errror`);
+  // }
 }
