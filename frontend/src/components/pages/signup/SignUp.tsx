@@ -5,7 +5,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom'
 
 import '@app/pages/signup/signup.scss'
 import { useAppDispatch } from '@app/store/store'
-import { signupAction } from '@app/store/slices/signupSlice'
+import { signUpAction } from '@app/store/slices/signupSlice'
 
 const { Title } = Typography
 
@@ -41,7 +41,7 @@ const SignUp: React.FC = () => {
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
 			const {repeatPassword, ...data} = values
-			dispatch(signupAction({...data, openNotification, navigate }))
+			dispatch(signUpAction({...data, openNotification, navigate }))
 		})
 	}
 
@@ -113,7 +113,7 @@ const SignUp: React.FC = () => {
 					label="Username" 
 					name="username" 
 					validateDebounce={1000}
-					// rules={[{ required: true, validator:handleUsernameValidator }]}
+					rules={[{ required: true, validator:handleUsernameValidator }]}
 				>
 					<Input placeholder="Input username" />
 				</Form.Item>
@@ -123,7 +123,7 @@ const SignUp: React.FC = () => {
 					label="Email" 
 					name="email" 
 					validateDebounce={1000}
-					// rules={[{ required: true, validator:handleEmailValidator }]}
+					rules={[{ required: true, validator:handleEmailValidator }]}
 				>
 					<Input placeholder="Input email" />
 				</Form.Item>
@@ -133,7 +133,7 @@ const SignUp: React.FC = () => {
 					label="Password" 
 					name="password" 
 					validateDebounce={1000}
-					// rules={[{ required: true, validator: handlePasswordValidator }]}
+					rules={[{ required: true, validator: handlePasswordValidator }]}
 				>
 					<Input.Password placeholder="Input password" autoComplete='on'/>
 				</Form.Item>

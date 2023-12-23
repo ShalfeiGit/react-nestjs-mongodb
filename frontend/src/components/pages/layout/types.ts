@@ -1,6 +1,6 @@
 ﻿export interface INotification {
 	message:string,
-	description:string,
+	description: string,
   type:TypeResponse
 }
 
@@ -29,5 +29,9 @@ export interface IResponseFailedAction {
 export interface ICallNotificationAction {
 	type: TypeResponse,
 	message: string,
-	error: string,
+	error?: string,
+}
+
+export interface IErrorResponse {
+	error?: string
 }

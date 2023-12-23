@@ -1,7 +1,6 @@
 ﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import type { IInitialState, IThunkApi } from '@app/store/store'
+import type { IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
 import { ICallNotificationAction, INavigateAction, INotificationAction, TypeResponse } from '@app/pages/layout/types'
-import axios from 'axios'
 
 export interface ISignUp {
 	username: string
@@ -9,21 +8,21 @@ export interface ISignUp {
 	password: string
 }
 
-export interface IErrorResponse {
-	error?: string
-}
-
-const initialState: IInitialState<ISignUp> = {
+const initialState: IInitialState<string> = {
 	data: null,
 	error: null,
-	loading: false
+	loading: false,
+	status: null,
+	statusText: null,
+	headers: null,
+	config: null,
 }
 
-export const signupAction = createAsyncThunk(
+export const signUpAction = createAsyncThunk(
 	'user/signup',
-	async (data: ISignUp & INotificationAction & INavigateAction, thunkAPI: IThunkApi<ISignUp & IErrorResponse>) => {
+	async (data: ISignUp & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<string>>) => {
 		const {openNotification, navigate, ...userInfo} = data
-		const callNotification = ({type, message, error}: ICallNotificationAction ) => {
+		const callNotification = ({type, message}: ICallNotificationAction ) => {
 			openNotification({
 				message: TypeResponse[`${type}`].charAt(0).toUpperCase() + TypeResponse[`${type}`].slice(1),
 				description: message,
@@ -34,31 +33,44 @@ export const signupAction = createAsyncThunk(
 			}
 		}
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo, callNotification })
-		return response.data.error
-			? <ISignUp & IErrorResponse><unknown>thunkAPI.rejectWithValue(response.data.error) 
-			: response.data
+		if(response.status >= 400){
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
+		} else {
+			callNotification({type: TypeResponse['success'], message: response.data})
+		}
+		return response
 	}
 )
 
-export const signupSlice = createSlice({
+export const signUpSlice = createSlice({
 	name: 'signup',
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
 		builder
-			.addCase(signupAction.pending, (state) => {
+			.addCase(signUpAction.pending, (state) => {
 				state.loading = true
 			})
-			.addCase(signupAction.fulfilled, (state, action) => {
-				state.data = action.payload
+			.addCase(signUpAction.fulfilled, (state, action) => {
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
+				state.data = data
+				state.status = status
+				state.statusText = statusText
+				state.headers = headers
+				state.config = config
 				state.loading = false
 			})
-			.addCase(signupAction.rejected, (state, action) => {
+			.addCase(signUpAction.rejected, (state, action)  => {
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
 				state.data = null
-				state.error = <IErrorResponse['error']>action.payload
+				state.error = data
+				state.status = status
+				state.statusText = statusText
+				state.headers = headers
+				state.config = config 
 				state.loading = false
 			})
 	}
 })
 
-export default signupSlice.reducer
+export default signUpSlice.reducer
