@@ -24,18 +24,18 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
     @Body() dto: loginUserDto,
   ): Promise<Omit<User, 'password'> & { refresh_token: string }> {
-    const { username, password, refreshToken } = dto;
-    if (!((username && password) || refreshToken)) {
+    const { username, password, refresh_token } = dto;
+    if (!((username && password) || refresh_token)) {
       throw new BadRequestException('Username or password incorrect');
     }
     let accessTokenData;
-    if (refreshToken) {
-      accessTokenData = await this.authService.updateTokens(refreshToken);
+    if (refresh_token) {
+      accessTokenData = await this.authService.updateTokens(refresh_token);
       const user = await this.userService.getUser(accessTokenData.username);
       if (!user) {
         throw new BadRequestException('Username or password incorrect');
       }
-      const hasAccess = await compare(password, user.password);
+      const hasAccess = await compare(accessTokenData.password, user.password);
       if (!hasAccess) {
         throw new BadRequestException('Username or password incorrect');
       }

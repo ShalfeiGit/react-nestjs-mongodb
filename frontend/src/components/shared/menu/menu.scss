@@ -10,4 +10,11 @@
     font-size: 22px;
     color: $blue-color;
   }
+  &__login{
+    display: flex;
+    justify-content: flex-end;
+  }
+  &__greetings{
+    font-size: 12px;
+  }
 }

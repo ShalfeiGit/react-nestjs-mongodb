@@ -1,5 +1,5 @@
 ﻿export class loginUserDto {
   readonly username: string;
   readonly password: string;
-  readonly refreshToken?: string;
+  readonly refresh_token?: string;
 }

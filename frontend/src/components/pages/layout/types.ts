@@ -5,11 +5,11 @@
 }
 
 export interface INotificationAction {
-	openNotification: (data: INotification) => void
+	openNotification?: (data: INotification) => void
 }
 
 export interface INavigateAction {
-	navigate: (data: string) => void
+	navigate?: (data: string) => void
 }
 
 export enum TypeResponse {
