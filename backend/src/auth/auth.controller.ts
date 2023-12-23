@@ -23,7 +23,7 @@ export class AuthController {
   async loginUser(
     @Res({ passthrough: true }) response: Response,
     @Body() dto: loginUserDto,
-  ): Promise<User> {
+  ): Promise<Omit<User, 'password'> & { refresh_token: string }> {
     const { username, password, refreshToken } = dto;
     if (!((username && password) || refreshToken)) {
       throw new BadRequestException('Username or password incorrect');
@@ -45,8 +45,11 @@ export class AuthController {
         signed: true,
         expires: new Date(Date.now() + 30 * 24 * 3600000),
       });
-      response.set('refresh_token', `${accessTokenData.refresh_token}`);
-      return user;
+      const { password: userPassword, ...enrichedUser } = user;
+      return {
+        ...enrichedUser,
+        refresh_token: `${accessTokenData.refresh_token}`,
+      };
     } else {
       const user = await this.userService.getUser(username);
       if (!user) {
@@ -63,8 +66,11 @@ export class AuthController {
         signed: true,
         expires: new Date(Date.now() + 3600000),
       });
-      response.set('refresh_token', `${accessTokenData.refresh_token}`);
-      return user;
+      const { password: userPassword, ...enrichedUser } = user;
+      return {
+        ...enrichedUser,
+        refresh_token: `${accessTokenData.refresh_token}`,
+      };
     }
   }
 }

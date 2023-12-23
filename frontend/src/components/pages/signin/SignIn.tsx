@@ -1,10 +1,11 @@
 ﻿import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { Form, Input, Button, Typography } from 'antd'
+import { Form, Input, Button, Typography, Checkbox } from 'antd'
+import { useOutletContext } from 'react-router-dom'
 
-import '@app/pages/signin/signin.scss'
+import '@app/pages/signIn/signIn.scss'
 import { useAppDispatch } from '@app/store/store'
-import { signinAction } from '@app/store/slices/signinSlice'
+import { signInAction } from '@app/store/slices/signInSlice'
 
 const { Title } = Typography
 
@@ -34,11 +35,12 @@ const tailFormItemLayout = {
 
 const Signin: React.FC = () => {
 	const dispatch = useAppDispatch()
+	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
-			const {repeatPassword, ...data} = values
-			dispatch(signinAction(data))
+			const {...data} = values
+			dispatch(signInAction({...data, openNotification }))
 		})
 	}
 
@@ -100,6 +102,15 @@ const Signin: React.FC = () => {
 					rules={[{ required: true, validator: handlePasswordValidator }]}
 				>
 					<Input.Password placeholder="Input password" autoComplete='on'/>
+				</Form.Item>
+
+				<Form.Item 
+					hasFeedback
+					name="remember" 
+					label="Remember me" 
+					valuePropName="checked"
+				>
+					<Checkbox/>
 				</Form.Item>
 
 				<Form.Item {...tailFormItemLayout}>

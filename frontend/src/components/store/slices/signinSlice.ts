@@ -1,48 +1,88 @@
-﻿// import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-// import type { IInitialState, IThunkApi } from '@app/store/store'
+﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import type { IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
+import { ICallNotificationAction, INotificationAction, TypeResponse } from '@app/pages/layout/types'
 
-// interface ISignIn {
-// 	username: string
-// 	password: string
-// }
+export interface ISignIn {
+	username: string
+	password: string
+	remember?: boolean
+}
 
-// const initialState: IInitialState<ISignIn> = {
-// 	data: null,
-// 	error: null,
-// 	loading: false,
-// 	status: null,
-// 	statusText: null,
-// 	headers: null,
-// 	config: null,
-// }
+export interface ISignInResponse {
+  username: string;
+  email: string;
+  bio: string;
+  age: number;
+  gender: string;
+	refresh_token: string;
+}
 
-// // export const signinAction = createAsyncThunk(
-// // 	'user/signin',
-// // 	async (data: ISignIn, thunkAPI: IThunkApi<ISignIn>) => {
-// // 		const response = await thunkAPI.extra.api({ method: 'post', url: 'signin', data })
-// // 		return 200 >= response.status && response.status <400 
-// // 			? response.data
-// // 			: thunkAPI.rejectWithValue({data: null, error: response.statusText})
-// // 	}
-// // )
+const initialState: IInitialState<string> = {
+	data: null,
+	error: null,
+	loading: false,
+	status: null,
+	statusText: null,
+	headers: null,
+	config: null,
+}
 
-// // export const signinSlice = createSlice({
-// // 	name: 'signin',
-// // 	initialState,
-// // 	reducers: {},
-// // 	extraReducers: (builder) => {
-// // 		builder
-// // 			.addCase(signinAction.pending, (state) => {
-// // 				state.loading = true
-// // 			})
-// // 			.addCase(signinAction.fulfilled, (state) => {
-// // 				state.loading = false
-// // 			})
-// // 			.addCase(signinAction.rejected, (state, action) => {
-// // 				state.error = action.error.message
-// // 				state.loading = false
-// // 			})
-// // 	}
-// // })
+export const signInAction = createAsyncThunk(
+	'user/signin',
+	async (data: ISignIn & INotificationAction, thunkAPI: IThunkApi<IAxiosResponse<ISignInResponse & string>>) => {
+		const {openNotification, ...userInfo} = data
+		const callNotification = ({type, message}: ICallNotificationAction ) => {
+			openNotification({
+				message: TypeResponse[`${type}`].charAt(0).toUpperCase() + TypeResponse[`${type}`].slice(1),
+				description: message,
+				type: TypeResponse[`${type}`]
+			})
+		}
+		const response = await thunkAPI.extra.api({ method: 'post', url: 'auth', data: userInfo })
+		if(response.status >= 400){
+			callNotification({
+				type: response.status >= 400 ? TypeResponse.failed : TypeResponse.success,
+				message: response.data
+			})
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
+		}	
+		if(userInfo.remember){
+			localStorage.setItem('refresh_token', response.data.refresh_token)
+		}
+		return response
+	}
+)
 
-// export default signinSlice.reducer
+export const signInSlice = createSlice({
+	name: 'signin',
+	initialState,
+	reducers: {},
+	extraReducers: (builder) => {
+		builder
+			.addCase(signInAction.pending, (state) => {
+				state.loading = true
+			})
+			.addCase(signInAction.fulfilled, (state, action) => {
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
+				state.data = data
+				state.error = null
+				state.status = status
+				state.statusText = statusText
+				state.headers = headers
+				state.config = config
+				state.loading = false
+			})
+			.addCase(signInAction.rejected, (state, action)  => {
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
+				state.data = null
+				state.error = data
+				state.status = status
+				state.statusText = statusText
+				state.headers = headers
+				state.config = config 
+				state.loading = false
+			})
+	}
+})
+
+export default signInSlice.reducer

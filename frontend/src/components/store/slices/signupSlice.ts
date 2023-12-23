@@ -32,12 +32,14 @@ export const signUpAction = createAsyncThunk(
 				navigate('/signin')
 			}
 		}
-		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo, callNotification })
+		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo })
+		callNotification({
+			type: response.status >= 400 ? TypeResponse.failed : TypeResponse.success,
+			message: response.data
+		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
-		} else {
-			callNotification({type: TypeResponse['success'], message: response.data})
-		}
+		}	
 		return response
 	}
 )
@@ -54,6 +56,7 @@ export const signUpSlice = createSlice({
 			.addCase(signUpAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
 				state.data = data
+				state.error = null
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers

@@ -6,8 +6,8 @@ import Layout from '@app/pages/layout/Layout'
 import Home from '@app/pages/home/Home'
 import Article from '@app/pages/article/Article'
 import ErrorPage from '@app/pages/error/ErrorPage'
-import SignIn from '@app/pages/signin/SignIn'
-import SingUp from '@app/pages/signup/SignUp'
+import SignIn from '@app/pages/signIn/SignIn'
+import SingUp from '@app/pages/signUp/SignUp'
 
 const router = createBrowserRouter([
 	{

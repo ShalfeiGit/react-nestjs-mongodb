@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom'
 import { Form, Input, Button, Typography } from 'antd'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 
-import '@app/pages/signup/signup.scss'
+import '@app/pages/signUp/signUp.scss'
 import { useAppDispatch } from '@app/store/store'
-import { signUpAction } from '@app/store/slices/signupSlice'
+import { signUpAction } from '@app/store/slices/signUpSlice'
 
 const { Title } = Typography
 
@@ -143,7 +143,7 @@ const SignUp: React.FC = () => {
 					label="Repeat password" 
 					name="repeatPassword"
 					validateDebounce={1000}
-					// rules={[{ required: true, validator: handleRepeatPasswordValidator }]}
+					rules={[{ required: true, validator: handleRepeatPasswordValidator }]}
 				>
 					<Input.Password placeholder="Input password" autoComplete='on'/>
 				</Form.Item>
