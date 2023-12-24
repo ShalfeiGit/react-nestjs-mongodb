@@ -8,6 +8,7 @@ import Article from '@app/pages/article/Article'
 import ErrorPage from '@app/pages/error/ErrorPage'
 import SignIn from '@app/pages/signIn/SignIn'
 import SingUp from '@app/pages/signUp/SignUp'
+import UserInfo from '@app/pages/userInfo/UserInfo'
 
 const router = createBrowserRouter([
 	{
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
 			{
 				path: 'articles/:slug',
 				Component: Article
+			},
+			{
+				path: 'userinfo/:username',
+				Component: UserInfo
 			}
 		]
 	}

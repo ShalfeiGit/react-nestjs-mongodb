@@ -48,7 +48,6 @@ export const signInAction = createAsyncThunk(
 			})
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
 		}	
-		console.log(response.data.refresh_token)
 		if(userInfo?.remember || userInfo?.refresh_token){
 			localStorage.setItem('refresh_token', response.data.refresh_token)
 		}

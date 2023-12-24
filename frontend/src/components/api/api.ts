@@ -8,6 +8,11 @@ const  makeRequest = async ({ method, url, data = null, responseType = 'json' }:
 		method,
 		responseType,
 		data,
+		withCredentials:true,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+		}
 	}).catch(function (error) {
 		if (error?.response) {
 			const message = error?.response?.data?.message

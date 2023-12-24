@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Col, Row, Button, Typography } from 'antd'
-import { RocketTwoTone, LoginOutlined, SmileOutlined } from '@ant-design/icons'
+import { RocketTwoTone, LoginOutlined, UserOutlined } from '@ant-design/icons'
 
 import '@app/shared/menu/menu.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
@@ -29,8 +29,8 @@ const Menu: React.FC = () => {
 		navigate('/signin')
 	}
 
-	const handleRedirectUserInfoModal = () => {
-		navigate('/userinfo')
+	const handleRedirectUserInfoModal = (username) => () => {
+		navigate(`/userinfo/${username}`)
 	}
 
 	return (
@@ -48,8 +48,8 @@ const Menu: React.FC = () => {
 				<Col span={3}></Col>
 				<Col span={9} className='menu__login'>
 					{userInfo 
-						? (<Button className={'menu__button'} type="link" title="User info" onClick={handleRedirectUserInfoModal}>
-							<SmileOutlined /><span className={'menu__greetings'}>{`Hi, ${userInfo?.username}`}</span>
+						? (<Button className={'menu__button'} type="link" title="User info" onClick={handleRedirectUserInfoModal(userInfo?.username)}>
+							<UserOutlined /><span className={'menu__greetings'}>{`Hi, ${userInfo?.username}`}</span>
 						</Button>) 
 						: (
 							<Button className={'menu__button'} type="link" title="Sign in" onClick={handleRedirectSignInModal}>

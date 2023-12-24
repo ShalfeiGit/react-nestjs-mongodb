@@ -55,11 +55,10 @@ export class UserController {
     if (!user) {
       return `User ${username} not found `;
     }
-    const { password, ...data } = dto;
-    const hashPassword = await hash(password, 10);
     const entity = Object.assign(new User(), {
-      ...data,
-      password: hashPassword,
+      ...dto,
+      username,
+      password: user.password,
     });
     await this.userService.updateUser(username, entity);
     return `${username} was updated`;
