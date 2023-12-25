@@ -30,9 +30,6 @@ export const updateUserInfoAction = createAsyncThunk(
 				description: message,
 				type: TypeResponse[`${type}`]
 			})
-			if(type === TypeResponse['success']){
-				navigate('/')
-			}
 		}
 		const {username, ...dataUserInfo} = userInfo
 		const response = await thunkAPI.extra.api({ method: 'patch', url: `user/${username}`, data: dataUserInfo })

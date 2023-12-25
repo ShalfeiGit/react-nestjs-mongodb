@@ -4,6 +4,7 @@
   Body,
   Res,
   BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
@@ -28,6 +29,7 @@ export class AuthController {
     if (!((username && password) || refresh_token)) {
       throw new BadRequestException('Username or password incorrect');
     }
+    response.status(HttpStatus.OK);
     let accessTokenData;
     if (refresh_token) {
       accessTokenData = await this.authService.updateTokens(refresh_token);
@@ -43,7 +45,6 @@ export class AuthController {
         httpOnly: true,
         secure: true,
         signed: true,
-        expires: new Date(Date.now() + 30 * 24 * 3600000),
       });
       const { password: userPassword, ...enrichedUser } = user;
       return {
@@ -64,8 +65,8 @@ export class AuthController {
         httpOnly: true,
         secure: true,
         signed: true,
-        expires: new Date(Date.now() + 3600000),
       });
+
       const { password: userPassword, ...enrichedUser } = user;
       return {
         ...enrichedUser,

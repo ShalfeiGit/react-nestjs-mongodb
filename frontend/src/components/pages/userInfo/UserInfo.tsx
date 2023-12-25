@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { Form, Input, Button, Typography, InputNumber, Select } from 'antd'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 
-import '@app/pages/signUp/signUp.scss'
+import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { updateUserInfoAction, getUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
 
