@@ -24,7 +24,7 @@ const  makeRequest = async ({ method, url, data = null, responseType = 'json' }:
 		const refreshToken =  localStorage.getItem('refresh_token')
 		if(refreshToken){
 			//запрос обновления cookie
-			await axios.request({
+			const response = await axios.request({
 				url: 'http://localhost:3000/api/auth', // Заменить на значение из .env
 				method: 'post',
 				responseType,
@@ -35,6 +35,9 @@ const  makeRequest = async ({ method, url, data = null, responseType = 'json' }:
 					'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 				}
 			})
+			if(response.status < 400){
+				localStorage.setItem('refresh_token', response.data.refresh_token)
+			}
 
 			const repeatResponse: IAxiosResponse<string>  = await axios.request({
 				url: `http://localhost:3000/api/${url}`, // Заменить на значение из .env

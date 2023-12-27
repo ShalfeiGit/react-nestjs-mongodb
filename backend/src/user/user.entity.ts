@@ -45,4 +45,13 @@ export class User {
 
   @Column({ default: null })
   password: string;
+
+  @Column({ type: 'bigint', default: null })
+  createdAt: number;
+
+  @Column({ type: 'bigint', default: null })
+  updatedAt: number;
+
+  @Column({ default: null })
+  refresh_token: string;
 }

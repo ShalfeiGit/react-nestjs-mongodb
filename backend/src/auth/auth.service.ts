@@ -12,7 +12,6 @@ export class AuthService {
       createdDate: Date.now(),
       password,
       username,
-      expired: Date.now() + 86400000,
     };
     return {
       access_token: sign(payloadToken, process.env.JWT_SECRET_SALT),
@@ -31,7 +30,6 @@ export class AuthService {
       createdDate: Date.now(),
       password: (decode as JwtPayload)?.password,
       username: (decode as JwtPayload)?.username,
-      expired: Date.now() + 86400000,
     };
 
     return {

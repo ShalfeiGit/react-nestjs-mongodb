@@ -24,7 +24,7 @@ export class UserService {
       .createQueryBuilder()
       .insert()
       .into(User)
-      .values([{ ...dto }])
+      .values([{ ...dto, createdAt: Date.now() }])
       .execute();
   }
 
@@ -35,7 +35,7 @@ export class UserService {
     return this.userRepository
       .createQueryBuilder()
       .update(User)
-      .set({ ...dto })
+      .set({ ...dto, updatedAt: Date.now() })
       .where('username = :username', { username })
       .execute();
   }

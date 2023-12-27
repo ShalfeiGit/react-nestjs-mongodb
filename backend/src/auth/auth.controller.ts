@@ -5,6 +5,7 @@
   Res,
   BadRequestException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
@@ -12,8 +13,10 @@ import { loginUserDto } from './dtos/loginUserDto';
 import { AuthService } from './auth.service';
 import { compare } from 'bcrypt';
 import { Response } from 'express';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
+@UseGuards(AuthGuard)
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -47,6 +50,10 @@ export class AuthController {
         signed: true,
       });
       const { password: userPassword, ...enrichedUser } = user;
+      await this.userService.updateUser(user.username, {
+        ...user,
+        refresh_token: `${accessTokenData.refresh_token}`,
+      });
       return {
         ...enrichedUser,
         refresh_token: `${accessTokenData.refresh_token}`,
@@ -66,8 +73,11 @@ export class AuthController {
         secure: true,
         signed: true,
       });
-
       const { password: userPassword, ...enrichedUser } = user;
+      await this.userService.updateUser(user.username, {
+        ...user,
+        refresh_token: `${accessTokenData.refresh_token}`,
+      });
       return {
         ...enrichedUser,
         refresh_token: `${accessTokenData.refresh_token}`,

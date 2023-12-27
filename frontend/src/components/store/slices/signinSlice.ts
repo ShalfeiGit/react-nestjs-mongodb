@@ -68,7 +68,7 @@ export const signInSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(signInAction.fulfilled, (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<ISignInResponse & string>>action.payload
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<ISignInResponse & string>>action?.payload ?? {}
 				state.data = data
 				state.error = null
 				state.status = status
@@ -78,7 +78,7 @@ export const signInSlice = createSlice({
 				state.loading = false
 			})
 			.addCase(signInAction.rejected, (state, action)  => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<ISignInResponse & string>>action.payload
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<ISignInResponse & string>>action?.payload ?? {}
 				state.data = null
 				state.error = data
 				state.status = status

@@ -8,6 +8,7 @@
   Body,
   UseGuards,
   BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
@@ -44,7 +45,7 @@ export class UserController {
     return `${dto.username} was created`;
   }
 
-  @Patch(':username')
+  @Put(':username')
   @UseGuards(AuthGuard)
   async updateUser(
     @Param('username') username,
@@ -65,6 +66,7 @@ export class UserController {
   }
 
   @Delete(':username')
+  @UseGuards(AuthGuard)
   async deleteUser(@Param('username') username): Promise<string> {
     const user = await this.userService.getUser(username); //дополнить проверкой из Passportjs
     if (!user) {

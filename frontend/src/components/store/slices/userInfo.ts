@@ -32,7 +32,7 @@ export const updateUserInfoAction = createAsyncThunk(
 			})
 		}
 		const {username, ...dataUserInfo} = userInfo
-		const response = await thunkAPI.extra.api({ method: 'patch', url: `user/${username}`, data: dataUserInfo })
+		const response = await thunkAPI.extra.api({ method: 'put', url: `user/${username}`, data: dataUserInfo })
 		callNotification({
 			type: response.status >= 400 ? TypeResponse.failed : TypeResponse.success,
 			message: response.data
@@ -67,7 +67,7 @@ export const userInfoSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(updateUserInfoAction.fulfilled, (state, action) => {
-				const {status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
+				const {status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
 				state.error = null
 				state.status = status
 				state.statusText = statusText
@@ -76,7 +76,7 @@ export const userInfoSlice = createSlice({
 				state.loading = false
 			})
 			.addCase(updateUserInfoAction.rejected, (state, action)  => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
 				state.data = null
 				state.error = data
 				state.status = status
@@ -89,7 +89,7 @@ export const userInfoSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(getUserInfoAction.fulfilled, (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action.payload
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
 				state.data = data
 				state.error = null
 				state.status = status
@@ -99,7 +99,7 @@ export const userInfoSlice = createSlice({
 				state.loading = false
 			})
 			.addCase(getUserInfoAction.rejected, (state, action)  => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action.payload
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
 				state.data = null
 				state.error = data
 				state.status = status
