@@ -5,7 +5,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom'
 
 import '@app/pages/signUp/signUp.scss'
 import { useAppDispatch } from '@app/store/store'
-import { signUpAction } from '@app/store/slices/signUpSlice'
+import { signUpAction } from '@app/store/slices/userInfo'
 
 const { Title } = Typography
 

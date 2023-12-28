@@ -7,6 +7,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom'
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { updateUserInfoAction, getUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
+import { resetUserInfoAction } from '@app/store/slices/userInfo'
 
 const { TextArea } = Input
 
@@ -43,6 +44,7 @@ const UserInfo: React.FC = () => {
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
+
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
 			dispatch(updateUserInfoAction({...values, openNotification, navigate }))
@@ -75,6 +77,16 @@ const UserInfo: React.FC = () => {
 		{label: 'female', value: 'female'},
 		{label: 'others', value: 'others'}
 	]
+
+	const handleLogOutUser = () => {
+		localStorage.clear()
+		dispatch(resetUserInfoAction())
+		navigate('/')
+	}
+
+	const handleDeleteUser = () => {
+		
+	}
 
 	return (
 		<div className="user-info">
@@ -133,6 +145,12 @@ const UserInfo: React.FC = () => {
 					<Button type="primary" htmlType="submit">
 						Submit
 					</Button>
+					<Button type="primary" ghost onClick={handleLogOutUser}>
+     				 Log Out
+    			</Button>
+					<Button type="primary" danger onClick={handleDeleteUser}>
+     				 Delete
+    			</Button>
 				</Form.Item>
 			</Form>
 		</div>

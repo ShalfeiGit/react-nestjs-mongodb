@@ -1,7 +1,9 @@
-﻿export interface INotification {
+﻿import { NoticeType } from 'antd/es/message/interface'
+
+export interface INotification {
 	message:string,
 	description: string,
-  type:TypeResponse
+  type:NoticeType
 }
 
 export interface INotificationAction {
@@ -27,7 +29,7 @@ export interface IResponseFailedAction {
 }
 
 export interface ICallNotificationAction {
-	type: TypeResponse,
+	type: NoticeType,
 	message: string,
 	error?: string,
 }

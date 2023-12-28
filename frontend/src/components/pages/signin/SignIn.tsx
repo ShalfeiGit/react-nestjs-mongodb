@@ -6,7 +6,7 @@ import { useOutletContext } from 'react-router-dom'
 
 import '@app/pages/signIn/signIn.scss'
 import { useAppDispatch } from '@app/store/store'
-import { signInAction } from '@app/store/slices/signInSlice'
+import { signInAction } from '@app/store/slices/userInfo'
 
 const { Title } = Typography
 

@@ -1,19 +1,19 @@
 ﻿import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Col, Row, Button, Typography } from 'antd'
+import { Col, Row, Button, Typography, Avatar, Space  } from 'antd'
 import { RocketTwoTone, LoginOutlined, UserOutlined } from '@ant-design/icons'
 
 import '@app/shared/menu/menu.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
-import { signInAction } from '@app/store/slices/signInSlice'
+import { IUserInfo, signInAction } from '@app/store/slices/userInfo'
 
 const { Text } = Typography
 
 const Menu: React.FC = () => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
-	const userInfo = useSelector((state: RootState) => state.signIn.data)
+	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 	useEffect(() => {
 		const refresh_token = localStorage.getItem('refresh_token')
 		if(!userInfo && refresh_token){
@@ -48,8 +48,8 @@ const Menu: React.FC = () => {
 				<Col span={3}></Col>
 				<Col span={9} className='menu__login'>
 					{userInfo 
-						? (<Button className={'menu__button'} type="link" title="User info" onClick={handleRedirectUserInfoModal(userInfo?.username)}>
-							<UserOutlined /><span className={'menu__greetings'}>{`Hi, ${userInfo?.username}`}</span>
+						? (<Button className={'menu__button'} type="link" title="User info" onClick={handleRedirectUserInfoModal((userInfo as IUserInfo).username)}>
+							<Avatar style={{ backgroundColor: '#1677ff' }} icon={<UserOutlined/>} /><span className={'menu__greetings'}>{`Hi, ${(userInfo as IUserInfo).username}`}</span>
 						</Button>) 
 						: (
 							<Button className={'menu__button'} type="link" title="Sign in" onClick={handleRedirectSignInModal}>

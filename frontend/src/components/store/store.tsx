@@ -1,8 +1,6 @@
 ﻿import { configureStore } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 
-import signUpReducer from '@app/store/slices/signUpSlice'
-import signInReducer from '@app/store/slices/signInSlice'
 import userInfoReducer from '@app/store/slices/userInfo'
 import makeRequest from '@app/api/api'
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
@@ -11,8 +9,6 @@ import { IResponseFailedAction } from '@app/pages/layout/types'
 
 export const store = configureStore({
 	reducer: {
-		signUp: signUpReducer,
-		signIn: signInReducer,
 		userInfo: userInfoReducer,
 	},
 	middleware: (getDefaultMiddleware) =>

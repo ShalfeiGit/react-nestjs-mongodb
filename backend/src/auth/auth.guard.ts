@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    if (request?.body?.refresh_token) {
+    if (request?.body?.refresh_token && request.signedCookies['access_token']) {
       const refresh_token = request?.body?.refresh_token;
       const payload = verify(
         request.signedCookies['access_token'],
