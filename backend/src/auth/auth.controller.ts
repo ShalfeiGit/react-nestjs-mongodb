@@ -29,9 +29,6 @@ export class AuthController {
     @Body() dto: loginUserDto,
   ): Promise<Omit<User, 'password'> & { refresh_token: string }> {
     const { username, password, refresh_token } = dto;
-    if (!((username && password) || refresh_token)) {
-      throw new BadRequestException('Username or password incorrect');
-    }
     response.status(HttpStatus.OK);
     let accessTokenData;
     if (refresh_token) {

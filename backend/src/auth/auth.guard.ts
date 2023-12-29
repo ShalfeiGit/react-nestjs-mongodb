@@ -26,12 +26,9 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    if (request?.body?.refresh_token && request.signedCookies['access_token']) {
+    if (request?.body?.refresh_token) {
       const refresh_token = request?.body?.refresh_token;
-      const payload = verify(
-        request.signedCookies['access_token'],
-        process.env.JWT_SECRET_SALT,
-      );
+      const payload = verify(refresh_token, process.env.JWT_SECRET_SALT);
       const user = await this.userRepository
         .createQueryBuilder('user')
         .where('user.username = :username', {

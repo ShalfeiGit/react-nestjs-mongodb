@@ -1,7 +1,6 @@
 ﻿import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Form, Input, Button, Typography, Checkbox } from 'antd'
-import { useOutletContext } from 'react-router-dom'
 
 
 import '@app/pages/signIn/signIn.scss'
@@ -36,13 +35,13 @@ const tailFormItemLayout = {
 
 const Signin: React.FC = () => {
 	const dispatch = useAppDispatch()
-	const openNotification = useOutletContext()
-	const [form] = Form.useForm()
 	const navigate = useNavigate()
+	const [form] = Form.useForm()
+	
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
 			const {...data} = values
-			dispatch(signInAction({...data, navigate, openNotification }))
+			dispatch(signInAction({...data, navigate }))
 		})
 	}
 

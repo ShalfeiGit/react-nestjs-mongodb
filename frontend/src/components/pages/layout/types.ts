@@ -1,8 +1,7 @@
 ﻿import { NoticeType } from 'antd/es/message/interface'
 
 export interface INotification {
-	message:string,
-	description: string,
+	content: string,
   type:NoticeType
 }
 

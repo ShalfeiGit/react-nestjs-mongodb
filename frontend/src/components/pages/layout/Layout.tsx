@@ -1,17 +1,16 @@
 ﻿import React from 'react'
-import { Button, message } from 'antd'
+import { message } from 'antd'
 import { Outlet } from 'react-router-dom'
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
 import Menu from '@app/shared/menu/Menu'
-import { INotification, TypeResponse } from './types'
+import { INotification } from './types'
 
 const Layout: React.FC = () =>{
 	const [messageApi, contextHolder] = message.useMessage()
-	const openNotification = ({type, message, description}: INotification) => {
+	const openNotification = ({type, content}: INotification) => {
 		messageApi.open({
 			type: type,
-			content: description,
+			content: <>{content}</>,
 		})
 	}
 

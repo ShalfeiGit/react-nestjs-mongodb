@@ -1,13 +1,13 @@
 ﻿import React, { useEffect }from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Form, Input, Button, Typography, InputNumber, Select } from 'antd'
+import { Form, Input, Button, Typography, InputNumber, Select, Flex } from 'antd'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { updateUserInfoAction, getUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
-import { resetUserInfoAction } from '@app/store/slices/userInfo'
+import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
 
 const { TextArea } = Input
 
@@ -80,12 +80,12 @@ const UserInfo: React.FC = () => {
 
 	const handleLogOutUser = () => {
 		localStorage.clear()
-		dispatch(resetUserInfoAction())
-		navigate('/')
+		dispatch(resetUserInfoAction({navigate}))
 	}
 
 	const handleDeleteUser = () => {
-		
+		localStorage.clear()
+		dispatch(deleteUserInfoAction({navigate, username}))
 	}
 
 	return (
@@ -142,15 +142,17 @@ const UserInfo: React.FC = () => {
 					<Select options={genderOptions} />
 				</Form.Item>
 				<Form.Item {...tailFormItemLayout}>
-					<Button type="primary" htmlType="submit">
+					<Flex gap="small" wrap="wrap">
+						<Button type="primary" htmlType="submit">
 						Submit
-					</Button>
-					<Button type="primary" ghost onClick={handleLogOutUser}>
+						</Button>
+						<Button type="primary" ghost onClick={handleLogOutUser}>
      				 Log Out
     			</Button>
-					<Button type="primary" danger onClick={handleDeleteUser}>
+						<Button type="primary" danger onClick={handleDeleteUser}>
      				 Delete
     			</Button>
+					</Flex>
 				</Form.Item>
 			</Form>
 		</div>
