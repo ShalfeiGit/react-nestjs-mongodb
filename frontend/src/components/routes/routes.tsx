@@ -2,10 +2,10 @@
 import { RouterProvider } from 'react-router-dom'
 import { createBrowserRouter } from 'react-router-dom'
 
-import Layout from '@app/pages/layout/Layout'
+import Layout from '@app/shared/layout/Layout'
 import Home from '@app/pages/home/Home'
 import Article from '@app/pages/article/Article'
-import ErrorPage from '@app/pages/error/ErrorPage'
+import ErrorPage from '@app/shared/error/ErrorPage'
 import SignIn from '@app/pages/signIn/SignIn'
 import SingUp from '@app/pages/signUp/SignUp'
 import UserInfo from '@app/pages/userInfo/UserInfo'

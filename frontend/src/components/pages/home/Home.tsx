@@ -2,7 +2,7 @@
 import { Col, Row, Typography } from 'antd'
 
 import '@app/pages/home/home.scss'
-import GlobalFeed from './components/GlobalFeed'
+import Feeds from './components/Feeds'
 import PopularTags from './components/PopularTags'
 
 const { Text } = Typography
@@ -19,7 +19,9 @@ const Home: React.FC = () => {
 				</div>
 			</div>
 			<Row justify="end">
-				<Col span={18}><GlobalFeed/></Col>
+				<Col span={1}></Col>
+				<Col span={16}><Feeds/></Col>
+				<Col span={1}></Col>
 				<Col span={6}><PopularTags/></Col>
 			</Row>
 		</div>

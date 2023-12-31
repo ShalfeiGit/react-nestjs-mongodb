@@ -7,7 +7,7 @@ import { RocketTwoTone, LoginOutlined, UserOutlined } from '@ant-design/icons'
 import '@app/shared/menu/menu.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { IUserInfo, signInAction } from '@app/store/slices/userInfo'
-import { INotification } from '@app/pages/layout/types'
+import { INotification } from '@app/shared/layout/types'
 
 const { Text } = Typography
 interface IProps {
@@ -60,7 +60,6 @@ const Menu: React.FC<IProps> = ({openNotification}) => {
 								<LoginOutlined />
 							</Button>
 						)}
-					
 				</Col>
 			</Row>
 		</div>

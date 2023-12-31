@@ -5,7 +5,7 @@ import userInfoReducer from '@app/store/slices/userInfo'
 import makeRequest from '@app/api/api'
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { AxiosRequestConfig, AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios'
-import { IResponseFailedAction } from '@app/pages/layout/types'
+import { IResponseFailedAction } from '@app/shared/menu/layout/types'
 
 export const store = configureStore({
 	reducer: {
