@@ -7,18 +7,21 @@ import { RocketTwoTone, LoginOutlined, UserOutlined } from '@ant-design/icons'
 import '@app/shared/menu/menu.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { IUserInfo, signInAction } from '@app/store/slices/userInfo'
+import { INotification } from '@app/pages/layout/types'
 
 const { Text } = Typography
+interface IProps {
+	openNotification(data: INotification): void
+}
 
-
-const Menu: React.FC = () => {
+const Menu: React.FC<IProps> = ({openNotification}) => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 	useEffect(() => {
 		const refresh_token = localStorage.getItem('refresh_token')
 		if(!userInfo && refresh_token){
-			dispatch(signInAction({ navigate, refresh_token, }))
+			dispatch(signInAction({ openNotification, navigate, refresh_token, }))
 		}
 	}, [])
 

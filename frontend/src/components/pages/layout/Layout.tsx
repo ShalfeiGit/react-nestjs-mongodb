@@ -17,7 +17,7 @@ const Layout: React.FC = () =>{
 	return (
 		<>
 			{contextHolder}
-			<Menu />
+			<Menu openNotification={openNotification}/>
 			<Outlet context={openNotification} />
 		</>
 	)

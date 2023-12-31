@@ -36,7 +36,7 @@ export class UserController {
     @Body() dto: createUserDto,
   ): Promise<Omit<User, 'password'>> {
     const searchedUser = await this.userService.getUser(dto.username);
-    if (!searchedUser) {
+    if (searchedUser) {
       throw new BadRequestException(`Already has ${searchedUser.username}`);
     }
     const { password: pass, ...data } = dto;
@@ -46,7 +46,7 @@ export class UserController {
       password: hashPassword,
     });
     await this.userService.saveUser(entity);
-    const { password, ...currentUser } = searchedUser;
+    const { password, ...currentUser } = entity;
     return currentUser;
   }
 
@@ -66,7 +66,7 @@ export class UserController {
       password: searchedUser.password,
     });
     await this.userService.updateUser(username, entity);
-    const { password, ...currentUser } = searchedUser;
+    const { password, ...currentUser } = entity;
     return currentUser;
   }
 

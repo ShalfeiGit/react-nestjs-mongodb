@@ -31,11 +31,18 @@ export type IThunkApi<T> = GetThunkAPI<{
 
 export interface IAxiosResponse<T> {
 	data: T
-	status: number,
-	statusText: string;
-  headers: RawAxiosResponseHeaders | AxiosResponseHeaders;
-  config: InternalAxiosRequestConfig<T>;
+	status: number
+	statusText: string
+  headers: RawAxiosResponseHeaders | AxiosResponseHeaders
+  config: InternalAxiosRequestConfig<T>
 }
+
+export interface IAxiosErrorResponse {
+	statusText: string
+	data: string
+	statusCode: number;
+}
+
 export interface IInitialState<T> extends IAxiosResponse<T> {
 	error: string
 	loading: boolean

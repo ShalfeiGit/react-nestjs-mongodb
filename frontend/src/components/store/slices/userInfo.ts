@@ -1,5 +1,5 @@
 ﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import type { IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
+import type { IAxiosErrorResponse, IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
 import { ICallNotificationAction, INavigateAction, INotificationAction, TypeResponse } from '@app/pages/layout/types'
 
 export interface IUserInfo {
@@ -74,11 +74,20 @@ export const updateUserInfoAction = createAsyncThunk(
 
 export const signInAction = createAsyncThunk(
 	'userInfo/signIn',
-	async (data: ISignIn & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<ISignInResponse>>) => {
+	async (data: ISignIn & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<ISignInResponse> & IAxiosErrorResponse>  ) => {
 		const { openNotification, navigate, ...userInfo} = data
+		const callNotification = ({type, message}: ICallNotificationAction ) => {
+			openNotification({
+				content: message,
+				type
+			})
+		}
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'auth', data: userInfo })
-
 		if(response.status >= 400){
+			callNotification({
+				type: response.status >= 400 ? 'error' : 'success',
+				message: response.data
+			})
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
 		}	else {
 			navigate('/')
@@ -92,7 +101,7 @@ export const signInAction = createAsyncThunk(
 
 export const signUpAction = createAsyncThunk(
 	'user/signUp',
-	async (data: ISignUp & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo>>) => {
+	async (data: ISignUp & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo> & IAxiosErrorResponse>) => {
 		const {openNotification, navigate, ...userInfo} = data
 		const callNotification = ({type, message}: ICallNotificationAction ) => {
 			openNotification({
@@ -103,7 +112,7 @@ export const signUpAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: `${response.data.username} success created`
+			message: response.status >= 400 ? response.data : `${response.data.username} was created`
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
