@@ -6,7 +6,8 @@ import { useOutletContext, useNavigate } from 'react-router-dom'
 
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
-import { updateUserInfoAction, getUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
+import { updateUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
+import { getOthersUserInfoAction, IOthersUserInfo } from '@app/store/slices/othersUserInfo'
 import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
 
 const { TextArea } = Input
@@ -39,7 +40,8 @@ const tailFormItemLayout = {
 
 const UserInfo: React.FC = () => {
 	const dispatch = useAppDispatch()
-	const data = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
+	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
+	const otherUserInfo = useSelector((state: RootState) => state.othersUserInfo.data as IOthersUserInfo)
 	const { username } = useParams()
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
@@ -52,12 +54,16 @@ const UserInfo: React.FC = () => {
 	}
 
 	useEffect(() => {
-		dispatch(getUserInfoAction({username}))
+		if(!userInfo.username){
+			navigate('/')
+		} else {
+			dispatch(getOthersUserInfoAction({username}))
+		}
 	}, [])
 
 	useEffect(() => {
-		form.setFieldsValue(data)
-	}, [data])
+		form.setFieldsValue(userInfo.username === username ? userInfo : otherUserInfo )
+	}, [userInfo, otherUserInfo])
 
 	const handleEmailValidator = (rule: { required: boolean }, value: string) => {
 		if(rule?.required && (!value || !value.trim())){
@@ -108,50 +114,51 @@ const UserInfo: React.FC = () => {
 				</Form.Item>
 
 				<Form.Item 
-					hasFeedback
 					label="Email" 
 					name="email" 
 					validateDebounce={1000}
 					rules={[{ required: true, validator:handleEmailValidator }]}
-					initialValue={data?.email}
+					initialValue={userInfo?.email}
 				>
-					<Input />
+					<Input disabled={username && userInfo.username !== username} />
 				</Form.Item>
 
 				<Form.Item 
 					label="Bio" 
 					name="bio"
-					initialValue={data?.bio}
+					initialValue={userInfo?.bio}
 				>
-					<TextArea placeholder="Input bio" />
+					<TextArea disabled={username && userInfo.username !== username} placeholder="Input bio" />
 				</Form.Item>
 
 				<Form.Item 
 					label="Age" 
 					name="age" 
-					initialValue={data?.age}
+					initialValue={userInfo?.age}
 				>
-					<InputNumber placeholder="Input age" />
+					<InputNumber disabled={username && userInfo.username !== username} placeholder="Input age" />
 				</Form.Item>
 
 				<Form.Item 
 					label="Gender" 
 					name="gender"
-					initialValue={data?.gender}
+					initialValue={userInfo?.gender}
 				>
-					<Select options={genderOptions} />
+					<Select disabled={username && userInfo.username !== username} options={genderOptions} />
 				</Form.Item>
 				<Form.Item {...tailFormItemLayout}>
 					<Flex gap="small" wrap="wrap">
-						<Button type="primary" htmlType="submit">
-						Submit
-						</Button>
-						<Button type="primary" ghost onClick={handleLogOutUser}>
-     				 Log Out
-    			</Button>
-						<Button type="primary" danger onClick={handleDeleteUser}>
-     				 Delete
-    			</Button>
+						{username && userInfo.username === username	
+							? (<><Button type="primary" htmlType="submit">
+							Submit
+							</Button>
+							<Button type="primary" ghost onClick={handleLogOutUser}>
+								Log Out
+							</Button>
+							<Button type="primary" danger onClick={handleDeleteUser}>
+								Delete
+							</Button></>
+							) : null}
 					</Flex>
 				</Form.Item>
 			</Form>

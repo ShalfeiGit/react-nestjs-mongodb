@@ -37,18 +37,6 @@ const initialState: IInitialState<IUserInfo | string> = {
 	config: null,
 }
 
-export const getUserInfoAction = createAsyncThunk(
-	'userInfo/getUserInfo',
-	async (data: Pick<IUserInfo, 'username'> & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo>>) => {
-		const { username } = data
-		const response = await thunkAPI.extra.api({ method: 'get', url: `user/${username}` })
-		if(response.status >= 400){
-			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
-		}	
-		return response
-	}
-)
-
 export const updateUserInfoAction = createAsyncThunk(
 	'userInfo/updateUserInfo',
 	async (data: IUserInfo & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo>>) => {
@@ -100,7 +88,7 @@ export const signInAction = createAsyncThunk(
 )
 
 export const signUpAction = createAsyncThunk(
-	'user/signUp',
+	'userInfo/signUp',
 	async (data: ISignUp & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo> & IAxiosErrorResponse>) => {
 		const {openNotification, navigate, ...userInfo} = data
 		const callNotification = ({type, message}: ICallNotificationAction ) => {
@@ -124,7 +112,7 @@ export const signUpAction = createAsyncThunk(
 )
 
 export const resetUserInfoAction = createAsyncThunk(
-	'signin/resetUserInfo',
+	'userInfo/resetUserInfo',
 	async (data: INavigateAction) => {
 		const { navigate } = data
 		navigate('/')
@@ -132,7 +120,7 @@ export const resetUserInfoAction = createAsyncThunk(
 )
 
 export const deleteUserInfoAction = createAsyncThunk(
-	'signin/deleteUserInfo',
+	'userInfo/deleteUserInfo',
 	async (data: Pick<IUserInfo, 'username'> & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<void>>) => {
 		const { navigate, ...userInfo } = data
 		const response = await thunkAPI.extra.api({ method: 'delete', url: `user/${userInfo.username}` })
@@ -164,29 +152,6 @@ export const userInfoSlice = createSlice({
 				state.loading = false
 			})
 			.addCase(updateUserInfoAction.rejected,  (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
-				state.data = null
-				state.error = data
-				state.status = status
-				state.statusText = statusText
-				state.headers = headers
-				state.config = config 
-				state.loading = false
-			})
-			.addCase(getUserInfoAction.pending, state => {
-				state.loading = true
-			})
-			.addCase(getUserInfoAction.fulfilled, (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
-				state.data = data
-				state.error = null
-				state.status = status
-				state.statusText = statusText
-				state.headers = headers
-				state.config = config
-				state.loading = false
-			})
-			.addCase(getUserInfoAction.rejected, (state, action)  => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
 				state.data = null
 				state.error = data

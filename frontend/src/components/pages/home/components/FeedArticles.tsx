@@ -1,8 +1,15 @@
-﻿import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons'
-import React from 'react'
-import { Avatar, List, Space } from 'antd'
+﻿// import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons'
+import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { Avatar, Divider, Space, Typography, Pagination, Image } from 'antd'
 
 
+import '@app/pages/home/components/feedArticles.scss'
+import { RootState, useAppDispatch } from '@app/store/store'
+import { IUserInfo } from '@app/store/slices/userInfo'
+
+const {Title, Text, Link} = Typography
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 	<Space>
@@ -16,66 +23,52 @@ interface IFeedArticle {
 	authorAvatar: string;
 	createdAt: string;
 	title: string;
-	content: string;
+	content: string[];
 	likes: number;
 	liked: boolean;
 }
 
-interface IProps {
-	feedArticles: IFeedArticle[]
+interface IPagination {
+	totalItems: number;
+	itemsPerPage: number;
+	currentPage: number;
 }
 
-const FeedArticles: React.FC<IProps> = ({feedArticles}) => {
-	const m = feedArticles
-	debugger
+interface IProps {
+	feedArticles: IFeedArticle[]
+	pagination: IPagination
+}
+
+const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
+	const [currentPage, setCurrentPage] = useState(pagination.currentPage)
+	const dispatch = useAppDispatch()
+	const userinfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
+
 	const handlePaginationFeeds = (page) => {
 		console.log(page)
+		setCurrentPage(page)
 	}
 
-	const data = Array.from({ length: 23 }).map((_, i) => ({
-		href: 'https://ant.design',
-		title: `ant design part ${i}`,
-		avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-		description:
-			'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-		content:
-			'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-	}))
-
 	return (
-		<List
-			itemLayout="vertical"
-			size="large"
-			pagination={{
-				onChange: handlePaginationFeeds,
-				pageSize: 3,
-			}}
-			dataSource={data}
-			renderItem={(item) => (
-				<List.Item
-					key={item.title}
-					actions={[
-						<IconText icon={StarOutlined} text="156" key="list-vertical-star-o" />,
-						<IconText icon={LikeOutlined} text="156" key="list-vertical-like-o" />,
-						<IconText icon={MessageOutlined} text="2" key="list-vertical-message" />,
-					]}
-					extra={
-						<img
-							width={272}
-							alt="logo"
-							src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-						/>
-					}
-				>
-					<List.Item.Meta
-						avatar={<Avatar src={item.avatar} />}
-						title={<a href={item.href}>{item.title}</a>}
-						description={item.description}
-					/>
-					{item.content}
-				</List.Item>
-			)}
-		/>
+		<div className='feed-articles'>
+			{feedArticles.map((feedArticle, i) => (
+				<div key={i} className='feed-articles__item'>
+					<div className='feed-articles__header'>
+						<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
+						<div className='feed-articles__header-content'>
+							<NavLink to={userinfo ? '/userinfo/Valentin' : '/'}  >
+								{feedArticle.authorName}
+							</NavLink>
+							<Text type="secondary">{feedArticle.createdAt}</Text>
+						</div>
+					</div>
+					<Title level={4}>{feedArticle.title}</Title>
+					<Text>{feedArticle.content.map((text, i) => <p className='feed-articles__text' key={i}>{text}</p>)}</Text>
+					<Divider />
+				</div>
+			))}
+			<Pagination simple current={currentPage} pageSize={pagination.itemsPerPage} total={pagination.totalItems} onChange={handlePaginationFeeds}/>
+		</div>
 	)}
 
 export default FeedArticles

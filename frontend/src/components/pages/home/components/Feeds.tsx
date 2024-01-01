@@ -1,160 +1,90 @@
 ﻿import React from 'react'
-import { List, Tabs } from 'antd'
+import moment from 'moment'
+import { Tabs } from 'antd'
 
 import FeedArticles from '@app/pages/home/components/FeedArticles'
 import '@app/pages/home/components/feeds.scss'
 
 const Feeds: React.FC = () => {
-	const data = Array.from({ length: 23 }).map((_, i) => ({
-		href: 'https://ant.design',
-		title: `ant design part ${i}`,
-		avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-		description:
-			'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-		content:
-			'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-	}))
-
-	// const tabs = [{
-	// 	tabName:'Global Feed',
-	// 	id: '0',
-	// 	feedArticles: [
-	// 		{
-	// 			authorName: null,
-	// 			authorAvatar: null,
-	// 			createdAt: null,
-	// 			title : null,
-	// 			content : null,
-	// 			likes: null,
-	// 			liked: false
-	// 		},
-	// 		{
-	// 			authorName: null,
-	// 			authorAvatar: null,
-	// 			createdAt: null,
-	// 			title : null,
-	// 			content : null,
-	// 			likes: null,
-	// 			liked: false
-	// 		},
-	// 		{
-	// 			authorName: null,
-	// 			authorAvatar: null,
-	// 			createdAt: null,
-	// 			title : null,
-	// 			content : null,
-	// 			likes: null,
-	// 			liked: false
-	// 		},
-	// 		{
-	// 			authorName: null,
-	// 			authorAvatar: null,
-	// 			createdAt: null,
-	// 			title : null,
-	// 			content : null,
-	// 			likes: null,
-	// 			liked: false
-	// 		}
-	// 	]
-	// },
-	// {
-	// 	tabName:'Your Feed',
-	// 	id: '1',
-	// 	articles: Array.from({ length: 4 }).map((article, i) => ({
-	// 		authorName: `Username_${i}`,
-	// 		authorAvatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-	// 		createdAt: `${new Date(Date.now())})`,
-	// 		title : null,
-	// 		content : null,
-	// 		likes: null,
-	// 		liked: false
-	// 	}))
-	// }]
-
-
 	const tabs = [{
 		tabName:'Global Feed',
 		id: '0',
-		feedArticles: [
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			},
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			},
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			},
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			}
-		]
+		pagination: {
+			totalItems: 4,
+			itemsPerPage: 3,
+			currentPage: 1,
+		},
+		feedArticles: Array.from({ length: 3 }).map((article, i) => ({
+			authorName: 'Valentin',
+			authorAvatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
+			createdAt: `${moment(Date.now()).format('MMMM DD, YYYY')}`,
+			title: 'What is a CV?',
+			content: [
+				`When applying for certain positions in the U.S., as well as jobs internationally,
+			you may be required to submit a curriculum vitae rather than a resume.
+			A curriculum vitae, or CV, includes more information than your typical resume,
+			including details of your education and academic achievements, research,
+			publications, awards, affiliations, and more.`,
+
+				`There are also differences in what is included, and when each document is used.
+			In the United States, a curriculum vitae is used when applying for academic,
+			education, scientific, or research positions. A curriculum vitae can also be used to
+			apply for fellowships or grants. In Europe, the Middle East, Africa, or Asia, employers
+			may expect to receive a curriculum vitae rather than a resume.
+			A curriculum vitae, commonly referred to as a “CV,” is a longer
+			(two or more pages), more detailed synopsis than a resume.`,
+
+				`In the United States, a curriculum vitae is used when applying for academic,
+			education, scientific, or research positions. A curriculum vitae can also be
+			used to apply for fellowships or grants. In Europe, the Middle East, Africa,
+			or Asia, employers may expect to receive a curriculum vitae rather than a resume.
+			A curriculum vitae, commonly referred to as a “CV,” is a longer (two or more pages),
+			more detailed synopsis than a resume. There are also differences in what is included,
+			and when each document is used.`
+			],
+			likes: i,
+			liked: false
+		}))
 	},
 	{
 		tabName:'Your Feed',
 		id: '1',
-		articles: [
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			},
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			},
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			},
-			{
-				authorName: null,
-				authorAvatar: null,
-				createdAt: null,
-				title : null,
-				content : null,
-				likes: null,
-				liked: false
-			}
-		]
+		pagination: {
+			totalItems: 4,
+			itemsPerPage: 3,
+			currentPage: 1,
+		},
+		feedArticles: Array.from({ length: 3 }).map((article, i) => ({
+			authorName: 'Valentin',
+			authorAvatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
+			createdAt: `${moment(Date.now()).format('MMMM DD, YYYY')}`,
+			title: 'What is a CV?',
+			content: [
+				`When applying for certain positions in the U.S., as well as jobs internationally,
+			you may be required to submit a curriculum vitae rather than a resume.
+			A curriculum vitae, or CV, includes more information than your typical resume,
+			including details of your education and academic achievements, research,
+			publications, awards, affiliations, and more.`,
+
+				`There are also differences in what is included, and when each document is used.
+			In the United States, a curriculum vitae is used when applying for academic,
+			education, scientific, or research positions. A curriculum vitae can also be used to
+			apply for fellowships or grants. In Europe, the Middle East, Africa, or Asia, employers
+			may expect to receive a curriculum vitae rather than a resume.
+			A curriculum vitae, commonly referred to as a “CV,” is a longer
+			(two or more pages), more detailed synopsis than a resume.`,
+
+				`In the United States, a curriculum vitae is used when applying for academic,
+			education, scientific, or research positions. A curriculum vitae can also be
+			used to apply for fellowships or grants. In Europe, the Middle East, Africa,
+			or Asia, employers may expect to receive a curriculum vitae rather than a resume.
+			A curriculum vitae, commonly referred to as a “CV,” is a longer (two or more pages),
+			more detailed synopsis than a resume. There are also differences in what is included,
+			and when each document is used.`
+			],
+			likes: i,
+			liked: false
+		}))
 	}]
 
 	return (
@@ -162,11 +92,11 @@ const Feeds: React.FC = () => {
 			defaultActiveKey="0"
 			style={{ height: 220 }}
 			items={tabs.map((tab) => {
-				const {tabName, feedArticles, id } = tab
+				const {tabName, feedArticles, id, pagination } = tab
 				return {
 					label: tabName,
 					key: id,
-					children: <FeedArticles feedArticles={feedArticles}/>,
+					children: <FeedArticles feedArticles={feedArticles} pagination={pagination}/>,
 				}
 			})}
 		/>
