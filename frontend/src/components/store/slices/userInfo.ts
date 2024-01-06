@@ -8,6 +8,8 @@ export interface IUserInfo {
   bio: string;
   age: number;
 	gender: string;
+	createdAt: number;
+	updatedAt: number;
 }
 
 export interface ISignIn {
