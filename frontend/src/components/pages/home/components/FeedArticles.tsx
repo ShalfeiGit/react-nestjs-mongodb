@@ -2,8 +2,9 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Avatar, Divider, Space, Typography, Pagination, Image } from 'antd'
-
+import { Avatar, Divider, Space, Typography, Pagination, Image, Button } from 'antd'
+import { StarOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
 
 import '@app/pages/home/components/feedArticles.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
@@ -42,11 +43,14 @@ interface IProps {
 const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 	const [currentPage, setCurrentPage] = useState(pagination.currentPage)
 	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 	const userinfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
 
 	const handlePaginationFeeds = (page) => {
-		console.log(page)
 		setCurrentPage(page)
+	}
+	const handleReadArticle = () => {
+		navigate('/')
 	}
 
 	return (
@@ -54,16 +58,29 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 			{feedArticles.map((feedArticle, i) => (
 				<div key={i} className='feed-articles__item'>
 					<div className='feed-articles__header'>
-						<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
-						<div className='feed-articles__header-content'>
-							<NavLink to={userinfo ? '/userinfo/Valentin' : '/'}  >
-								{feedArticle.authorName}
-							</NavLink>
-							<Text type="secondary">{feedArticle.createdAt}</Text>
+						<div className='feed-articles__userinfo'>
+							<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
+							<div className='feed-articles__userinfo-content'>
+								<NavLink to={userinfo ? '/userinfo/Valentin' : '/'}  >
+									{feedArticle.authorName}
+								</NavLink>
+								<Text type="secondary">{feedArticle.createdAt}</Text>
+							</div>
+						</div>
+						<div className='feed-articles__grade'>
+							<span className={`feed-articles__stars${feedArticle.liked ? '_liked' : '' }`} onClick={() => {}}>
+								<IconText icon={StarOutlined} text={`${feedArticle.likes}`} key="list-vertical-star-o" />
+							</span>
 						</div>
 					</div>
 					<Title level={4}>{feedArticle.title}</Title>
-					<Text>{feedArticle.content.map((text, i) => <p className='feed-articles__text' key={i}>{text}</p>)}</Text>
+					<div className='feed-articles__article'>
+						<div className='feed-articles__article_gradient' />
+						<Text>{feedArticle.content.map((text, i) => <p className='feed-articles__article_text' key={i}>{text}</p>)}</Text>
+					</div>
+					<Button className='feed-articles__read-more' type="text" onClick={handleReadArticle}>
+						Read more...
+					</Button>
 					<Divider />
 				</div>
 			))}

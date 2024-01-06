@@ -42,8 +42,8 @@ const Feeds: React.FC = () => {
 			more detailed synopsis than a resume. There are also differences in what is included,
 			and when each document is used.`
 			],
-			likes: i,
-			liked: false
+			likes: 157,
+			liked: true
 		}))
 	},
 	{
@@ -82,7 +82,7 @@ const Feeds: React.FC = () => {
 			more detailed synopsis than a resume. There are also differences in what is included,
 			and when each document is used.`
 			],
-			likes: i,
+			likes: 13,
 			liked: false
 		}))
 	}]
