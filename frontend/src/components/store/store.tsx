@@ -2,7 +2,9 @@
 import { useDispatch } from 'react-redux'
 
 import userInfoReducer from '@app/store/slices/userInfo'
-import othersUserInfoReducer from '@app/store/slices/othersUserInfo'
+import otherAuthorInfoReducer from '@app/store/slices/otherAuthorInfo'
+import feedsReducer from '@app/store/slices/feeds'
+import popularTagsReducer from '@app/store/slices/popularTags'
 import makeRequest from '@app/api/api'
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { AxiosRequestConfig, AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios'
@@ -11,7 +13,9 @@ import { IResponseFailedAction } from '@app/shared/layout/types'
 export const store = configureStore({
 	reducer: {
 		userInfo: userInfoReducer,
-		othersUserInfo: othersUserInfoReducer,
+		otherAuthorInfo: otherAuthorInfoReducer,
+		feeds: feedsReducer,
+		popularTags: popularTagsReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

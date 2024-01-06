@@ -7,7 +7,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom'
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { updateUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
-import { getOthersUserInfoAction, IOthersUserInfo } from '@app/store/slices/othersUserInfo'
+import { getOtherAuthorInfoAction, IOtherAuthorInfo } from '@app/store/slices/otherAuthorInfo'
 import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
 
 const { TextArea } = Input
@@ -41,7 +41,7 @@ const tailFormItemLayout = {
 const UserInfo: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
-	const otherUserInfo = useSelector((state: RootState) => state.othersUserInfo.data as IOthersUserInfo)
+	const otherAuthorInfo = useSelector((state: RootState) => state.otherAuthorInfo.data as IOtherAuthorInfo)
 	const { username } = useParams()
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
@@ -54,16 +54,20 @@ const UserInfo: React.FC = () => {
 	}
 
 	useEffect(() => {
-		if(!userInfo.username){
+		if(!userInfo?.username){
 			navigate('/')
 		} else {
-			dispatch(getOthersUserInfoAction({username}))
+			dispatch(getOtherAuthorInfoAction({username}))
 		}
 	}, [])
 
 	useEffect(() => {
-		form.setFieldsValue(userInfo.username === username ? userInfo : otherUserInfo )
-	}, [userInfo, otherUserInfo])
+		form.resetFields()
+	}, [username])
+
+	useEffect(() => {
+		form.setFieldsValue(userInfo?.username === username ? userInfo : otherAuthorInfo )
+	}, [userInfo, otherAuthorInfo])
 
 	const handleEmailValidator = (rule: { required: boolean }, value: string) => {
 		if(rule?.required && (!value || !value.trim())){
@@ -120,7 +124,7 @@ const UserInfo: React.FC = () => {
 					rules={[{ required: true, validator:handleEmailValidator }]}
 					initialValue={userInfo?.email}
 				>
-					<Input disabled={username && userInfo.username !== username} />
+					<Input disabled={username && userInfo?.username !== username} />
 				</Form.Item>
 
 				<Form.Item 
@@ -128,7 +132,7 @@ const UserInfo: React.FC = () => {
 					name="bio"
 					initialValue={userInfo?.bio}
 				>
-					<TextArea disabled={username && userInfo.username !== username} placeholder="Input bio" />
+					<TextArea disabled={username && userInfo?.username !== username} placeholder="Input bio" />
 				</Form.Item>
 
 				<Form.Item 
@@ -136,7 +140,7 @@ const UserInfo: React.FC = () => {
 					name="age" 
 					initialValue={userInfo?.age}
 				>
-					<InputNumber disabled={username && userInfo.username !== username} placeholder="Input age" />
+					<InputNumber disabled={username && userInfo?.username !== username} placeholder="Input age" />
 				</Form.Item>
 
 				<Form.Item 
@@ -144,11 +148,11 @@ const UserInfo: React.FC = () => {
 					name="gender"
 					initialValue={userInfo?.gender}
 				>
-					<Select disabled={username && userInfo.username !== username} options={genderOptions} />
+					<Select disabled={username && userInfo?.username !== username} options={genderOptions} />
 				</Form.Item>
 				<Form.Item {...tailFormItemLayout}>
 					<Flex gap="small" wrap="wrap">
-						{username && userInfo.username === username	
+						{username && userInfo?.username === username	
 							? (<><Button type="primary" htmlType="submit">
 							Submit
 							</Button>

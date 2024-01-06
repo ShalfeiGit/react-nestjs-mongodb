@@ -1,6 +1,6 @@
 ﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { IAxiosErrorResponse, IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
-import { ICallNotificationAction, INavigateAction, INotificationAction, TypeResponse } from '@app/shared/layout/types'
+import { ICallNotificationAction, INavigateAction, INotificationAction } from '@app/shared/layout/types'
 
 export interface IUserInfo {
 	username: string;
@@ -27,7 +27,7 @@ export interface ISignInResponse extends IUserInfo {
 	refresh_token: string;
 }
 
-const initialState: IInitialState<IUserInfo | string> = {
+const initialState: IInitialState<IUserInfo> = {
 	data: null,
 	error: null,
 	loading: false,
@@ -54,7 +54,7 @@ export const updateUserInfoAction = createAsyncThunk(
 			message: `${response.data.username} success updated`
 		})
 		if(response.status >= 400){
-			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	
 		return response
 	}
@@ -76,7 +76,7 @@ export const signInAction = createAsyncThunk(
 				type: response.status >= 400 ? 'error' : 'success',
 				message: response.data
 			})
-			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
 			navigate('/')
 		}
@@ -103,7 +103,7 @@ export const signUpAction = createAsyncThunk(
 			message: response.status >= 400 ? response.data : `${response.data.username} was created`
 		})
 		if(response.status >= 400){
-			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
 			navigate('/signIn')
 		}
@@ -123,9 +123,9 @@ export const deleteUserInfoAction = createAsyncThunk(
 	'userInfo/deleteUserInfo',
 	async (data: Pick<IUserInfo, 'username'> & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<void>>) => {
 		const { navigate, ...userInfo } = data
-		const response = await thunkAPI.extra.api({ method: 'delete', url: `user/${userInfo.username}` })
+		const response = await thunkAPI.extra.api({ method: 'delete', url: `user/${userInfo?.username}` })
 		if(response.status >= 400){
-			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<string>
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
 			navigate('/')
 		}
@@ -142,7 +142,7 @@ export const userInfoSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(updateUserInfoAction.fulfilled, (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
 				state.data = data
 				state.error = null
 				state.status = status
@@ -152,9 +152,9 @@ export const userInfoSlice = createSlice({
 				state.loading = false
 			})
 			.addCase(updateUserInfoAction.rejected,  (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
 				state.data = null
-				state.error = data
+				state.error = data as unknown as string
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers
@@ -165,7 +165,7 @@ export const userInfoSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(signInAction.fulfilled, (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
 				state.data = data
 				state.error = null
 				state.status = status
@@ -176,9 +176,9 @@ export const userInfoSlice = createSlice({
 				
 			})
 			.addCase(signInAction.rejected, (state, action)  => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<string>>action?.payload ?? {}
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
 				state.data = null
-				state.error = data
+				state.error = data  as unknown as string
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers

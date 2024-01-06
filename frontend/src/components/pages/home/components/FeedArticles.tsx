@@ -6,9 +6,9 @@ import { Avatar, Divider, Space, Typography, Pagination, Image, Button } from 'a
 import { StarOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 
-import '@app/pages/home/components/feedArticles.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { IUserInfo } from '@app/store/slices/userInfo'
+import '@app/pages/home/components/feedArticles.scss'
 
 const {Title, Text, Link} = Typography
 
@@ -44,7 +44,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 	const [currentPage, setCurrentPage] = useState(pagination.currentPage)
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const userinfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
+	const userinfo = useSelector<RootState, IUserInfo>((state) => state.userInfo.data)
 
 	const handlePaginationFeeds = (page) => {
 		setCurrentPage(page)
@@ -61,7 +61,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 						<div className='feed-articles__userinfo'>
 							<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
 							<div className='feed-articles__userinfo-content'>
-								<NavLink to={userinfo ? '/userinfo/Valentin' : '/'}  >
+								<NavLink to={userinfo?.username ? '/userinfo/Valentin' : '/'}  >
 									{feedArticle.authorName}
 								</NavLink>
 								<Text type="secondary">{feedArticle.createdAt}</Text>

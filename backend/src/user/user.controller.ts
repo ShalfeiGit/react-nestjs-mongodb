@@ -31,6 +31,22 @@ export class UserController {
     return currentUser;
   }
 
+  @Get('author/:username')
+  @UseGuards(AuthGuard)
+  async getAuthor(
+    @Param('username') username,
+  ): Promise<
+    Pick<User, 'id' | 'username' | 'email' | 'bio' | 'age' | 'gender'>
+  > {
+    const searchedUser = await this.userService.getUser(username);
+    if (!searchedUser) {
+      throw new BadRequestException(`Not found ${searchedUser.username}`);
+    }
+    const { password, createdAt, updatedAt, refresh_token, ...currentUser } =
+      searchedUser;
+    return currentUser;
+  }
+
   @Post()
   async createUser(
     @Body() dto: createUserDto,

@@ -1,11 +1,19 @@
 ﻿import React from 'react'
 import moment from 'moment'
 import { Tabs } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
+import { RootState, useAppDispatch } from '@app/store/store'
 import FeedArticles from '@app/pages/home/components/FeedArticles'
 import '@app/pages/home/components/feeds.scss'
 
 const Feeds: React.FC = () => {
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
+	const feeds = useSelector((state: RootState) => state.feeds) // добавить
+	const popularTags = [{},{},{},{},{},{},{},{}]
+
 	const tabs = [{
 		tabName:'Global Feed',
 		id: '0',
@@ -15,6 +23,7 @@ const Feeds: React.FC = () => {
 			currentPage: 1,
 		},
 		feedArticles: Array.from({ length: 3 }).map((article, i) => ({
+			articleId: i,
 			authorName: 'Valentin',
 			authorAvatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
 			createdAt: `${moment(Date.now()).format('MMMM DD, YYYY')}`,
@@ -55,6 +64,7 @@ const Feeds: React.FC = () => {
 			currentPage: 1,
 		},
 		feedArticles: Array.from({ length: 3 }).map((article, i) => ({
+			articleId: i,
 			authorName: 'Valentin',
 			authorAvatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
 			createdAt: `${moment(Date.now()).format('MMMM DD, YYYY')}`,

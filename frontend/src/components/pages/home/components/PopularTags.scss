@@ -1,5 +1,13 @@
 ﻿@import '@app/app.scss';
 
 .popular-tags {
-  font-size: 16px;
+  background-color: $grey-color;
+  min-height: 300px;
+  margin-right: 40px;
+  border-radius: 20px;
+  margin-top: 20px;
+  &__header{
+    display: flex;
+    margin-left: 40px;
+  }
 }
