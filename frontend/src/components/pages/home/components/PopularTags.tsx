@@ -103,11 +103,11 @@ const PopularTags: React.FC = () => {
 				<Title level={4}>Popular Tags</Title>
 			</div>
 			<div className="popular-tags__content">
-				{/* {popular_tags.map(({tagId, title}) => {
-					<div onClick={handleClickTag(tagId)}>
-						{}
-					</div>
-				})} */}
+				{popular_tags.map(({tagId, title}, i) => 
+					(<div className="popular-tags__tag" key={i} onClick={handleClickTag(tagId)}>
+						{title}
+					</div>)
+				)}
 			</div>
 		</div>
 	)

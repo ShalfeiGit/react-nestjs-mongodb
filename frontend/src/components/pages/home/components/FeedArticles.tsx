@@ -84,7 +84,9 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 					<Divider />
 				</div>
 			))}
-			<Pagination simple current={currentPage} pageSize={pagination.itemsPerPage} total={pagination.totalItems} onChange={handlePaginationFeeds}/>
+			<div className='feed-articles__pagination'>
+				<Pagination simple current={currentPage} pageSize={pagination.itemsPerPage} total={pagination.totalItems} onChange={handlePaginationFeeds}/>
+			</div>
 		</div>
 	)}
 

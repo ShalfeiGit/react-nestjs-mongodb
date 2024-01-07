@@ -11,8 +11,7 @@ import '@app/pages/home/components/feeds.scss'
 const Feeds: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const feeds = useSelector((state: RootState) => state.feeds) // добавить
-	const popularTags = [{},{},{},{},{},{},{},{}]
+	const feeds = useSelector((state: RootState) => state.feeds.data) // добавить
 
 	const tabs = [{
 		tabName:'Global Feed',

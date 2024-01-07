@@ -30,6 +30,10 @@
     max-height: 150px;
     overflow: hidden;
   }
+  &__pagination{
+    display: flex;
+    justify-content: center;
+  }
   &__article_gradient{
     position: absolute;
     width: 100%;
