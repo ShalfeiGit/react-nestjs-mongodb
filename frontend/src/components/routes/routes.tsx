@@ -29,7 +29,7 @@ const router = createBrowserRouter([
 				Component: SingUp
 			},
 			{
-				path: 'articles/:slug',
+				path: 'article/:slug',
 				Component: Article
 			},
 			{

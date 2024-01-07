@@ -12,7 +12,7 @@ const Home: React.FC = () => {
 		<div className="home">
 			<div className="home__explanation">
 				<div className="home__title">
-					<Text>React-Nestjs-MongoDB Startup</Text>
+					<Text>React-Nestjs-MySQL Startup</Text>
 				</div>
 				<div className="home__content">
 					<Text>A place to share your knowledge.</Text>

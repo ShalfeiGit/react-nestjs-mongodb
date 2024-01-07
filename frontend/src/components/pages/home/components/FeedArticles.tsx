@@ -20,6 +20,7 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 )
 
 interface IFeedArticle {
+	articleId: number;
 	authorName: string;
 	authorAvatar: string;
 	createdAt: string;
@@ -49,8 +50,8 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 	const handlePaginationFeeds = (page) => {
 		setCurrentPage(page)
 	}
-	const handleReadArticle = () => {
-		navigate('/')
+	const handleReadArticle = (slug) => () => {
+		navigate(`/article/${slug}`)
 	}
 
 	return (
@@ -78,7 +79,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 						<div className='feed-articles__article_gradient' />
 						<Text>{feedArticle.content.map((text, i) => <p className='feed-articles__article_text' key={i}>{text}</p>)}</Text>
 					</div>
-					<Button className='feed-articles__read-more' type="text" onClick={handleReadArticle}>
+					<Button className='feed-articles__read-more' type="text" onClick={handleReadArticle(feedArticle.articleId)}>
 						Read more...
 					</Button>
 					<Divider />
