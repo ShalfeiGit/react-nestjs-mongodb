@@ -98,11 +98,11 @@ const UserContent: React.FC = () => {
 	}
 
 	return (
-		<div className="user-info">
-			<Title className={'user-info__text'}>User Info</Title>
+		<div className="user-content">
+			<Title className={'user-content__text'}>User Info</Title>
 			<Form
 				form={form}
-				name="user-info"
+				name="user-content"
 				{...formItemLayout}
 				initialValues={{ remember: true }}
 				onFinish={handleSubmitForm}

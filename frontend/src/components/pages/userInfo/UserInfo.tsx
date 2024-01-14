@@ -43,21 +43,22 @@ const tailFormItemLayout = {
 const UserInfo: React.FC = () => {
 	const tabs: TabsProps['items'] = [
 		{
-			key: 'articles',
-			label: 'Articles',
-			children: <ArticlesContent />,
-		},
-		{
-			key: 'user-info',
+			key: 'user-content',
 			label: 'User Info',
 			children: <UserContent /> ,
+		},
+		{
+			key: 'articles-content',
+			label: 'Articles Info',
+			children: <ArticlesContent />,
 		}
 	]
 
 	return (
 		<div className="user-info">
 			<Tabs 
-				defaultActiveKey="articles"
+				className={'user-info__tabs'}
+				defaultActiveKey="user-content"
 				items={tabs}
 			/>
 		</div>

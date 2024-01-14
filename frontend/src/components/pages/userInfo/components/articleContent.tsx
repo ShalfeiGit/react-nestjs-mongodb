@@ -1,173 +1,103 @@
-import React, { useEffect }from 'react'
-import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { Form, Input, Button, Typography, InputNumber, Select, Flex, Tabs, TabsProps } from 'antd'
-import { useOutletContext, useNavigate } from 'react-router-dom'
+import React from 'react'
+import { Button, Table } from 'antd'
+import { EditOutlined, CloseOutlined } from '@ant-design/icons'
+import type { TableProps } from 'antd'
 
-import { RootState, useAppDispatch } from '@app/store/store'
-import { updateUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
-import { getOtherAuthorInfoAction, IOtherAuthorInfo } from '@app/store/slices/otherAuthorInfo'
-import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
+interface DataType {
+  key: string;
+  title: string;
+  content: string;
+  tag: string;
+  likes: number;
+}
 
-const { TextArea } = Input
-
-const { Title } = Typography
-
-const formItemLayout = {
-	labelCol: {
-		xs: { span: 24 },
-		sm: { span: 4 }
+const columns: TableProps<DataType>['columns'] = [
+	{
+		title: 'Title',
+		dataIndex: 'title',
+		key: 'title',
 	},
-	wrapperCol: {
-		xs: { span: 24 },
-		sm: { span: 16 }
-	}
-}
-
-const tailFormItemLayout = {
-	wrapperCol: {
-		xs: {
-			span: 24,
-			offset: 0
+	{
+		title: 'Content',
+		dataIndex: 'content',
+		key: 'content',
+	},
+	{
+		title: 'Tag',
+		dataIndex: 'tag',
+		key: 'tag',
+	},
+	{
+		title: 'Likes',
+		dataIndex: 'likes',
+		key: 'likes',
+	},
+	{
+		title: 'Manage',
+		dataIndex: 'manage',
+		key: 'manage',
+		render: (manage, item) => {
+			return (
+				<div>
+					<Button className="article-content__manage" type="primary" shape="circle" icon={<EditOutlined />}  onClick={() => { console.log(item)}}/>
+					<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />} onClick={() => { console.log(item)}}/>
+				</div>
+			)
 		},
-		sm: {
-			span: 16,
-			offset: 4
-		}
 	}
-}
+]
 
-const ArticlesContent: React.FC = () => {
-	const dispatch = useAppDispatch()
-	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
-	const otherAuthorInfo = useSelector((state: RootState) => state.otherAuthorInfo.data as IOtherAuthorInfo)
-	const { username } = useParams()
-	const openNotification = useOutletContext()
-	const [form] = Form.useForm()
-	const navigate = useNavigate()
+const data: DataType[] = [
+	{
+		key: '1',
+		title: 'Test title 1',
+		content: 'Test content 1',
+		tag: 'frontend',
+		likes: 35,
+	},
+	{
+		key: '2',
+		title: 'Test title 2',
+		content: 'Test content 2',
+		tag: 'backend',
+		likes: 36,
+	},
+	{
+		key: '3',
+		title: 'Test title 3',
+		content: 'Test content 3',
+		tag: 'marketing',
+		likes: 37,
+	},
+	{
+		key: '4',
+		title: 'Test title 4',
+		content: 'Test content 4',
+		tag: 'graphic',
+		likes: 38,
+	},
+	{
+		key: '5',
+		title: 'Test title 5',
+		content: 'Test content 5',
+		tag: 'devops',
+		likes: 39,
+	},
+	{
+		key: '6',
+		title: 'Test title 6',
+		content: 'Test content 6',
+		tag: 'marketing',
+		likes: 40,
+	},
+]
 
-	const handleSubmitForm = () => {
-		form.validateFields().then((values) => {
-			dispatch(updateUserInfoAction({...values, openNotification, navigate }))
-		})
-	}
-
-	useEffect(() => {
-		if(!userInfo?.username){
-			navigate('/')
-		} else {
-			dispatch(getOtherAuthorInfoAction({username}))
-		}
-	}, [])
-
-	useEffect(() => {
-		form.resetFields()
-	}, [username])
-
-	useEffect(() => {
-		form.setFieldsValue(userInfo?.username === username ? userInfo : otherAuthorInfo )
-	}, [userInfo, otherAuthorInfo])
-
-	const handleEmailValidator = (rule: { required: boolean }, value: string) => {
-		if(rule?.required && (!value || !value.trim())){
-			return Promise.reject(new Error('Field must not be empty'))
-		}
-		if(value.length < 6){
-			return Promise.reject(new Error('Email length must be longer than 6 characters'))
-		}
-		if(value.search(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g)){
-			return Promise.reject(new Error('Incorrect email. Example correct email: test@gmail.com'))
-		}
-		return Promise.resolve()
-	}
-
-	const genderOptions =[
-		{label: 'male', value: 'male'},
-		{label: 'female', value: 'female'},
-		{label: 'others', value: 'others'}
-	]
-
-	const handleLogOutUser = () => {
-		localStorage.clear()
-		dispatch(resetUserInfoAction({navigate}))
-	}
-
-	const handleDeleteUser = () => {
-		localStorage.clear()
-		dispatch(deleteUserInfoAction({navigate, username}))
-	}
-
+const ArticleContent: React.FC = () => {
 	return (
-		<div className="user-info">
-			<Title className={'user-info__text'}>User Info</Title>
-			<Form
-				form={form}
-				name="user-info"
-				{...formItemLayout}
-				initialValues={{ remember: true }}
-				onFinish={handleSubmitForm}
-				autoComplete="off"
-			>
-				<Form.Item 
-					label="Username" 
-					name="username" 
-					initialValue={username}
-				>
-					<Input disabled />
-				</Form.Item>
-
-				<Form.Item 
-					label="Email" 
-					name="email" 
-					validateDebounce={1000}
-					rules={[{ required: true, validator:handleEmailValidator }]}
-					initialValue={userInfo?.email}
-				>
-					<Input disabled={username && userInfo?.username !== username} />
-				</Form.Item>
-
-				<Form.Item 
-					label="Bio" 
-					name="bio"
-					initialValue={userInfo?.bio}
-				>
-					<TextArea disabled={username && userInfo?.username !== username} placeholder="Input bio" />
-				</Form.Item>
-
-				<Form.Item 
-					label="Age" 
-					name="age" 
-					initialValue={userInfo?.age}
-				>
-					<InputNumber disabled={username && userInfo?.username !== username} placeholder="Input age" />
-				</Form.Item>
-
-				<Form.Item 
-					label="Gender" 
-					name="gender"
-					initialValue={userInfo?.gender}
-				>
-					<Select disabled={username && userInfo?.username !== username} options={genderOptions} />
-				</Form.Item>
-				<Form.Item {...tailFormItemLayout}>
-					<Flex gap="small" wrap="wrap">
-						{username && userInfo?.username === username	
-							? (<>
-								<Button type="primary" htmlType="submit">
-									Submit
-								</Button>
-								<Button type="primary" ghost onClick={handleLogOutUser}>
-									Log Out
-								</Button>
-								<Button type="primary" danger onClick={handleDeleteUser}>
-									Delete
-								</Button>
-							</>) : null}
-					</Flex>
-				</Form.Item>
-			</Form>
-		</div>
+		<div className='article-content'>
+			<Table className='article-content__table' columns={columns} dataSource={data} />
+		</div>	
 	)
-}
+} 
 
-export default ArticlesContent
+export default ArticleContent

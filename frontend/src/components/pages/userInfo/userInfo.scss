@@ -1,9 +1,10 @@
 ﻿@import '@app/app.scss';
 
-.user-info{
+.user-content{
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   & form {
     width: 100%;
     max-width: 800px;
@@ -16,5 +17,27 @@
     color: $blue-color;
     text-decoration: none;
     font-size: 16px;
+  }
+}
+
+.article-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  &__table{
+    width: 100%;
+  }
+  &__manage{
+    
+  }
+}
+
+.user-info{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  &__tabs{
+    width: 50%;
   }
 }
