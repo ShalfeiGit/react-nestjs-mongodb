@@ -23,7 +23,7 @@ export class Article {
 
   @Column({
     type: 'varchar',
-    length: 20000,
+    length: 2000,
   })
   content: string;
 
