@@ -1,4 +1,5 @@
-﻿import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+﻿import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Article } from 'src/article/article.entity';
 
 export enum UserGender {
   MALE = 'male',
@@ -54,4 +55,10 @@ export class User {
 
   @Column({ default: null })
   refresh_token: string;
+
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
+
+  @OneToMany(() => Article, (article) => article.id)
+  liked: Article[];
 }

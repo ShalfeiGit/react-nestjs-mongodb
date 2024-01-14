@@ -40,7 +40,7 @@ export class UserController {
   > {
     const searchedUser = await this.userService.getUser(username);
     if (!searchedUser) {
-      throw new BadRequestException(`Not found ${searchedUser.username}`);
+      throw new BadRequestException(`Not found ${username}`);
     }
     const { password, createdAt, updatedAt, refresh_token, ...currentUser } =
       searchedUser;
