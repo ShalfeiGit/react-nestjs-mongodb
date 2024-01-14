@@ -3,8 +3,8 @@ import { ArticleService } from './article.service';
 import { UserController } from './article.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from './article.entity';
-import { User } from 'src/user/user.entity';
-import { UserService } from 'src/user/user.service';
+import { User } from '../user/user.entity';
+import { UserService } from '../user/user.service';
 
 @Global()
 @Module({
@@ -13,4 +13,4 @@ import { UserService } from 'src/user/user.service';
   providers: [ArticleService, UserService],
   exports: [ArticleService],
 })
-export class UserModule {}
+export class ArticleModule {}

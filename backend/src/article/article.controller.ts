@@ -15,9 +15,9 @@ import { Article } from './article.entity';
 import { createArticleDto } from './dtos/createArticleDto';
 import { updateArticleDto } from './dtos/updateArticleDto';
 import { hash } from 'bcrypt';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/user.entity';
+import { AuthGuard } from '../auth/auth.guard';
+import { UserService } from '../user/user.service';
+import { User } from '../user/user.entity';
 
 @Controller('article')
 export class UserController {

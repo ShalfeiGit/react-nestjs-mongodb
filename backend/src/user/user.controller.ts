@@ -14,7 +14,7 @@ import { User } from './user.entity';
 import { createUserDto } from './dtos/createUserDto';
 import { updateUserDto } from './dtos/updateUserDto';
 import { hash } from 'bcrypt';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('user')
 export class UserController {

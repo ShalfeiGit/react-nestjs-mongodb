@@ -4,7 +4,7 @@ import { Article, TagArticle } from './article.entity';
 import { createArticleDto } from './dtos/createArticleDto';
 import { updateArticleDto } from './dtos/updateArticleDto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/user/user.entity';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class ArticleService {

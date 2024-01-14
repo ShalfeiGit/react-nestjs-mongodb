@@ -1,5 +1,5 @@
 ﻿import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Article } from 'src/article/article.entity';
+import { Article } from '../article/article.entity';
 
 export enum UserGender {
   MALE = 'male',

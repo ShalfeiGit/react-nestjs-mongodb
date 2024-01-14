@@ -9,6 +9,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: 'dbReact',
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/*.ts'],
+  migrationsTransactionMode: 'each',
 };
 
 export const dataSource = new DataSource(dataSourceOptions);

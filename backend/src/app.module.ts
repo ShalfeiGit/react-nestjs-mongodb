@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { ArticleModule } from './article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './ormconfig';
 import { AuthModule } from './auth/auth.module';
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
+    ArticleModule,
     AuthModule,
   ],
   controllers: [AppController],
