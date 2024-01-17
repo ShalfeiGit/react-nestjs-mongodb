@@ -80,7 +80,7 @@ export const signInAction = createAsyncThunk(
 			})
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
-			navigate('/')
+			// navigate('/')
 		}
 		if(userInfo?.remember || userInfo?.refresh_token){
 			localStorage.setItem('refresh_token', response.data.refresh_token)

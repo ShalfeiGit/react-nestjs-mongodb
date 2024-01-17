@@ -2,6 +2,7 @@
 import { useDispatch } from 'react-redux'
 
 import userInfoReducer from '@app/store/slices/userInfo'
+import articleReducer from '@app/store/slices/article'
 import otherAuthorInfoReducer from '@app/store/slices/otherAuthorInfo'
 import feedsReducer from '@app/store/slices/feeds'
 import popularTagsReducer from '@app/store/slices/popularTags'
@@ -13,6 +14,7 @@ import { IResponseFailedAction } from '@app/shared/layout/types'
 export const store = configureStore({
 	reducer: {
 		userInfo: userInfoReducer,
+		article: articleReducer,
 		otherAuthorInfo: otherAuthorInfoReducer,
 		feeds: feedsReducer,
 		popularTags: popularTagsReducer,

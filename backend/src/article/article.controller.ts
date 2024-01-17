@@ -11,7 +11,7 @@
   Patch,
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { Article } from './article.entity';
+import { Article, TagArticle } from './article.entity';
 import { createArticleDto } from './dtos/createArticleDto';
 import { updateArticleDto } from './dtos/updateArticleDto';
 import { hash } from 'bcrypt';
@@ -49,6 +49,12 @@ export class UserController {
     const searchedArticles =
       await this.articleService.getArticlesByUsername(username);
     return searchedArticles;
+  }
+
+  @Get('options/tag')
+  @UseGuards(AuthGuard)
+  async getTagOptions(): Promise<TagArticle> {
+    return JSON.parse(JSON.stringify(TagArticle));
   }
 
   @Post(':username')

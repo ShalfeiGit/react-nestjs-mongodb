@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Button, Table } from 'antd'
-import { EditOutlined, CloseOutlined } from '@ant-design/icons'
+import { EditOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons'
 import type { TableProps } from 'antd'
+import { useOutletContext, useNavigate } from 'react-router-dom'
+
+import { RootState, useAppDispatch } from '@app/store/store'
 
 interface DataType {
   key: string;
@@ -10,42 +13,6 @@ interface DataType {
   tag: string;
   likes: number;
 }
-
-const columns: TableProps<DataType>['columns'] = [
-	{
-		title: 'Title',
-		dataIndex: 'title',
-		key: 'title',
-	},
-	{
-		title: 'Content',
-		dataIndex: 'content',
-		key: 'content',
-	},
-	{
-		title: 'Tag',
-		dataIndex: 'tag',
-		key: 'tag',
-	},
-	{
-		title: 'Likes',
-		dataIndex: 'likes',
-		key: 'likes',
-	},
-	{
-		title: 'Manage',
-		dataIndex: 'manage',
-		key: 'manage',
-		render: (manage, item) => {
-			return (
-				<div>
-					<Button className="article-content__manage" type="primary" shape="circle" icon={<EditOutlined />}  onClick={() => { console.log(item)}}/>
-					<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />} onClick={() => { console.log(item)}}/>
-				</div>
-			)
-		},
-	}
-]
 
 const data: DataType[] = [
 	{
@@ -93,8 +60,66 @@ const data: DataType[] = [
 ]
 
 const ArticleContent: React.FC = () => {
+	const openNotification = useOutletContext()
+	const navigate = useNavigate()
+	const dispatch = useAppDispatch()
+	useEffect(() => {
+	}, [])
+
+	const handleAddArticle = () => {
+		navigate('/article/add')
+	}
+
+	const handleEditArticle = (id) => () => {
+		navigate(`/article/${id}`)
+	}
+
+	const handleRemoveArticle = (id) => () => {
+	}
+
+	const columns: TableProps<DataType>['columns'] = [
+		{
+			title: 'Title',
+			dataIndex: 'title',
+			key: 'title',
+		},
+		{
+			title: 'Content',
+			dataIndex: 'content',
+			key: 'content',
+		},
+		{
+			title: 'Tag',
+			dataIndex: 'tag',
+			key: 'tag',
+		},
+		{
+			title: 'Likes',
+			dataIndex: 'likes',
+			key: 'likes',
+		},
+		{
+			title: 'Manage',
+			dataIndex: 'manage',
+			key: 'manage',
+			render: (manage, row) => {
+				return (
+					<>
+						<Button className="article-content__manage" type="primary" shape="circle" icon={<EditOutlined />}  onClick={handleEditArticle(row.key)}/>
+						<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />} onClick={handleRemoveArticle(row.key)}/>
+					</>
+				)
+			},
+		}
+	]
+
 	return (
 		<div className='article-content'>
+			<div className='article-content__dashboard'>
+				<Button type="primary"  icon={<PlusOutlined />} onClick={handleAddArticle} >
+					Создать
+				</Button>
+			</div>
 			<Table className='article-content__table' columns={columns} dataSource={data} />
 		</div>	
 	)

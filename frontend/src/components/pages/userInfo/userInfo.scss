@@ -29,7 +29,13 @@
     width: 100%;
   }
   &__manage{
-    
+    margin-right: 8px;
+  }
+  &__dashboard{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
   }
 }
 

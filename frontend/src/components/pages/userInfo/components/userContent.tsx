@@ -54,7 +54,7 @@ const UserContent: React.FC = () => {
 
 	useEffect(() => {
 		if(!userInfo?.username){
-			navigate('/')
+			// navigate('/')
 		} else {
 			dispatch(getOtherAuthorInfoAction({username}))
 		}

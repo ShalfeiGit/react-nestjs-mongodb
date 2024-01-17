@@ -1,10 +1,11 @@
-﻿import React from 'react'
+﻿import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Form, Input, Button, Typography, InputNumber, Select, Flex } from 'antd'
-import { useOutletContext, useNavigate } from 'react-router-dom'
+import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
 
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
+import { loadTagOptionsAction } from '@app/store/slices/article'
 
 const { TextArea } = Input
 const { Title } = Typography
@@ -39,17 +40,24 @@ const Article: React.FC = () => {
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
+	const {slug} = useParams()
+
+	useEffect(() => {
+		dispatch(loadTagOptionsAction())
+	}, [])
 
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
-			// dispatch()
+			// dispatch(addArticleAction({...values, openNotification, navigate }))
 		})
 	}
-	
-	const genderOptions =[
-		{label: 'male', value: 'male'},
-		{label: 'female', value: 'female'},
-		{label: 'others', value: 'others'}
+
+	const tagOptions =[
+		{label: 'frontend', value: 'frontend'},
+		{label: 'backend', value: 'backend'},
+		{label: 'marketing', value: 'marketing'},
+		{label: 'graphic', value: 'graphic'},
+		{label: 'devops', value: 'devops'},
 	]
 
 	return (
@@ -72,7 +80,7 @@ const Article: React.FC = () => {
 					label="Tag" 
 					name="tag"
 				>
-					<Select options={genderOptions} />
+					<Select options={tagOptions} />
 				</Form.Item>
 
 				<Form.Item 
@@ -84,15 +92,20 @@ const Article: React.FC = () => {
 
 				<Form.Item {...tailFormItemLayout}>
 					<Flex gap="small" wrap="wrap">
-						<Button type="primary" htmlType="submit">
-							Удалить
-						</Button>
-						<Button type="primary" htmlType="submit">
-							Редактировать
-						</Button>
-						<Button type="primary" htmlType="submit">
-							Сохранить
-						</Button>
+						{slug === 'add' ? (
+							<Button type="primary" htmlType="submit">
+								Сохранить
+							</Button>
+						):(
+							<>
+								<Button type="primary" htmlType="submit">
+									Редактировать
+								</Button>
+								<Button danger type="primary" htmlType="submit">
+									Удалить
+								</Button>
+							</>
+						)}
 					</Flex>
 				</Form.Item>
 			</Form>

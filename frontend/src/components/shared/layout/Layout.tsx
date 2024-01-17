@@ -6,6 +6,7 @@ import Menu from '@app/shared/menu/Menu'
 import { INotification } from './types'
 
 const Layout: React.FC = () =>{
+	
 	const [messageApi, contextHolder] = message.useMessage()
 	const openNotification = ({type, content}: INotification) => {
 		messageApi.open({
