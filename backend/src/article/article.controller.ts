@@ -53,8 +53,10 @@ export class UserController {
 
   @Get('options/tag')
   @UseGuards(AuthGuard)
-  async getTagOptions(): Promise<TagArticle> {
-    return JSON.parse(JSON.stringify(TagArticle));
+  async getTagOptions(): Promise<{ label: string; value: string }[]> {
+    return (
+      Object.values(JSON.parse(JSON.stringify(TagArticle)) ?? {}) as string[]
+    ).map((item) => ({ label: item, value: item }));
   }
 
   @Post(':username')

@@ -80,6 +80,7 @@ export const signInAction = createAsyncThunk(
 			})
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
+			// /userinfo/Valentin
 			// navigate('/')
 		}
 		if(userInfo?.remember || userInfo?.refresh_token){
