@@ -1,6 +1,7 @@
 ﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { IAxiosErrorResponse, IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
 import { ICallNotificationAction, INavigateAction, INotificationAction } from '@app/shared/layout/types'
+import { IAdditionalArticleInfo, IArticle, ILikeArticleResponse, likeArticleAction } from './article'
 
 export interface IUserInfo {
 	username: string;
@@ -176,7 +177,6 @@ export const userInfoSlice = createSlice({
 				state.headers = headers
 				state.config = config
 				state.loading = false
-				
 			})
 			.addCase(signInAction.rejected, (state, action)  => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
@@ -214,6 +214,12 @@ export const userInfoSlice = createSlice({
 				state.statusText = null
 				state.headers = null
 				state.config = null
+			})
+			.addCase(likeArticleAction.fulfilled, (state, action) => {
+				const {user}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo & ILikeArticleResponse>action?.payload ?? {}
+				state.data = user
+				state.error = null
+				state.loading = false
 			})
 	}
 })

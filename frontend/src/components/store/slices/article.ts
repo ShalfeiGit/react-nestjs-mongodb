@@ -1,7 +1,7 @@
 ﻿import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { IAxiosErrorResponse, IAxiosResponse, IInitialState, IThunkApi } from '@app/store/store'
 import { ICallNotificationAction, INavigateAction, INotificationAction } from '@app/shared/layout/types'
-import { IUserInfo } from './userInfo'
+import { IUserInfo, signInAction } from './userInfo'
 
 export interface IFeedArticles {
 	articleId: string,
@@ -47,8 +47,9 @@ export interface IArticleRequestData {
 	username?: string;
 }
 
-export interface IArticleGroup {
-
+export interface ILikeArticleResponse {
+	user: IUserInfo
+	groupArticles: IGroupArticle[]
 }
 
 export interface IGroupArticle {
@@ -177,13 +178,18 @@ export const likeArticleAction = createAsyncThunk(
 	async (data: Pick<IUserInfo, 'username'> & IArticleRequestData
 		& Pick<IArticle, 'content' | 'title' | 'tag'>
 		& INotificationAction 
-		& INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo> & IAxiosErrorResponse>) => {
+		& INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo> & ILikeArticleResponse & IAxiosErrorResponse>) => {
 		const {username, id, content, title, tag} = data
-		const response = await thunkAPI.extra.api({ method: 'post', url: `article/like/${id}/username/${username}`, data: {tag, title, content} })
-		if(response.status >= 400){
-			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
+		const responseUserInfo = await thunkAPI.extra.api({ method: 'post', url: `article/like/${id}/username/${username}`, data: {tag, title, content} })
+		const responseGroupArticles = await thunkAPI.extra.api({ method: 'get', url: `article/group/${tag}` })
+		if(responseUserInfo.status >= 400){
+			return thunkAPI.rejectWithValue(responseUserInfo) as unknown as IAxiosResponse<null>
 		}	else {
-			return response
+			return {
+				...responseUserInfo,
+				user: responseUserInfo.data,
+				groupArticles: responseGroupArticles.data,
+			}
 		}
 	}
 )
@@ -217,7 +223,6 @@ export const articleSlice = createSlice({
 				state.config = config 
 				state.loading = false
 			})
-
 			.addCase(loadGroupArticlesAction.pending, state => {
 				state.loading = true
 			})
@@ -289,7 +294,6 @@ export const articleSlice = createSlice({
 				state.config = config 
 				state.loading = false
 			})
-
 			.addCase(createArticleAction.pending, state => {
 				state.loading = true
 			})
@@ -366,9 +370,9 @@ export const articleSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(likeArticleAction.fulfilled, (state, action) => {
-				const {tags, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
-				state.tags = tags
+				const {groupArticles, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo & ILikeArticleResponse>action?.payload ?? {}
 				state.error = null
+				state.groupArticles =groupArticles
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers

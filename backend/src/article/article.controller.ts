@@ -124,6 +124,7 @@ export class UserController {
         : [...searchedUser.liked, article],
     });
     await this.userService.updateUser(username, entity);
+    await this.articleService.updateArticle(id, dto);
     const { password, updatedAt, createdAt, refresh_token, ...currentUser } =
       entity;
     return currentUser;
