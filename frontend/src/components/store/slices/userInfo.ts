@@ -15,7 +15,7 @@ export interface IUserInfo {
 
 export interface ISignIn {
 	username?: string
-	password?: string
+	pass?: string
 	remember?: boolean
 	refresh_token?: string;
 }
@@ -23,7 +23,7 @@ export interface ISignIn {
 export interface ISignUp {
 	username: string
 	email: string
-	password: string
+	pass: string
 }
 
 export interface ISignInResponse extends IUserInfo {
@@ -81,10 +81,11 @@ export const signInAction = createAsyncThunk(
 			})
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
-			// /userinfo/Valentin
-			// navigate('/')
+			if(navigate){
+				navigate('/')
+			}
 		}
-		if(userInfo?.remember || userInfo?.refresh_token){
+		if(response?.data?.refresh_token){
 			localStorage.setItem('refresh_token', response.data.refresh_token)
 		}
 		return response

@@ -13,7 +13,7 @@ export interface IUserInfo {
 
 export interface ISignIn {
 	username?: string
-	password?: string
+	pass?: string
 	remember?: boolean
 	refresh_token?: string;
 }
@@ -21,7 +21,7 @@ export interface ISignIn {
 export interface ISignUp {
 	username: string
 	email: string
-	password: string
+	pass: string
 }
 
 export interface ISignInResponse extends IUserInfo {

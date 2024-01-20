@@ -40,7 +40,7 @@ const SignUp: React.FC = () => {
 	const navigate = useNavigate()
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
-			const {repeatPassword, ...data} = values
+			const {repeatPass, ...data} = values
 			dispatch(signUpAction({...data, openNotification, navigate }))
 		})
 	}
@@ -88,7 +88,7 @@ const SignUp: React.FC = () => {
 		if(rule?.required && (!value || !value.trim())){
 			return Promise.reject(new Error('Field must not be empty'))
 		}
-		if(form.getFieldValue('password') !== value){
+		if(form.getFieldValue('pass') !== value){
 			return Promise.reject(new Error('Password fields must be the same'))
 		}
 		return Promise.resolve()
@@ -130,8 +130,8 @@ const SignUp: React.FC = () => {
 
 				<Form.Item 
 					hasFeedback
-					label="Password" 
-					name="password" 
+					label="Pass" 
+					name="pass" 
 					validateDebounce={1000}
 					rules={[{ required: true, validator: handlePasswordValidator }]}
 				>
@@ -141,7 +141,7 @@ const SignUp: React.FC = () => {
 				<Form.Item 
 					hasFeedback
 					label="Repeat password" 
-					name="repeatPassword"
+					name="repeatPass"
 					validateDebounce={1000}
 					rules={[{ required: true, validator: handleRepeatPasswordValidator }]}
 				>

@@ -63,7 +63,7 @@ export interface IAdditionalArticleInfo {
 	userArticles: IGroupArticle,
 }
 
-const initialState: IInitialState<IArticle> & IAdditionalArticleInfo = {
+const initialState: IInitialState<IArticle | ITagOption[]> & IAdditionalArticleInfo = {
 	data: null,
 	tags: null,
 	groupArticles: null,
@@ -122,7 +122,7 @@ export const loadTagOptionsAction = createAsyncThunk(
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
 		}	else {
-			return response.data
+			return response
 		}
 	}
 )
@@ -271,29 +271,36 @@ export const articleSlice = createSlice({
 				state.loading = false
 			})
 
+			//добавление тэгов
 			.addCase(loadTagOptionsAction.pending, state => {
 				state.loading = true
 			})
 			.addCase(loadTagOptionsAction.fulfilled, (state, action) => {
-				const {tags, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
-				state.tags = tags
+				const {data, status, statusText, headers, config }  = <IAxiosResponse<ITagOption[]>>action?.payload ?? {}
+				state.tags = data
 				state.error = null
+				state.loading = true
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers
 				state.config = config
-				state.loading = false
 			})
 			.addCase(loadTagOptionsAction.rejected,  (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
+				const {data, status, statusText, headers, config }  = <IAxiosResponse<ITagOption[]>>action?.payload ?? {}
 				state.tags = null
 				state.error = data as unknown as string
+				state.loading = true
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers
-				state.config = config 
-				state.loading = false
+				state.config = config
 			})
+
+
+
+
+
+
 			.addCase(createArticleAction.pending, state => {
 				state.loading = true
 			})

@@ -1,14 +1,12 @@
-﻿import React, { useEffect }from 'react'
+﻿import React, { useEffect, useState }from 'react'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
-import { Form, Input, Button, Typography, InputNumber, Select, Flex, Tabs, TabsProps } from 'antd'
-import { useOutletContext, useNavigate } from 'react-router-dom'
+import { Input, Typography, Tabs, TabsProps } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import queryString from 'query-string'
 
 import '@app/pages/userInfo/userInfo.scss'
-import { RootState, useAppDispatch } from '@app/store/store'
-import { updateUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
-import { getOtherAuthorInfoAction, IOtherAuthorInfo } from '@app/store/slices/otherAuthorInfo'
-import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
+import { RootState } from '@app/store/store'
+import { IUserInfo } from '@app/store/slices/userInfo'
 import UserContent from './components/userContent'
 import ArticlesContent from './components/articleContent'
 
@@ -41,6 +39,9 @@ const tailFormItemLayout = {
 }
 
 const UserInfo: React.FC = () => {
+	const navigate = useNavigate()
+	const [tabQuery, setTabQuery]  = useState('')
+	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 	const tabs: TabsProps['items'] = [
 		{
 			key: 'user-content',
@@ -54,12 +55,28 @@ const UserInfo: React.FC = () => {
 		}
 	]
 
-	return (
+	useEffect(() => {
+		const { tab } = queryString.parse(window.location.search)
+		const currentTab = tab ? `${tab}` : 'user-content'
+		setTabQuery(currentTab)
+		if(userInfo?.username){
+			navigate(`/userinfo/${userInfo?.username}?${queryString.stringify({ tab: currentTab})}`)
+		}
+	}, [userInfo?.username]) 
+
+	const onChange = (key: string) => {
+		setTabQuery(key)
+		navigate(`/userinfo/${userInfo.username}?${queryString.stringify({ tab: key})}`)
+	}
+
+	return ( 
 		<div className="user-info">
 			<Tabs 
 				className={'user-info__tabs'}
 				defaultActiveKey="user-content"
 				items={tabs}
+				activeKey={tabQuery}
+				onChange={onChange}
 			/>
 		</div>
 	)

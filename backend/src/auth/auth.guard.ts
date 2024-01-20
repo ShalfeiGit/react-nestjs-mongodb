@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
   async validateRequest(request): Promise<boolean> {
     if (
       request?.path === '/api/auth' &&
-      request?.body?.password &&
+      request?.body?.pass &&
       request?.body?.username
     ) {
       return true;
@@ -35,7 +35,10 @@ export class AuthGuard implements CanActivate {
           username: (payload as JwtPayload)?.username,
         })
         .getOne();
-      return refresh_token === user.refresh_token;
+      if (refresh_token !== user.refresh_token) {
+        throw new UnauthorizedException();
+      }
+      return true;
     }
 
     if (request.signedCookies['access_token']) {

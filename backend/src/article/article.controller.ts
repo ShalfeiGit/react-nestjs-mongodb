@@ -70,9 +70,12 @@ export class UserController {
     const article = await this.articleService.getArticleById(
       createdArticle.raw.insertId,
     );
+    console.log(user);
+    console.log(user?.articles);
     await this.userService.updateUser(user.username, {
       ...user,
-      articles: [...user.articles, article],
+
+      articles: [...(user?.articles ?? []), article],
     });
     return article;
   }
@@ -109,9 +112,7 @@ export class UserController {
     @Param('username') username,
     @Param('id') id,
     @Body() dto: Omit<updateArticleDto, 'likes'>,
-  ): Promise<
-    Omit<User, 'password' | 'updatedAt' | 'createdAt' | 'refresh_token'>
-  > {
+  ): Promise<Omit<User, 'pass' | 'updatedAt' | 'createdAt' | 'refresh_token'>> {
     const searchedUser = await this.userService.getUser(username);
     if (!searchedUser) {
       throw new BadRequestException(`Not found ${searchedUser.username}`);
@@ -119,13 +120,17 @@ export class UserController {
     const article = await this.articleService.getArticleById(id);
     const entity = Object.assign(new User(), {
       ...searchedUser,
-      liked: searchedUser.liked.some((article) => `${article.id}` === `${id}`)
-        ? searchedUser.liked.filter((article) => `${article.id}` !== `${id}`)
-        : [...searchedUser.liked, article],
+      liked: searchedUser.likedArticle.some(
+        (article) => `${article.id}` === `${id}`,
+      )
+        ? searchedUser.likedArticle.filter(
+            (article) => `${article.id}` !== `${id}`,
+          )
+        : [...searchedUser.likedArticle, article],
     });
     await this.userService.updateUser(username, entity);
     await this.articleService.updateArticle(id, dto);
-    const { password, updatedAt, createdAt, refresh_token, ...currentUser } =
+    const { pass, updatedAt, createdAt, refresh_token, ...currentUser } =
       entity;
     return currentUser;
   }

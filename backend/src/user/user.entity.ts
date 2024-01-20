@@ -1,4 +1,10 @@
-﻿import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+﻿import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import { Article } from '../article/article.entity';
 
 export enum UserGender {
@@ -45,7 +51,7 @@ export class User {
   gender: keyof typeof UserGender;
 
   @Column({ default: null })
-  password: string;
+  pass: string;
 
   @Column({ type: 'bigint', default: null })
   createdAt: number;
@@ -59,6 +65,6 @@ export class User {
   @OneToMany(() => Article, (article) => article.user)
   articles: Article[];
 
-  @OneToMany(() => Article, (article) => article.id)
-  liked: Article[];
+  @ManyToOne(() => Article, (article) => article.id)
+  likedArticle: Article[];
 }

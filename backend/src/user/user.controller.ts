@@ -22,12 +22,12 @@ export class UserController {
 
   @Get(':username')
   @UseGuards(AuthGuard)
-  async getUser(@Param('username') username): Promise<Omit<User, 'password'>> {
+  async getUser(@Param('username') username): Promise<Omit<User, 'pass'>> {
     const searchedUser = await this.userService.getUser(username);
     if (!searchedUser) {
       throw new BadRequestException(`Not found ${searchedUser.username}`);
     }
-    const { password, ...currentUser } = searchedUser;
+    const { pass, ...currentUser } = searchedUser;
     return currentUser;
   }
 
@@ -42,27 +42,25 @@ export class UserController {
     if (!searchedUser) {
       throw new BadRequestException(`Not found ${username}`);
     }
-    const { password, createdAt, updatedAt, refresh_token, ...currentUser } =
+    const { pass, createdAt, updatedAt, refresh_token, ...currentUser } =
       searchedUser;
     return currentUser;
   }
 
   @Post()
-  async createUser(
-    @Body() dto: createUserDto,
-  ): Promise<Omit<User, 'password'>> {
+  async createUser(@Body() dto: createUserDto): Promise<Omit<User, 'pass'>> {
     const searchedUser = await this.userService.getUser(dto.username);
     if (searchedUser) {
       throw new BadRequestException(`Already has ${searchedUser.username}`);
     }
-    const { password: pass, ...data } = dto;
-    const hashPassword = await hash(pass, 10);
+    const { pass: dtoPass, ...data } = dto;
+    const hashPassword = await hash(dtoPass, 10);
     const entity = Object.assign(new User(), {
       ...data,
-      password: hashPassword,
+      pass: hashPassword,
     });
     await this.userService.saveUser(entity);
-    const { password, ...currentUser } = entity;
+    const { pass, ...currentUser } = entity;
     return currentUser;
   }
 
@@ -71,7 +69,7 @@ export class UserController {
   async updateUser(
     @Param('username') username,
     @Body() dto: updateUserDto,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<User, 'pass'>> {
     const searchedUser = await this.userService.getUser(username);
     if (!searchedUser) {
       throw new BadRequestException(`Not found ${searchedUser.username}`);
@@ -79,24 +77,22 @@ export class UserController {
     const entity = Object.assign(new User(), {
       ...dto,
       username,
-      password: searchedUser.password,
+      pass: searchedUser.pass,
     });
     await this.userService.updateUser(username, entity);
-    const { password, ...currentUser } = entity;
+    const { pass, ...currentUser } = entity;
     return currentUser;
   }
 
   @Delete(':username')
   @UseGuards(AuthGuard)
-  async deleteUser(
-    @Param('username') username,
-  ): Promise<Omit<User, 'password'>> {
+  async deleteUser(@Param('username') username): Promise<Omit<User, 'pass'>> {
     const searchedUser = await this.userService.getUser(username);
     if (!searchedUser) {
       throw new BadRequestException(`Not found ${searchedUser.username}`);
     }
     await this.userService.deleteUser(username);
-    const { password, ...currentUser } = searchedUser;
+    const { pass, ...currentUser } = searchedUser;
     return currentUser;
   }
 }

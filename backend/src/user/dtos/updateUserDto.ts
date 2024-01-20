@@ -8,5 +8,5 @@ export class updateUserDto {
   readonly gender?: keyof typeof UserGender;
   readonly refresh_token?: string;
   readonly articles?: Article[];
-  readonly liked?: Article[];
+  readonly likedArticles?: Article[];
 }

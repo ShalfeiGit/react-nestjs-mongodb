@@ -1,4 +1,10 @@
-﻿import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+﻿import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { User } from '../user/user.entity';
 
 export enum TagArticle {
@@ -12,7 +18,7 @@ export enum TagArticle {
 @Entity()
 export class Article {
   @PrimaryGeneratedColumn()
-  @ManyToOne(() => User, (user) => user.liked)
+  @OneToMany(() => User, (user) => user.likedArticle)
   id: number;
 
   @Column({

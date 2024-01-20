@@ -38,7 +38,7 @@ const tailFormItemLayout = {
 const Article: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const tagOptions = useSelector((state: RootState) => state.article.tags)
-	const article = useSelector((state: RootState) => state.article.data)
+	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
@@ -54,7 +54,7 @@ const Article: React.FC = () => {
 
 	const handleSubmitForm = () => {
 		form.validateFields().then((values) => {
-			dispatch(createArticleAction({...values, openNotification, navigate }))
+			dispatch(createArticleAction({...values, username: userInfo?.username, openNotification, navigate }))
 		})
 	}
 
@@ -63,6 +63,32 @@ const Article: React.FC = () => {
 	}
 	const handleEditArticle = () => {
 		setEditArticle(true)
+	}
+
+	const handleTitleValidator = (rule: { required: boolean }, value: string) => {
+		if(rule?.required && (!value || !value.trim())){
+			return Promise.reject(new Error('Field must not be empty'))
+		}
+		if(value.length < 6){
+			return Promise.reject(new Error('Title length must be longer than 6 characters'))
+		}
+		return Promise.resolve()
+	}
+
+
+	const handleTagValidator = (rule: { required: boolean }, value: string) => {
+		if(rule?.required && (!value || !value.trim())){
+			return Promise.reject(new Error('Field must not be empty'))
+		}
+		return Promise.resolve()
+	}
+
+
+	const handleContentValidator = (rule: { required: boolean }, value: string) => {
+		if(rule?.required && (!value || !value.trim())){
+			return Promise.reject(new Error('Field must not be empty'))
+		}
+		return Promise.resolve()
 	}
 
 	return (
@@ -77,6 +103,7 @@ const Article: React.FC = () => {
 				<Form.Item 
 					label="Title" 
 					name="title" 
+					rules={[{ required: true, validator: handleTitleValidator }]}
 				>
 					<Input />
 				</Form.Item>
@@ -84,6 +111,7 @@ const Article: React.FC = () => {
 				<Form.Item 
 					label="Tag" 
 					name="tag"
+					rules={[{ required: true, validator: handleTagValidator }]}
 				>
 					<Select options={tagOptions} />
 				</Form.Item>
@@ -91,6 +119,7 @@ const Article: React.FC = () => {
 				<Form.Item 
 					label="Content" 
 					name="content"
+					rules={[{ required: true, validator: handleContentValidator }]}
 				>
 					<TextArea rows={20} />
 				</Form.Item>

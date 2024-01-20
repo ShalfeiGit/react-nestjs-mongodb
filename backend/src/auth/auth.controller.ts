@@ -27,8 +27,8 @@ export class AuthController {
   async loginUser(
     @Res({ passthrough: true }) response: Response,
     @Body() dto: loginUserDto,
-  ): Promise<Omit<User, 'password'> & { refresh_token: string }> {
-    const { username, password, refresh_token } = dto;
+  ): Promise<Omit<User, 'pass'> & { refresh_token: string }> {
+    const { username, pass, refresh_token } = dto;
     response.status(HttpStatus.OK);
     let accessTokenData;
     if (refresh_token) {
@@ -37,7 +37,7 @@ export class AuthController {
       if (!user) {
         throw new BadRequestException('Username or password incorrect');
       }
-      const hasAccess = await compare(accessTokenData.password, user.password);
+      const hasAccess = await compare(accessTokenData.pass, user.pass);
       if (!hasAccess) {
         throw new BadRequestException('Username or password incorrect');
       }
@@ -46,7 +46,7 @@ export class AuthController {
         secure: true,
         signed: true,
       });
-      const { password: userPassword, ...enrichedUser } = user;
+      const { pass: userPassword, ...enrichedUser } = user;
       await this.userService.updateUser(user.username, {
         ...user,
         refresh_token: `${accessTokenData.refresh_token}`,
@@ -60,17 +60,17 @@ export class AuthController {
       if (!user) {
         throw new BadRequestException('Username or password incorrect');
       }
-      const hasAccess = await compare(password, user.password);
+      const hasAccess = await compare(pass, user.pass);
       if (!hasAccess) {
         throw new BadRequestException('Username or password incorrect');
       }
-      accessTokenData = await this.authService.signIn(username, password);
+      accessTokenData = await this.authService.signIn(username, pass);
       response.cookie('access_token', `${accessTokenData.access_token}`, {
         httpOnly: true,
         secure: true,
         signed: true,
       });
-      const { password: userPassword, ...enrichedUser } = user;
+      const { pass: userPassword, ...enrichedUser } = user;
       await this.userService.updateUser(user.username, {
         ...user,
         refresh_token: `${accessTokenData.refresh_token}`,

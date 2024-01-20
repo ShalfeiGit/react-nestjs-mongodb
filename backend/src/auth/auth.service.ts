@@ -2,7 +2,7 @@
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
-  async signIn(username, password) {
+  async signIn(username, pass) {
     const payloadToken = {
       createdDate: Date.now(),
       username,
@@ -10,7 +10,7 @@ export class AuthService {
     };
     const payloadTokenRefresh = {
       createdDate: Date.now(),
-      password,
+      pass,
       username,
     };
     return {
@@ -28,12 +28,12 @@ export class AuthService {
     };
     const payloadTokenRefresh = {
       createdDate: Date.now(),
-      password: (decode as JwtPayload)?.password,
+      pass: (decode as JwtPayload)?.pass,
       username: (decode as JwtPayload)?.username,
     };
 
     return {
-      password: (decode as JwtPayload)?.password,
+      pass: (decode as JwtPayload)?.pass,
       username: (decode as JwtPayload)?.username,
       access_token: sign(payloadToken, process.env.JWT_SECRET_SALT),
       refresh_token: sign(payloadTokenRefresh, process.env.JWT_SECRET_SALT),
