@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate {
           username: (payload as JwtPayload)?.username,
         })
         .getOne();
-      if (refresh_token !== user.refresh_token) {
+      if (refresh_token !== user?.refresh_token) {
         throw new UnauthorizedException();
       }
       return true;

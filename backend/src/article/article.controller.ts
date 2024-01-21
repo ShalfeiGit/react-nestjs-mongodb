@@ -52,7 +52,6 @@ export class UserController {
   }
 
   @Get('options/tag')
-  @UseGuards(AuthGuard)
   async getTagOptions(): Promise<{ label: string; value: string }[]> {
     return (
       Object.values(JSON.parse(JSON.stringify(TagArticle)) ?? {}) as string[]
@@ -70,13 +69,6 @@ export class UserController {
     const article = await this.articleService.getArticleById(
       createdArticle.raw.insertId,
     );
-    console.log(user);
-    console.log(user?.articles);
-    await this.userService.updateUser(user.username, {
-      ...user,
-
-      articles: [...(user?.articles ?? []), article],
-    });
     return article;
   }
 

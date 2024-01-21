@@ -13,6 +13,14 @@ export enum TagArticle {
   MARKETING = 'marketing',
   GRAPHIC = 'graphic',
   DEVOPS = 'devops',
+  VIDEO = 'video',
+  TOOLS = 'tools',
+  MOBILE = 'mobile',
+  GAMEDEV = 'gamedev',
+  CMS = 'cms',
+  BLOCKCHAIN = 'blockchain',
+  QA = 'Quality assurance',
+  SECURITY = 'security',
 }
 
 @Entity()
@@ -45,7 +53,7 @@ export class Article {
   @Column({ type: 'bigint', default: null })
   updatedAt: number;
 
-  @Column({ type: 'int', default: null })
+  @Column({ type: 'int', default: 0 })
   likes: number;
 
   @ManyToOne(() => User, (user) => user.articles)
