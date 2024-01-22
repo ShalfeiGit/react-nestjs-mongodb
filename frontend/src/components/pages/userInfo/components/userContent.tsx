@@ -41,7 +41,7 @@ const UserContent: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
 	const otherAuthorInfo = useSelector((state: RootState) => state.otherAuthorInfo.data as IOtherAuthorInfo)
-	const { username } = useParams()
+	const {username} = useParams()
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
@@ -53,15 +53,10 @@ const UserContent: React.FC = () => {
 	}
 
 	useEffect(() => {
-		if(!userInfo?.username){
-			// navigate('/')
-		} else {
+		form.resetFields()
+		if(userInfo?.username !== username){
 			dispatch(getOtherAuthorInfoAction({username}))
 		}
-	}, [])
-
-	useEffect(() => {
-		form.resetFields()
 	}, [username])
 
 	useEffect(() => {

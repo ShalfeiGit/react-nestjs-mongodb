@@ -1,11 +1,18 @@
 ﻿import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Typography, InputNumber, Select, Flex } from 'antd'
+import { Form, Input, Button, Typography, Select, Flex, Popconfirm } from 'antd'
 import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
 
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
-import { loadTagOptionsAction, loadArticleAction, createArticleAction, deleteArticleAction, ITagOption } from '@app/store/slices/article'
+import {
+	loadTagOptionsAction,
+	loadArticleAction,
+	createArticleAction,
+	deleteArticleAction,
+	updateArticleAction,
+	ITagOption
+} from '@app/store/slices/article'
 
 const { TextArea } = Input
 const { Title } = Typography
@@ -34,58 +41,71 @@ const tailFormItemLayout = {
 	}
 }
 
-
 const Article: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const tagOptions = useSelector((state: RootState) => state.article.tags)
+	const article = useSelector((state: RootState) => state.article.data)
 	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 	const openNotification = useOutletContext()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
-	const {slug} = useParams()
-	const [editArticle, setEditArticle] = useState(false)
+	const { slug } = useParams()
 
 	useEffect(() => {
 		dispatch(loadTagOptionsAction())
-		if(slug !== 'add'){
-			dispatch(loadArticleAction({id:slug}))
+		if (slug) {
+			dispatch(loadArticleAction({ articleId: slug }))
 		}
 	}, [])
 
-	const handleSubmitForm = () => {
+	useEffect(() => {
+		if (article && slug) {
+			form.setFieldsValue({ ...article })
+		}
+	}, [article])
+
+
+	const handleRedirectToListArticle = () => {
+		navigate(`/userinfo/${userInfo?.username}?tab=articles-content`)
+	}
+
+	const handleSaveArticle = () => {
 		form.validateFields().then((values) => {
-			dispatch(createArticleAction({...values, username: userInfo?.username, openNotification, navigate }))
+			if(slug){
+				dispatch(
+					updateArticleAction({
+						articleId: slug,
+						...form.getFieldsValue(),
+						username: userInfo?.username,
+						openNotification,
+						navigate
+					})
+				)
+			} else{
+				dispatch(createArticleAction({ ...values, username: userInfo?.username, openNotification, navigate }))
+			}
 		})
 	}
 
-	const handleDeleteArticle = () => {
-		dispatch(deleteArticleAction({navigate, id: slug}))
-	}
-	const handleEditArticle = () => {
-		setEditArticle(true)
-	}
-
 	const handleTitleValidator = (rule: { required: boolean }, value: string) => {
-		if(rule?.required && (!value || !value.trim())){
+		if (!value || !value.trim()) {
 			return Promise.reject(new Error('Field must not be empty'))
 		}
-		if(value.length < 6){
+		if (value.length < 6) {
 			return Promise.reject(new Error('Title length must be longer than 6 characters'))
 		}
 		return Promise.resolve()
 	}
 
-
 	const handleTagValidator = (rule: { required: boolean }, value: string) => {
-		if(rule?.required && (!value || !value.trim())){
+		if (!value || !value.trim()) {
 			return Promise.reject(new Error('Field must not be empty'))
 		}
 		return Promise.resolve()
 	}
 
-
 	const handleContentValidator = (rule: { required: boolean }, value: string) => {
-		if(rule?.required && (!value || !value.trim())){
+		if (!value || !value.trim()) {
 			return Promise.reject(new Error('Field must not be empty'))
 		}
 		return Promise.resolve()
@@ -93,53 +113,33 @@ const Article: React.FC = () => {
 
 	return (
 		<div className="article">
-			<Form
-				form={form}
-				name="article"
-				{...formItemLayout}
-				onFinish={handleSubmitForm}
-				autoComplete="off"
-			>
-				<Form.Item 
-					label="Title" 
-					name="title" 
-					rules={[{ required: true, validator: handleTitleValidator }]}
-				>
+			<Form form={form} name="article" {...formItemLayout} autoComplete="off">
+				<Form.Item label="Title" name="title" rules={[{ validator: handleTitleValidator }]}>
 					<Input />
 				</Form.Item>
 
-				<Form.Item 
-					label="Tag" 
-					name="tag"
-					rules={[{ required: true, validator: handleTagValidator }]}
-				>
+				<Form.Item label="Tag" name="tag" rules={[{ validator: handleTagValidator }]}>
 					<Select options={tagOptions} />
 				</Form.Item>
 
-				<Form.Item 
-					label="Content" 
-					name="content"
-					rules={[{ required: true, validator: handleContentValidator }]}
-				>
+				<Form.Item label="Content" name="content" rules={[{ validator: handleContentValidator }]}>
 					<TextArea rows={20} />
 				</Form.Item>
 
 				<Form.Item {...tailFormItemLayout}>
 					<Flex gap="small" wrap="wrap">
-						{slug === 'add' || editArticle ? (
-							<Button type="primary" htmlType="submit">
+						<Popconfirm
+							title="Cохранить статью"
+							description="Вы уверены что хотите сохранить статью?"
+							onConfirm={handleSaveArticle}
+							onCancel={handleRedirectToListArticle}
+							okText="Да"
+							cancelText="Нет"
+						>
+							<Button  type="primary">
 								Сохранить
 							</Button>
-						):(
-							<>
-								<Button type="primary" onClick={handleEditArticle}>
-									Редактировать
-								</Button>
-								<Button danger type="primary"  onClick={handleDeleteArticle}>
-									Удалить
-								</Button>
-							</>
-						)}
+						</Popconfirm>
 					</Flex>
 				</Form.Item>
 			</Form>

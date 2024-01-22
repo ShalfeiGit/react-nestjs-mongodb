@@ -6,7 +6,6 @@ import queryString from 'query-string'
 
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState } from '@app/store/store'
-import { IUserInfo } from '@app/store/slices/userInfo'
 import UserContent from './components/userContent'
 import ArticlesContent from './components/articleContent'
 

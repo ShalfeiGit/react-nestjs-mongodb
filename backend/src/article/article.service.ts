@@ -29,10 +29,10 @@ export class ArticleService {
       .getMany();
   }
 
-  async getArticlesByUsername(username: string): Promise<Article[]> {
+  async getArticlesByUsername(userId: string): Promise<Article[]> {
     return await this.articleRepository
       .createQueryBuilder('article')
-      .where('article.user.username = :username', { username })
+      .where('article.userId = :userId', { userId })
       .getMany();
   }
 

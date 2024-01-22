@@ -1,10 +1,13 @@
 import React, {useEffect} from 'react'
-import { Button, Table } from 'antd'
-import { EditOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Popconfirm, Table } from 'antd'
+import { EditOutlined, CloseOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons'
 import type { TableProps } from 'antd'
-import { useOutletContext, useNavigate } from 'react-router-dom'
+import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import { RootState, useAppDispatch } from '@app/store/store'
+import { loadUserArticlesAction } from '@app/store/slices/article'
+import { IUserInfo } from '@app/store/slices/userInfo'
 
 interface DataType {
   key: string;
@@ -14,65 +17,35 @@ interface DataType {
   likes: number;
 }
 
-const data: DataType[] = [
-	{
-		key: '1',
-		title: 'Test title 1',
-		content: 'Test content 1',
-		tag: 'frontend',
-		likes: 35,
-	},
-	{
-		key: '2',
-		title: 'Test title 2',
-		content: 'Test content 2',
-		tag: 'backend',
-		likes: 36,
-	},
-	{
-		key: '3',
-		title: 'Test title 3',
-		content: 'Test content 3',
-		tag: 'marketing',
-		likes: 37,
-	},
-	{
-		key: '4',
-		title: 'Test title 4',
-		content: 'Test content 4',
-		tag: 'graphic',
-		likes: 38,
-	},
-	{
-		key: '5',
-		title: 'Test title 5',
-		content: 'Test content 5',
-		tag: 'devops',
-		likes: 39,
-	},
-	{
-		key: '6',
-		title: 'Test title 6',
-		content: 'Test content 6',
-		tag: 'marketing',
-		likes: 40,
-	},
-]
-
 const ArticleContent: React.FC = () => {
 	const openNotification = useOutletContext()
 	const navigate = useNavigate()
+	const {username} = useParams()
+	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
+	
+	const data: DataType[] = (useSelector((state: RootState) => state.article.userArticles) ?? []).map(article => ({
+		key: `${article.id}`,
+		...article
+	}))
 	const dispatch = useAppDispatch()
 	useEffect(() => {
-	}, [])
+		if(userInfo.username){
+			dispatch(loadUserArticlesAction({userId: userInfo.id}))
+		}
+	}, [userInfo])
 
 	const handleAddArticle = () => {
-		navigate('/article/add')
+		navigate('/article/create')
 	}
 
 	const handleEditArticle = (id) => () => {
-		navigate(`/article/${id}`)
+		navigate(`/article/edit/${id}`)
 	}
+
+	const handleViewArticle = (id) => () => {
+		navigate(`/article/preview/${id}`)
+	}
+
 
 	const handleRemoveArticle = (id) => () => {
 	}
@@ -105,8 +78,21 @@ const ArticleContent: React.FC = () => {
 			render: (manage, row) => {
 				return (
 					<>
-						<Button className="article-content__manage" type="primary" shape="circle" icon={<EditOutlined />}  onClick={handleEditArticle(row.key)}/>
-						<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />} onClick={handleRemoveArticle(row.key)}/>
+						<Button className="article-content__manage" type="primary" shape="circle" icon={<EyeOutlined />}  onClick={handleViewArticle(row.key)}/>
+						{userInfo.username === username && (<>
+							<Button className="article-content__manage" type="primary" shape="circle" icon={<EditOutlined />}  onClick={handleEditArticle(row.key)}/>
+							<Popconfirm
+									 title="Удалить статью"
+									 description="Вы уверены что хотите удалить статью?"
+									 onConfirm={handleRemoveArticle(row.key)}
+									 okText="Да"
+									 cancelText="Нет"
+							>
+								<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />}/>
+							</Popconfirm>
+							
+						</>)}
+						
 					</>
 				)
 			},

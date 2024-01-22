@@ -4,6 +4,7 @@ import { ICallNotificationAction, INavigateAction, INotificationAction } from '@
 import { IAdditionalArticleInfo, IArticle, ILikeArticleResponse, likeArticleAction } from './article'
 
 export interface IUserInfo {
+	id: number;
 	username: string;
 	email: string;
   bio: string;
@@ -11,6 +12,7 @@ export interface IUserInfo {
 	gender: string;
 	createdAt: number;
 	updatedAt: number;
+	refresh_token?: string;
 }
 
 export interface ISignIn {
@@ -54,7 +56,7 @@ export const updateUserInfoAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'put', url: `user/${username}`, data: dataUserInfo })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: `${response.data.username} success updated`
+			message: response.status >= 400 ? response.data as unknown as string : `${response.data.username} was updated`
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
@@ -105,7 +107,7 @@ export const signUpAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: response.status >= 400 ? response.data : `${response.data.username} was created`
+			message: response.status >= 400 ? response.data as unknown as string : `${response.data.username} was created`
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
@@ -171,7 +173,8 @@ export const userInfoSlice = createSlice({
 			})
 			.addCase(signInAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
-				state.data = data
+				const {refresh_token, ...updatedDate}  = data
+				state.data = updatedDate
 				state.error = null
 				state.status = status
 				state.statusText = statusText

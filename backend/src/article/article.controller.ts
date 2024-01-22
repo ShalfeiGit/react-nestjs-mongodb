@@ -43,11 +43,11 @@ export class UserController {
     return searchedArticles;
   }
 
-  @Get('sort/:username')
+  @Get('sort/:userId')
   @UseGuards(AuthGuard)
-  async getArticlesByUsername(@Param('username') username): Promise<Article[]> {
+  async getArticlesByUsername(@Param('userId') userId): Promise<Article[]> {
     const searchedArticles =
-      await this.articleService.getArticlesByUsername(username);
+      await this.articleService.getArticlesByUsername(userId);
     return searchedArticles;
   }
 
@@ -79,7 +79,7 @@ export class UserController {
     @Body() dto: updateArticleDto,
   ): Promise<Article> {
     const searchedArticle = await this.articleService.getArticleById(id);
-    if (searchedArticle) {
+    if (!searchedArticle) {
       throw new BadRequestException(`Not found article with id:${id}`);
     }
     await this.articleService.updateArticle(id, dto);
