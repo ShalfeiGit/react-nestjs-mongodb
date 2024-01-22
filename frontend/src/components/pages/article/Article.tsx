@@ -9,9 +9,7 @@ import {
 	loadTagOptionsAction,
 	loadArticleAction,
 	createArticleAction,
-	deleteArticleAction,
 	updateArticleAction,
-	ITagOption
 } from '@app/store/slices/article'
 
 const { TextArea } = Input
@@ -82,7 +80,7 @@ const Article: React.FC = () => {
 					})
 				)
 			} else{
-				dispatch(createArticleAction({ ...values, username: userInfo?.username, openNotification, navigate }))
+				dispatch(createArticleAction({ ...values, username: userInfo?.username, openNotification, navigate}))
 			}
 		})
 	}

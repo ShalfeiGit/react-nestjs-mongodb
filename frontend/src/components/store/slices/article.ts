@@ -185,12 +185,31 @@ export const updateArticleAction = createAsyncThunk(
 export const deleteArticleAction = createAsyncThunk(
 	'article/deleteArticle',
 	async (data: IArticleRequestData
+	& Pick<IUserInfo, 'username'>
 	& INotificationAction 
 	& INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IArticle> & IAxiosErrorResponse>) => {
-		const response = await thunkAPI.extra.api({ method: 'delete', url: 'article/${id}' })
+		const {articleId, openNotification, navigate, username, userId} = data
+		const callNotification = ({type, message}: ICallNotificationAction ) => {
+			openNotification({
+				content: message,
+				type
+			})
+		}
+		const response = await thunkAPI.extra.api({ method: 'delete', url: `article/${articleId}` })
+		const responseUserArticles = await thunkAPI.extra.api({ method: 'get', url: `article/sort/${userId}` })
+		callNotification({
+			type: response.status >= 400 ? 'error' : 'success',
+			message: response.status >= 400 ? response.data as unknown as string : 'Article was deleted'
+		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
 		}	else {
+			navigate(`/userinfo/${username}?tab=articles-content`)
+
+			return {
+				...responseUserArticles,
+				userArticles: responseUserArticles.data,
+			}
 			return response
 		}
 	}
@@ -295,7 +314,7 @@ export const articleSlice = createSlice({
 				state.loading = false
 			})
 
-			//добавление тэгов
+			//загрузка тэгов
 			.addCase(loadTagOptionsAction.pending, state => {
 				state.loading = true
 			})
@@ -369,13 +388,14 @@ export const articleSlice = createSlice({
 				state.config = config 
 				state.loading = false
 			})
-
+			//удаление статьи
 			.addCase(deleteArticleAction.pending, state => {
 				state.loading = true
 			})
 			.addCase(deleteArticleAction.fulfilled, (state, action) => {
-				const { status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
+				const {userArticles, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
 				state.data = null
+				state.userArticles = userArticles
 				state.error = null
 				state.status = status
 				state.statusText = statusText
@@ -385,7 +405,7 @@ export const articleSlice = createSlice({
 			})
 			.addCase(deleteArticleAction.rejected,  (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
-				state.tags = null
+				state.data = null
 				state.error = data as unknown as string
 				state.status = status
 				state.statusText = statusText

@@ -1,13 +1,14 @@
 ﻿import React, { useEffect, useState }from 'react'
 import { useSelector } from 'react-redux'
 import { Input, Typography, Tabs, TabsProps } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import queryString from 'query-string'
 
 import '@app/pages/userInfo/userInfo.scss'
 import { RootState } from '@app/store/store'
 import UserContent from './components/userContent'
 import ArticlesContent from './components/articleContent'
+import { INotificationAction } from '@app/shared/layout/types'
 
 const { TextArea } = Input
 
@@ -39,6 +40,7 @@ const tailFormItemLayout = {
 
 const UserInfo: React.FC = () => {
 	const navigate = useNavigate()
+	const openNotification = useOutletContext()
 	const [tabQuery, setTabQuery]  = useState('')
 	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 	const tabs: TabsProps['items'] = [
@@ -50,7 +52,7 @@ const UserInfo: React.FC = () => {
 		{
 			key: 'articles-content',
 			label: 'Articles Info',
-			children: <ArticlesContent />,
+			children: <ArticlesContent openNotification={openNotification as INotificationAction['openNotification']}/>,
 		}
 	]
 

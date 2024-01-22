@@ -2,12 +2,13 @@ import React, {useEffect} from 'react'
 import { Button, Popconfirm, Table } from 'antd'
 import { EditOutlined, CloseOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons'
 import type { TableProps } from 'antd'
-import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams} from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { RootState, useAppDispatch } from '@app/store/store'
-import { loadUserArticlesAction } from '@app/store/slices/article'
+import { deleteArticleAction, loadUserArticlesAction } from '@app/store/slices/article'
 import { IUserInfo } from '@app/store/slices/userInfo'
+import { INotificationAction } from '@app/shared/layout/types'
 
 interface DataType {
   key: string;
@@ -16,9 +17,11 @@ interface DataType {
   tag: string;
   likes: number;
 }
+ interface IProps{
+	openNotification: INotificationAction['openNotification'];
+ }
+const ArticleContent: React.FC<IProps> = (props) => {
 
-const ArticleContent: React.FC = () => {
-	const openNotification = useOutletContext()
 	const navigate = useNavigate()
 	const {username} = useParams()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
@@ -29,8 +32,8 @@ const ArticleContent: React.FC = () => {
 	}))
 	const dispatch = useAppDispatch()
 	useEffect(() => {
-		if(userInfo.username){
-			dispatch(loadUserArticlesAction({userId: userInfo.id}))
+		if(userInfo?.username){
+			dispatch(loadUserArticlesAction({userId: userInfo?.id}))
 		}
 	}, [userInfo])
 
@@ -48,6 +51,8 @@ const ArticleContent: React.FC = () => {
 
 
 	const handleRemoveArticle = (id) => () => {
+		const {openNotification}  = props
+		dispatch(deleteArticleAction({articleId: id, navigate, openNotification, username: userInfo?.username, userId: userInfo?.id}))
 	}
 
 	const columns: TableProps<DataType>['columns'] = [
