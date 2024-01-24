@@ -8,8 +8,12 @@
   UseGuards,
   BadRequestException,
   Put,
-  Patch,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
+
 import { ArticleService } from './article.service';
 import { Article, TagArticle } from './article.entity';
 import { createArticleDto } from './dtos/createArticleDto';
@@ -38,16 +42,32 @@ export class UserController {
 
   @Get('group/:tag')
   @UseGuards(AuthGuard)
-  async getArticlesByTag(@Param('tag') tag): Promise<Article[]> {
-    const searchedArticles = await this.articleService.getArticlesByTag(tag);
+  async getArticlesByTag(
+    @Param('tag') tag,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Article>> {
+    const searchedArticles = await this.articleService.getArticlesByTag(tag, {
+      page,
+      limit,
+    });
     return searchedArticles;
   }
 
   @Get('sort/:userId')
   @UseGuards(AuthGuard)
-  async getArticlesByUsername(@Param('userId') userId): Promise<Article[]> {
-    const searchedArticles =
-      await this.articleService.getArticlesByUsername(userId);
+  async getArticlesByUsername(
+    @Param('userId') userId,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Article>> {
+    const searchedArticles = await this.articleService.getArticlesByUsername(
+      userId,
+      {
+        page,
+        limit,
+      },
+    );
     return searchedArticles;
   }
 

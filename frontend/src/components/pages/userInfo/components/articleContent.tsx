@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { Button, Popconfirm, Table } from 'antd'
+import { Button, Popconfirm, Table, Pagination } from 'antd'
 import { EditOutlined, CloseOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons'
 import type { TableProps } from 'antd'
 import { useNavigate, useParams} from 'react-router-dom'
@@ -26,14 +26,16 @@ const ArticleContent: React.FC<IProps> = (props) => {
 	const {username} = useParams()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
 	
-	const data: DataType[] = (useSelector((state: RootState) => state.article.userArticles) ?? []).map(article => ({
+	const data: DataType[] = (useSelector((state: RootState) => state.article.userArticles?.articles?.items) ?? []).map(article => ({
 		key: `${article.id}`,
 		...article
 	}))
+
+	const pagination = (useSelector((state: RootState) => state.article.userArticles?.articles?.meta))
 	const dispatch = useAppDispatch()
 	useEffect(() => {
 		if(userInfo?.username){
-			dispatch(loadUserArticlesAction({userId: userInfo?.id}))
+			dispatch(loadUserArticlesAction({userId: userInfo?.id, page: 1, limit: 10}))
 		}
 	}, [userInfo])
 
@@ -49,12 +51,14 @@ const ArticleContent: React.FC<IProps> = (props) => {
 		navigate(`/article/preview/${id}`)
 	}
 
-
 	const handleRemoveArticle = (id) => () => {
 		const {openNotification}  = props
 		dispatch(deleteArticleAction({articleId: id, navigate, openNotification, username: userInfo?.username, userId: userInfo?.id}))
 	}
 
+	const handleChangeArticlePagination = (page) =>{
+		dispatch(loadUserArticlesAction({userId: userInfo?.id, page, limit: 10}))
+	}
 	const columns: TableProps<DataType>['columns'] = [
 		{
 			title: 'Title',
@@ -95,9 +99,7 @@ const ArticleContent: React.FC<IProps> = (props) => {
 							>
 								<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />}/>
 							</Popconfirm>
-							
 						</>)}
-						
 					</>
 				)
 			},
@@ -111,7 +113,14 @@ const ArticleContent: React.FC<IProps> = (props) => {
 					Создать
 				</Button>
 			</div>
-			<Table className='article-content__table' columns={columns} dataSource={data} />
+			<Table className='article-content__table' columns={columns} dataSource={data} pagination={{
+				onChange: handleChangeArticlePagination,
+				pageSize: pagination?.itemsPerPage ?? 10,
+				showSizeChanger: false,
+				showQuickJumper: false,
+				total: pagination?.totalItems ?? 0,
+				current: pagination?.currentPage?? 1
+			}}/>
 		</div>	
 	)
 } 

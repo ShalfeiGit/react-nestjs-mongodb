@@ -5,6 +5,11 @@ import { createArticleDto } from './dtos/createArticleDto';
 import { updateArticleDto } from './dtos/updateArticleDto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ArticleService {
@@ -22,18 +27,22 @@ export class ArticleService {
       .getOne();
   }
 
-  async getArticlesByTag(tag: TagArticle): Promise<Article[]> {
-    return await this.articleRepository
-      .createQueryBuilder('article')
-      .where('article.tag = :tag', { tag })
-      .getMany();
+  async getArticlesByTag(
+    tag: TagArticle,
+    options: IPaginationOptions,
+  ): Promise<Pagination<Article>> {
+    const queryBuilder = this.articleRepository.createQueryBuilder('article');
+    queryBuilder.where('article.tag = :tag', { tag }).getMany();
+    return paginate<Article>(queryBuilder, options);
   }
 
-  async getArticlesByUsername(userId: string): Promise<Article[]> {
-    return await this.articleRepository
-      .createQueryBuilder('article')
-      .where('article.userId = :userId', { userId })
-      .getMany();
+  async getArticlesByUsername(
+    userId: string,
+    options: IPaginationOptions,
+  ): Promise<Pagination<Article>> {
+    const queryBuilder = this.articleRepository.createQueryBuilder('article');
+    queryBuilder.where('article.userId = :userId', { userId }).getMany();
+    return paginate<Article>(queryBuilder, options);
   }
 
   async saveArticle(user: User, dto: createArticleDto): Promise<InsertResult> {
