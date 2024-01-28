@@ -13,7 +13,7 @@ import { INotificationAction } from '@app/shared/layout/types'
 interface DataType {
   key: string;
   title: string;
-  content: string;
+  content: string[];
   tag: string;
   likes: number;
 }
@@ -26,12 +26,12 @@ const ArticleContent: React.FC<IProps> = (props) => {
 	const {username} = useParams()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
 	
-	const data: DataType[] = (useSelector((state: RootState) => state.article.userArticles?.articles?.items) ?? []).map(article => ({
+	const data: DataType[] = (useSelector((state: RootState) => state.article.userArticles.find(userArticle => userArticle.userId === userInfo.id)?.articles?.items) ?? []).map(article => ({
 		key: `${article.id}`,
 		...article
 	}))
 
-	const pagination = (useSelector((state: RootState) => state.article.userArticles?.articles?.meta))
+	const pagination = (useSelector((state: RootState) => state.article.userArticles.find(userArticle => userArticle.userId === userInfo.id)?.articles?.meta))
 	const dispatch = useAppDispatch()
 	useEffect(() => {
 		if(userInfo?.username){
@@ -69,6 +69,12 @@ const ArticleContent: React.FC<IProps> = (props) => {
 			title: 'Content',
 			dataIndex: 'content',
 			key: 'content',
+			render: content => (
+				<div className={'feed-articles__article'}>
+					<div className='feed-articles__article_gradient' />
+					{content.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+				</div>
+			)
 		},
 		{
 			title: 'Tag',
@@ -84,9 +90,10 @@ const ArticleContent: React.FC<IProps> = (props) => {
 			title: 'Manage',
 			dataIndex: 'manage',
 			key: 'manage',
+			width:' 18%',
 			render: (manage, row) => {
 				return (
-					<>
+					<div>
 						<Button className="article-content__manage" type="primary" shape="circle" icon={<EyeOutlined />}  onClick={handleViewArticle(row.key)}/>
 						{userInfo.username === username && (<>
 							<Button className="article-content__manage" type="primary" shape="circle" icon={<EditOutlined />}  onClick={handleEditArticle(row.key)}/>
@@ -100,7 +107,7 @@ const ArticleContent: React.FC<IProps> = (props) => {
 								<Button className="article-content__manage" type="primary" danger  shape="circle" icon={<CloseOutlined />}/>
 							</Popconfirm>
 						</>)}
-					</>
+					</div>
 				)
 			},
 		}

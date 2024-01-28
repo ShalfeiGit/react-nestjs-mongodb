@@ -24,6 +24,9 @@ export class ArticleService {
     return await this.articleRepository
       .createQueryBuilder('article')
       .where('article.id = :id', { id })
+      .leftJoinAndSelect('article.user', 'user')
+      .select(['article'])
+      .addSelect(['user.username'])
       .getOne();
   }
 
@@ -33,6 +36,14 @@ export class ArticleService {
   ): Promise<Pagination<Article>> {
     const queryBuilder = this.articleRepository.createQueryBuilder('article');
     queryBuilder.where('article.tag = :tag', { tag }).getMany();
+    return paginate<Article>(queryBuilder, options);
+  }
+
+  async getAllArticles(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Article>> {
+    const queryBuilder = this.articleRepository.createQueryBuilder('article');
+    queryBuilder.getMany();
     return paginate<Article>(queryBuilder, options);
   }
 

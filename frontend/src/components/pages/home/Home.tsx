@@ -22,7 +22,7 @@ const Home: React.FC = () => {
 				<Col span={1}></Col>
 				<Col span={16}><Feeds/></Col>
 				<Col span={1}></Col>
-				<Col span={6}><PopularTags/></Col>
+				<Col span={6}><PopularTags page={1} limit={10}/></Col>
 			</Row>
 		</div>
 	)

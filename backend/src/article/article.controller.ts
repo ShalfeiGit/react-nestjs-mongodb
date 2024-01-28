@@ -37,7 +37,13 @@ export class UserController {
     if (!searchedArticle) {
       throw new BadRequestException(`Not found article with id:${id}`);
     }
-    return searchedArticle;
+    return {
+      ...searchedArticle,
+      createdAt: Number(searchedArticle.createdAt),
+      updatedAt: searchedArticle?.updatedAt
+        ? Number(searchedArticle?.updatedAt)
+        : null,
+    };
   }
 
   @Get('group/:tag')
@@ -54,7 +60,20 @@ export class UserController {
     return searchedArticles;
   }
 
-  @Get('sort/:userId')
+  @Get('global/:id')
+  @UseGuards(AuthGuard)
+  async getAllArticles(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Article>> {
+    const searchedArticles = await this.articleService.getAllArticles({
+      page,
+      limit,
+    });
+    return searchedArticles;
+  }
+
+  @Get('filter/:userId')
   @UseGuards(AuthGuard)
   async getArticlesByUsername(
     @Param('userId') userId,

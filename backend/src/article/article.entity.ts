@@ -35,10 +35,7 @@ export class Article {
   })
   title: string;
 
-  @Column({
-    type: 'varchar',
-    length: 2000,
-  })
+  @Column({ type: 'varchar', length: 16000 })
   content: string;
 
   @Column({

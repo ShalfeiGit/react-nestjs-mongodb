@@ -17,8 +17,10 @@
   &__userinfo{
     display: flex;
     flex-direction: row;
+    align-items: center;
  
     &-content{
+      margin-left: 8px;
       display: flex;
       flex-direction: column;
       & h5{

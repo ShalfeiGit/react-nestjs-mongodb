@@ -11,6 +11,7 @@ import {
 	createArticleAction,
 	updateArticleAction,
 } from '@app/store/slices/article'
+import { INotificationAction } from '@app/shared/layout/types'
 
 const { TextArea } = Input
 const { Title } = Typography
@@ -44,7 +45,7 @@ const Article: React.FC = () => {
 	const tagOptions = useSelector((state: RootState) => state.article.tags)
 	const article = useSelector((state: RootState) => state.article.data)
 	const userInfo = useSelector((state: RootState) => state.userInfo.data)
-	const openNotification = useOutletContext()
+	const openNotification = useOutletContext<INotificationAction['openNotification']>()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
 	const { slug } = useParams()
@@ -73,14 +74,22 @@ const Article: React.FC = () => {
 				dispatch(
 					updateArticleAction({
 						articleId: slug,
-						...form.getFieldsValue(),
+						title: values?.title,
+						content: (values?.content ?? ''),
+						tag: values?.tags,
 						username: userInfo?.username,
+						navigate,
 						openNotification,
-						navigate
 					})
 				)
 			} else{
-				dispatch(createArticleAction({ ...values, username: userInfo?.username, openNotification, navigate}))
+				dispatch(createArticleAction({ 
+					title: values?.title,
+					content: (values?.content ?? ''),
+					tag: values?.tags,
+					username: userInfo?.username,
+					openNotification,
+					navigate}))
 			}
 		})
 	}

@@ -37,15 +37,15 @@ interface IPagination {
 }
 
 interface IProps {
-	feedArticles: IFeedArticle[]
+	feedArticles: IFeedArticle[],
+	userinfo: IUserInfo,
 	pagination: IPagination
 }
 
-const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
+const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, userinfo}) => {
 	const [currentPage, setCurrentPage] = useState(pagination.currentPage)
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const userinfo = useSelector<RootState, IUserInfo>((state) => state.userInfo.data)
 
 	const handlePaginationFeeds = (page) => {
 		setCurrentPage(page)
@@ -65,7 +65,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination}) => {
 								<NavLink to={userinfo?.username ? '/userinfo/Valentin' : '/'}  >
 									{feedArticle.authorName}
 								</NavLink>
-								<Text type="secondary">{feedArticle.createdAt}</Text>
+								<Text type="secondary">Date: {feedArticle.createdAt}</Text>
 							</div>
 						</div>
 						<div className='feed-articles__grade'>

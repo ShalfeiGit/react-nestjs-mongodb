@@ -5,16 +5,30 @@ import { Button, Typography } from 'antd'
 
 import { RootState, useAppDispatch } from '@app/store/store'
 import '@app/pages/home/components/popularTags.scss'
-import { loadTagOptionsAction } from '@app/store/slices/article'
+import { loadAllArticlesAction, loadTagOptionsAction, loadUserArticlesAction } from '@app/store/slices/article'
 
 const { Text, Title } = Typography
 
-const PopularTags: React.FC = () => {
+interface IPopularTags {
+	page: number;
+	limit: number;
+}
+
+const PopularTags: React.FC<IPopularTags> = ({page, limit}) => {
 	const dispatch = useAppDispatch()
 	const tagOptions = useSelector((state: RootState) => state.article.tags)
+	const userId = useSelector((state: RootState) => state.userInfo?.data?.id)
+
 	useEffect(() => {
 		dispatch(loadTagOptionsAction())
+		dispatch(loadAllArticlesAction({page, limit}))
 	}, [])
+
+	useEffect(() => {
+		if(userId){
+			dispatch(loadUserArticlesAction({userId, page, limit}))
+		}
+	}, [userId])
 
 	const navigate = useNavigate()
 	const popularTags = (tagOptions ?? []).map(tagOption => ({

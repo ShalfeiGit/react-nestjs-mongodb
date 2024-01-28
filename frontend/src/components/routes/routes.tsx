@@ -5,6 +5,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import Layout from '@app/shared/layout/Layout'
 import Home from '@app/pages/home/Home'
 import Article from '@app/pages/article/Article'
+import PreviewArticle from '@app/pages/previewArticle/PreviewArticle'
 import ErrorPage from '@app/shared/error/ErrorPage'
 import SignIn from '@app/pages/signIn/SignIn'
 import SingUp from '@app/pages/signUp/SignUp'
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
 		// errorElement: <ErrorPage />,
 		children: [
 			{
-				index: true,
+				index: true, 
 				Component: Home
 			},
 			{
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'article/preview/:slug',
-				Component: Article
+				Component: PreviewArticle
 			},
 			{
 				path: 'article/create',

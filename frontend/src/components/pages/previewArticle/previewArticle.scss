@@ -1,0 +1,14 @@
+.preview-article{
+  &__meta{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  &__meta-block{
+    margin-right: 10px;
+  }
+  &__title{
+    display: flex;
+    justify-content: center;
+  }
+}
