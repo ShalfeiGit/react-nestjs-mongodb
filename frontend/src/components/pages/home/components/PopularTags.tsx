@@ -21,12 +21,12 @@ const PopularTags: React.FC<IPopularTags> = ({page, limit}) => {
 
 	useEffect(() => {
 		dispatch(loadTagOptionsAction())
-		dispatch(loadAllArticlesAction({page, limit}))
 	}, [])
 
 	useEffect(() => {
 		if(userId){
 			dispatch(loadUserArticlesAction({userId, page, limit}))
+			dispatch(loadAllArticlesAction({page, limit}))
 		}
 	}, [userId])
 

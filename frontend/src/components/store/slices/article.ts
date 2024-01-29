@@ -300,6 +300,8 @@ export const articleSlice = createSlice({
 			})
 			.addCase(loadArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle>>action?.payload ?? {}
+				const m = state.data = {...data,
+					content: `${data?.content}`.split(/\r\n|\n/g)}
 				state.data = {...data,
 					content: `${data?.content}`.split(/\r\n|\n/g)},
 				state.error = null
@@ -327,7 +329,6 @@ export const articleSlice = createSlice({
 			.addCase(loadAllArticlesAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IGroupArticle<IArticle>>>action?.payload ?? {}
 				state.groupArticles = [
-					...(state?.groupArticles ?? []),
 					{
 						tag: data.tag,
 						articles: 	{
@@ -363,7 +364,6 @@ export const articleSlice = createSlice({
 			.addCase(loadGroupArticlesAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IGroupArticle<IArticle>>>action?.payload ?? {}
 				state.groupArticles = [
-					...(state?.groupArticles ?? []),
 					{
 						tag: data.tag,
 						articles: 	{
@@ -399,7 +399,6 @@ export const articleSlice = createSlice({
 			.addCase(loadUserArticlesAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserArticle<IArticle>>>action?.payload ?? {}
 				state.userArticles = [
-					...(state?.userArticles ?? []),
 					{
 						userId: data.userId,
 						articles: 	{
@@ -459,7 +458,8 @@ export const articleSlice = createSlice({
 			})
 			.addCase(createArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
-				state.data = data
+				state.data =  {...data,
+					content: `${data?.content}`.split(/\r\n|\n/g)}
 				state.error = null
 				state.status = status
 				state.statusText = statusText
@@ -484,7 +484,8 @@ export const articleSlice = createSlice({
 			})
 			.addCase(updateArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
-				state.data = data
+				state.data = {...data,
+					content: `${data?.content}`.split(/\r\n|\n/g)}
 				state.error = null
 				state.status = status
 				state.statusText = statusText

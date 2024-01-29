@@ -60,7 +60,8 @@ export class UserController {
       pass: hashPassword,
     });
     await this.userService.saveUser(entity);
-    const { pass, ...currentUser } = entity;
+    const createdUser = await this.userService.getUser(dto.username);
+    const { pass, ...currentUser } = createdUser;
     return currentUser;
   }
 
@@ -80,7 +81,8 @@ export class UserController {
       pass: searchedUser.pass,
     });
     await this.userService.updateUser(username, entity);
-    const { pass, ...currentUser } = entity;
+    const updatedUser = await this.userService.getUser(username);
+    const { pass, ...currentUser } = updatedUser;
     return currentUser;
   }
 

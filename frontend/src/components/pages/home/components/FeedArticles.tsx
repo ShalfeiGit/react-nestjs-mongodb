@@ -51,7 +51,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, userinfo}) =>
 		setCurrentPage(page)
 	}
 	const handleReadArticle = (slug) => () => {
-		navigate(`/article/${slug}`)
+		navigate(`/article/preview/${slug}`)
 	}
 
 	return (
@@ -62,10 +62,10 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, userinfo}) =>
 						<div className='feed-articles__userinfo'>
 							<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
 							<div className='feed-articles__userinfo-content'>
-								<NavLink to={userinfo?.username ? '/userinfo/Valentin' : '/'}  >
+								<NavLink to={userinfo?.username ? `/userinfo/${feedArticle.authorName}` : '/'}  >
 									{feedArticle.authorName}
 								</NavLink>
-								<Text type="secondary">Date: {feedArticle.createdAt}</Text>
+								<Text type="secondary">Date: {feedArticle?.createdAt}</Text>
 							</div>
 						</div>
 						<div className='feed-articles__grade'>

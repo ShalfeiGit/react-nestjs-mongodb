@@ -75,7 +75,7 @@ const Article: React.FC = () => {
 					updateArticleAction({
 						articleId: slug,
 						title: values?.title,
-						content: (values?.content ?? ''),
+						content: Array.isArray(values?.content) ? values?.content.join('\n').trim() : (values?.content ?? ''),
 						tag: values?.tags,
 						username: userInfo?.username,
 						navigate,
@@ -112,7 +112,7 @@ const Article: React.FC = () => {
 	}
 
 	const handleContentValidator = (rule: { required: boolean }, value: string) => {
-		if (!value || !value.trim()) {
+		if (!value || Array.isArray(value) && value.length === 0 || typeof value === 'string'  && !value.trim()) {
 			return Promise.reject(new Error('Field must not be empty'))
 		}
 		return Promise.resolve()

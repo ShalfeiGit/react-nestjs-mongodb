@@ -26,7 +26,7 @@ export class ArticleService {
       .where('article.id = :id', { id })
       .leftJoinAndSelect('article.user', 'user')
       .select(['article'])
-      .addSelect(['user.username'])
+      .addSelect(['user.username', 'user.id'])
       .getOne();
   }
 
@@ -35,14 +35,23 @@ export class ArticleService {
     options: IPaginationOptions,
   ): Promise<Pagination<Article>> {
     const queryBuilder = this.articleRepository.createQueryBuilder('article');
-    queryBuilder.where('article.tag = :tag', { tag }).getMany();
+    queryBuilder
+      .where('article.tag = :tag', { tag })
+      .leftJoinAndSelect('article.user', 'user')
+      .select(['article'])
+      .addSelect(['user.username', 'user.id'])
+      .getMany();
     return paginate<Article>(queryBuilder, options);
   }
 
   async getAllArticles(
     options: IPaginationOptions,
   ): Promise<Pagination<Article>> {
-    const queryBuilder = this.articleRepository.createQueryBuilder('article');
+    const queryBuilder = this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
+      .select(['article'])
+      .addSelect(['user.username', 'user.id']);
     queryBuilder.getMany();
     return paginate<Article>(queryBuilder, options);
   }
@@ -51,7 +60,11 @@ export class ArticleService {
     userId: string,
     options: IPaginationOptions,
   ): Promise<Pagination<Article>> {
-    const queryBuilder = this.articleRepository.createQueryBuilder('article');
+    const queryBuilder = this.articleRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.user', 'user')
+      .select(['article'])
+      .addSelect(['user.username', 'user.id']);
     queryBuilder.where('article.userId = :userId', { userId }).getMany();
     return paginate<Article>(queryBuilder, options);
   }
