@@ -1,13 +1,13 @@
 import React, { useEffect }from 'react'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
 import { Form, Input, Button, Typography, InputNumber, Select, Flex, Tabs, TabsProps } from 'antd'
-import { useOutletContext, useNavigate } from 'react-router-dom'
+import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
 
 import { RootState, useAppDispatch } from '@app/store/store'
 import { updateUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
 import { getOtherAuthorInfoAction, IOtherAuthorInfo } from '@app/store/slices/otherAuthorInfo'
 import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
+import { loadUserArticlesAction } from '@app/store/slices/article'
 
 const { TextArea } = Input
 
@@ -56,6 +56,7 @@ const UserContent: React.FC = () => {
 		form.resetFields()
 		if(userInfo?.username !== username){
 			dispatch(getOtherAuthorInfoAction({username}))
+			dispatch(loadUserArticlesAction({username, page: 1, limit: 10}))
 		}
 	}, [username])
 

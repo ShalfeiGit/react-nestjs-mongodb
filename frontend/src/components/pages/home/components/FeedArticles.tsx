@@ -62,7 +62,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, userinfo}) =>
 						<div className='feed-articles__userinfo'>
 							<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
 							<div className='feed-articles__userinfo-content'>
-								<NavLink to={userinfo?.username ? `/userinfo/${feedArticle.authorName}` : '/'}  >
+								<NavLink to={`/userinfo/${feedArticle.authorName}`}  >
 									{feedArticle.authorName}
 								</NavLink>
 								<Text type="secondary">Date: {feedArticle?.createdAt}</Text>

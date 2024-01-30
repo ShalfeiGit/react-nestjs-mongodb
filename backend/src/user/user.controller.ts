@@ -32,7 +32,6 @@ export class UserController {
   }
 
   @Get('author/:username')
-  @UseGuards(AuthGuard)
   async getAuthor(
     @Param('username') username,
   ): Promise<

@@ -57,7 +57,7 @@ export class ArticleService {
   }
 
   async getArticlesByUsername(
-    userId: string,
+    username: string,
     options: IPaginationOptions,
   ): Promise<Pagination<Article>> {
     const queryBuilder = this.articleRepository
@@ -65,7 +65,7 @@ export class ArticleService {
       .leftJoinAndSelect('article.user', 'user')
       .select(['article'])
       .addSelect(['user.username', 'user.id']);
-    queryBuilder.where('article.userId = :userId', { userId }).getMany();
+    queryBuilder.where('user.username = :username', { username }).getMany();
     return paginate<Article>(queryBuilder, options);
   }
 

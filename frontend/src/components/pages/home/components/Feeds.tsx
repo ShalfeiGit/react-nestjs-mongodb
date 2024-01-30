@@ -60,7 +60,6 @@ const Feeds: React.FC = () => {
 			liked: false,
 		}))
 	}))
-	debugger
 	return (
 		<Tabs
 			accessKey={activeKey}

@@ -57,7 +57,7 @@ export interface IPaginatedResponse <T>{
 export interface IArticleRequestData {
 	articleId?: string;
 	tag?: string;
-	userId?: number;
+	username?: string;
 }
 
 export interface ILikeArticleResponse {
@@ -71,7 +71,7 @@ export interface IGroupArticle<T> {
 }
 
 export interface IUserArticle<T> {
-	userId: number,
+	username: string,
 	articles: IPaginatedResponse<IArticle>
 }
 
@@ -152,15 +152,15 @@ export const loadGroupArticlesAction = createAsyncThunk(
 export const loadUserArticlesAction = createAsyncThunk(
 	'article/loadUserArticles',
 	async (data: IArticleRequestData & IPaginationInfo, thunkAPI: IThunkApi<IAxiosResponse<IUserArticle<IArticle>> & IAxiosErrorResponse>) => {
-		const { userId, page, limit } = data
-		const response = await thunkAPI.extra.api({ method: 'get', url: `article/filter/${userId}?page=${page}&limit=${limit}` })
+		const { username, page, limit } = data
+		const response = await thunkAPI.extra.api({ method: 'get', url: `article/filter/${username}?page=${page}&limit=${limit}` })
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
 		}	else {
 			return {
 				...response,
 				data: {
-					userId,
+					username,
 					articles: response.data
 				}
 			}
@@ -241,7 +241,7 @@ export const deleteArticleAction = createAsyncThunk(
 	& Pick<IUserInfo, 'username'>
 	& INotificationAction 
 	& INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IArticle> & IAxiosErrorResponse>) => {
-		const {articleId, openNotification, navigate, username, userId} = data
+		const {articleId, openNotification, navigate, username} = data
 		const callNotification = ({type, message}: ICallNotificationAction ) => {
 			openNotification({
 				content: message,
@@ -249,7 +249,7 @@ export const deleteArticleAction = createAsyncThunk(
 			})
 		}
 		const response = await thunkAPI.extra.api({ method: 'delete', url: `article/${articleId}` })
-		const responseUserArticles = await thunkAPI.extra.api({ method: 'get', url: `article/filter/${userId}` })
+		const responseUserArticles = await thunkAPI.extra.api({ method: 'get', url: `article/filter/${username}` })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
 			message: response.status >= 400 ? response.data as unknown as string : 'Article was deleted'
@@ -400,7 +400,7 @@ export const articleSlice = createSlice({
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserArticle<IArticle>>>action?.payload ?? {}
 				state.userArticles = [
 					{
-						userId: data.userId,
+						username: data.username,
 						articles: 	{
 							items: (data?.articles?.items ?? []).map(article => ({
 								...article, 

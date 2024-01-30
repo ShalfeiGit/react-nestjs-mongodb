@@ -1,7 +1,7 @@
 ﻿import React, { useEffect, useState }from 'react'
 import { useSelector } from 'react-redux'
 import { Input, Typography, Tabs, TabsProps } from 'antd'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import queryString from 'query-string'
 
 import '@app/pages/userInfo/userInfo.scss'
@@ -40,6 +40,7 @@ const tailFormItemLayout = {
 
 const UserInfo: React.FC = () => {
 	const navigate = useNavigate()
+	const {username} = useParams()
 	const openNotification = useOutletContext()
 	const [tabQuery, setTabQuery]  = useState('')
 	const userInfo = useSelector((state: RootState) => state.userInfo.data)
@@ -60,14 +61,14 @@ const UserInfo: React.FC = () => {
 		const { tab } = queryString.parse(window.location.search)
 		const currentTab = tab ? `${tab}` : 'user-content'
 		setTabQuery(currentTab)
-		if(userInfo?.username){
-			navigate(`/userinfo/${userInfo?.username}?${queryString.stringify({ tab: currentTab})}`)
+		if(username){
+			navigate(`/userinfo/${username}?${queryString.stringify({ tab: currentTab})}`)
 		}
 	}, [userInfo?.username]) 
 
 	const onChange = (key: string) => {
 		setTabQuery(key)
-		navigate(`/userinfo/${userInfo.username}?${queryString.stringify({ tab: key})}`)
+		navigate(`/userinfo/${username}?${queryString.stringify({ tab: key})}`)
 	}
 
 	return ( 

@@ -31,7 +31,6 @@ export class UserController {
   ) {}
 
   @Get('/:id')
-  @UseGuards(AuthGuard)
   async getArticleById(@Param('id') id): Promise<Article> {
     const searchedArticle = await this.articleService.getArticleById(id);
     if (!searchedArticle) {
@@ -47,7 +46,6 @@ export class UserController {
   }
 
   @Get('group/:tag')
-  @UseGuards(AuthGuard)
   async getArticlesByTag(
     @Param('tag') tag,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -61,7 +59,6 @@ export class UserController {
   }
 
   @Get('global/:id')
-  @UseGuards(AuthGuard)
   async getAllArticles(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
@@ -73,15 +70,14 @@ export class UserController {
     return searchedArticles;
   }
 
-  @Get('filter/:userId')
-  @UseGuards(AuthGuard)
+  @Get('filter/:username')
   async getArticlesByUsername(
-    @Param('userId') userId,
+    @Param('username') username,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Pagination<Article>> {
     const searchedArticles = await this.articleService.getArticlesByUsername(
-      userId,
+      username,
       {
         page,
         limit,
