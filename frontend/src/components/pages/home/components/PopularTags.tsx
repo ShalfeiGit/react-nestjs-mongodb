@@ -5,7 +5,7 @@ import { Button, Typography } from 'antd'
 
 import { RootState, useAppDispatch } from '@app/store/store'
 import '@app/pages/home/components/popularTags.scss'
-import { loadAllArticlesAction, loadTagOptionsAction } from '@app/store/slices/article'
+import { loadAllArticlesAction, loadGroupArticlesAction, loadTagOptionsAction, removeGroupArticlesAction } from '@app/store/slices/article'
 
 const { Text, Title } = Typography
 
@@ -17,6 +17,7 @@ interface IPopularTags {
 const PopularTags: React.FC<IPopularTags> = ({page, limit}) => {
 	const dispatch = useAppDispatch()
 	const tagOptions = useSelector((state: RootState) => state.article.tags)
+	const groupArticles = useSelector((state: RootState) => state.article.groupArticles)
 	const userId = useSelector((state: RootState) => state.userInfo?.data?.id)
 
 	useEffect(() => {
@@ -26,22 +27,31 @@ const PopularTags: React.FC<IPopularTags> = ({page, limit}) => {
 
 	const navigate = useNavigate()
 	const popularTags = (tagOptions ?? []).map(tagOption => ({
-		tagId: tagOption.value, 
+		tag: tagOption.value, 
 		title: tagOption.label,
 	}))
 	
-	const handleClickTag = (tagId) => () => {
+	const handleSelectTag = (tag) => () => {
+		groupArticles.some(groupArticle => groupArticle.tag === tag) 
+			? dispatch(removeGroupArticlesAction({tag})) 
+			: dispatch(loadGroupArticlesAction({tag, page, limit}))
 	}
+
 	return (
 		<div className="popular-tags">
 			<div className="popular-tags__header">
 				<Title level={4}>Popular Tags</Title>
 			</div>
 			<div className="popular-tags__content">
-				{popularTags.map(({tagId, title}, i) => 
-					(<div className="popular-tags__tag" key={i} onClick={handleClickTag(tagId)}>
+				{popularTags.map(({tag, title}, i) => 
+					(<Button 
+						danger={groupArticles.some(groupArticle => groupArticle.tag === tag)} 
+						className="popular-tags__tag" 
+						key={i} 
+						onClick={handleSelectTag(tag)}
+					>
 						{title}
-					</div>)
+					</Button>)
 				)}
 			</div>
 		</div>

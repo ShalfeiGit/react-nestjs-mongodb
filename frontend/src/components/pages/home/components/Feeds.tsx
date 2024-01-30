@@ -59,7 +59,7 @@ const Feeds: React.FC = () => {
 			likes: article?.likes,
 			liked: false,
 		}))
-	}))
+	})).sort(first => first?.id === 'global' ? -1 : 1)
 	return (
 		<Tabs
 			accessKey={activeKey}
@@ -69,7 +69,7 @@ const Feeds: React.FC = () => {
 				return {
 					label: tabName,
 					key: id,
-					children: <FeedArticles feedArticles={feedArticles} pagination={pagination} userinfo={userinfo}/>,
+					children: <FeedArticles feedArticles={feedArticles} pagination={pagination} tag={id}/>,
 				}
 			})}
 			onChange={(key) => {

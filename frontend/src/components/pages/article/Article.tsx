@@ -76,7 +76,7 @@ const Article: React.FC = () => {
 						articleId: slug,
 						title: values?.title,
 						content: Array.isArray(values?.content) ? values?.content.join('\n').trim() : (values?.content ?? ''),
-						tag: values?.tags,
+						tag: values?.tag,
 						username: userInfo?.username,
 						navigate,
 						openNotification,
@@ -86,7 +86,7 @@ const Article: React.FC = () => {
 				dispatch(createArticleAction({ 
 					title: values?.title,
 					content: (values?.content ?? ''),
-					tag: values?.tags,
+					tag: values?.tag,
 					username: userInfo?.username,
 					openNotification,
 					navigate}))

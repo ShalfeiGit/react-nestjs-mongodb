@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { IUserInfo } from '@app/store/slices/userInfo'
 import '@app/pages/home/components/feedArticles.scss'
+import { loadAllArticlesAction, loadGroupArticlesAction } from '@app/store/slices/article'
 
 const {Title, Text, Link} = Typography
 
@@ -38,17 +39,18 @@ interface IPagination {
 
 interface IProps {
 	feedArticles: IFeedArticle[],
-	userinfo: IUserInfo,
+	tag: string,
 	pagination: IPagination
 }
 
-const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, userinfo}) => {
-	const [currentPage, setCurrentPage] = useState(pagination.currentPage)
+const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 
 	const handlePaginationFeeds = (page) => {
-		setCurrentPage(page)
+		dispatch(tag === 'global'
+			? loadAllArticlesAction({page, limit: pagination.itemsPerPage}) 
+			: loadGroupArticlesAction({tag, page, limit: pagination.itemsPerPage}))
 	}
 	const handleReadArticle = (slug) => () => {
 		navigate(`/article/preview/${slug}`)
@@ -86,7 +88,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, userinfo}) =>
 				</div>
 			))}
 			<div className='feed-articles__pagination'>
-				<Pagination simple current={currentPage} pageSize={pagination.itemsPerPage} total={pagination.totalItems} onChange={handlePaginationFeeds}/>
+				<Pagination current={pagination.currentPage} onChange={handlePaginationFeeds} total={pagination.totalItems} />
 			</div>
 		</div>
 	)}

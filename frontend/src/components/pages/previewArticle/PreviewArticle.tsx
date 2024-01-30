@@ -46,7 +46,6 @@ const PreviewArticle: React.FC = () => {
 	const { slug } = useParams()
 
 	useEffect(() => {
-		dispatch(loadTagOptionsAction())
 		if (slug) {
 			dispatch(loadArticleAction({ articleId: slug }))
 		}

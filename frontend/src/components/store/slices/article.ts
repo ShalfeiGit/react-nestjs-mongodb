@@ -149,6 +149,14 @@ export const loadGroupArticlesAction = createAsyncThunk(
 	}
 )
 
+export const removeGroupArticlesAction = createAsyncThunk(
+	'article/removeGroupArticles',
+	async (data: IArticleRequestData) => {
+		const { tag } = data
+		return { tag }
+	}
+)
+
 export const loadUserArticlesAction = createAsyncThunk(
 	'article/loadUserArticles',
 	async (data: IArticleRequestData & IPaginationInfo, thunkAPI: IThunkApi<IAxiosResponse<IUserArticle<IArticle>> & IAxiosErrorResponse>) => {
@@ -329,6 +337,7 @@ export const articleSlice = createSlice({
 			.addCase(loadAllArticlesAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IGroupArticle<IArticle>>>action?.payload ?? {}
 				state.groupArticles = [
+					...(state.groupArticles ?? []).filter(groupArticle => groupArticle.tag !== data.tag),
 					{
 						tag: data.tag,
 						articles: 	{
@@ -364,6 +373,7 @@ export const articleSlice = createSlice({
 			.addCase(loadGroupArticlesAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IGroupArticle<IArticle>>>action?.payload ?? {}
 				state.groupArticles = [
+					...(state.groupArticles ?? []).filter(groupArticle => groupArticle.tag !== data.tag),
 					{
 						tag: data.tag,
 						articles: 	{
@@ -392,6 +402,14 @@ export const articleSlice = createSlice({
 				state.loading = false
 			})
 
+			//удаление статей по тэгу
+			.addCase(removeGroupArticlesAction.fulfilled, (state, action) => {
+				const { tag }  = <IArticleRequestData>action?.payload ?? {}
+				state.groupArticles = [
+					...(state.groupArticles ?? []).filter(groupArticle => groupArticle.tag !== tag),
+				]
+			})
+
 			//загрузка статей пользователя 
 			.addCase(loadUserArticlesAction.pending, state => {
 				state.loading = true
@@ -399,6 +417,7 @@ export const articleSlice = createSlice({
 			.addCase(loadUserArticlesAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserArticle<IArticle>>>action?.payload ?? {}
 				state.userArticles = [
+					...(state.userArticles ?? []).filter(userArticle => userArticle.username !== data.username),
 					{
 						username: data.username,
 						articles: 	{
