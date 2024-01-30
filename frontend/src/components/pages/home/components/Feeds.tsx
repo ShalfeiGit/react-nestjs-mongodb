@@ -36,11 +36,8 @@ export interface IFeedTab {
 const Feeds: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const feeds = useSelector((state: RootState) => state.feeds.data) // добавить
-	const userinfo = useSelector<RootState, IUserInfo>((state) => state.userInfo.data)
 	const groupArticles = useSelector<RootState, IGroupArticle<IArticle>[]>((state) => state.article.groupArticles)
 	const [activeKey, setActiveKey] = useState('global')
-	const userArticles = useSelector<RootState, IUserArticle<IArticle>[]>((state) => state.article.userArticles)
 	const currentTabs: IFeedTab[] = (groupArticles ?? []).map((groupArticle) => ({
 		tabName:`${groupArticle.tag.charAt(0).toUpperCase()}${groupArticle.tag.substring(1)} Feed`,
 		id: `${groupArticle.tag}`,

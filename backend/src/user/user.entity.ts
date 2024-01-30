@@ -62,9 +62,9 @@ export class User {
   @Column({ default: null })
   refresh_token: string;
 
-  @OneToMany(() => Article, (article) => article.user)
+  @OneToMany(() => Article, (article) => article.user, { cascade: true })
   articles: Article[];
 
-  @ManyToOne(() => Article, (article) => article.id)
+  @ManyToOne(() => Article, (article) => article.id, { onDelete: 'CASCADE' })
   likedArticle: Article[];
 }

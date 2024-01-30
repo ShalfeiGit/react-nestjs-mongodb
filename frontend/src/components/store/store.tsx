@@ -4,8 +4,6 @@ import { useDispatch } from 'react-redux'
 import userInfoReducer from '@app/store/slices/userInfo'
 import articleReducer from '@app/store/slices/article'
 import otherAuthorInfoReducer from '@app/store/slices/otherAuthorInfo'
-import feedsReducer from '@app/store/slices/feeds'
-import popularTagsReducer from '@app/store/slices/popularTags'
 import makeRequest from '@app/api/api'
 import { GetThunkAPI } from '@reduxjs/toolkit/dist/createAsyncThunk'
 import { AxiosRequestConfig, AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios'
@@ -16,8 +14,6 @@ export const store = configureStore({
 		userInfo: userInfoReducer,
 		article: articleReducer,
 		otherAuthorInfo: otherAuthorInfoReducer,
-		feeds: feedsReducer,
-		popularTags: popularTagsReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
@@ -47,7 +43,7 @@ export interface IAxiosResponse<T> {
 
 export interface IAxiosErrorResponse {
 	statusText: string
-	data: string
+	data: {message: string}
 	statusCode: number;
 }
 

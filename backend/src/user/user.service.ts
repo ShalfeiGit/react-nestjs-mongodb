@@ -41,12 +41,11 @@ export class UserService {
   }
 
   async deleteUser(username: string): Promise<DeleteResult> {
-    const deleteResult = await this.userRepository
+    return await this.userRepository
       .createQueryBuilder()
       .delete()
       .from(User)
       .where('username = :username', { username })
       .execute();
-    return deleteResult;
   }
 }

@@ -88,7 +88,13 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 				</div>
 			))}
 			<div className='feed-articles__pagination'>
-				<Pagination current={pagination.currentPage} onChange={handlePaginationFeeds} total={pagination.totalItems} />
+				{feedArticles.length > 0 ? (
+					<Pagination current={pagination.currentPage} onChange={handlePaginationFeeds} total={pagination.totalItems} />
+				) : (
+					<div className='feed-articles__item'>
+						<Title level={4}>Не найдены статьи по данной тематике</Title>
+					</div>
+				)}
 			</div>
 		</div>
 	)}

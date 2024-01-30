@@ -78,8 +78,8 @@ export const signInAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'auth', data: userInfo })
 		if(response.status >= 400){
 			callNotification({
-				type: response.status >= 400 ? 'error' : 'success',
-				message: response.data
+				type: 'error',
+				message: response.data.message
 			})
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
@@ -105,10 +105,12 @@ export const signUpAction = createAsyncThunk(
 			})
 		}
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo })
+		debugger
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: response.status >= 400 ? response.data as unknown as string : `${response.data.username} was created`
+			message: response.status >= 400 ? response.data.message : 'Article was deleted'
 		})
+		debugger
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
@@ -123,6 +125,7 @@ export const resetUserInfoAction = createAsyncThunk(
 	async (data: INavigateAction) => {
 		const { navigate } = data
 		navigate('/')
+		localStorage.clear()
 	}
 )
 
@@ -135,7 +138,9 @@ export const deleteUserInfoAction = createAsyncThunk(
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {
 			navigate('/')
+			localStorage.clear()
 		}
+		return response
 	}
 )
 

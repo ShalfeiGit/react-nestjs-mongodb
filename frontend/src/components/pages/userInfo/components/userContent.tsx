@@ -1,6 +1,6 @@
 import React, { useEffect }from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Typography, InputNumber, Select, Flex, Tabs, TabsProps } from 'antd'
+import { Form, Input, Button, Typography, InputNumber, Select, Flex, Tabs, TabsProps, Popconfirm } from 'antd'
 import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
 
 import { RootState, useAppDispatch } from '@app/store/store'
@@ -84,12 +84,10 @@ const UserContent: React.FC = () => {
 	]
 
 	const handleLogOutUser = () => {
-		localStorage.clear()
 		dispatch(resetUserInfoAction({navigate}))
 	}
 
 	const handleDeleteUser = () => {
-		localStorage.clear()
 		dispatch(deleteUserInfoAction({navigate, username}))
 	}
 
@@ -150,14 +148,22 @@ const UserContent: React.FC = () => {
 						{username && userInfo?.username === username	
 							? (<>
 								<Button type="primary" htmlType="submit">
-									Submit
+										Submit
 								</Button>
 								<Button type="primary" ghost onClick={handleLogOutUser}>
 									Log Out
 								</Button>
-								<Button type="primary" danger onClick={handleDeleteUser}>
+								<Popconfirm
+									 title="Удалить статью"
+									 description="Вы уверены что хотите удалить пользователя и все его статьи?"
+									 onConfirm={handleDeleteUser}
+									 okText="Да"
+									 cancelText="Нет"
+								>
+									<Button type="primary" danger >
 									Delete
-								</Button>
+									</Button>
+								</Popconfirm>
 							</>) : null}
 					</Flex>
 				</Form.Item>

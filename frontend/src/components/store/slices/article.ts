@@ -204,7 +204,7 @@ export const createArticleAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'post', url: `article/${username}`, data: {tag, title, content} })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: response.status >= 400 ? response.data as unknown as string : 'Article was created'
+			message: response.status >= 400 ? response.data.message : 'Article was created'
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
@@ -232,7 +232,7 @@ export const updateArticleAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'put', url: `article/${articleId}`, data: {tag, title, content} })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: response.status >= 400 ? response.data as unknown as string : 'Article was updated'
+			message: response.status >= 400 ? response.data.message : 'Article was updated'
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
@@ -257,19 +257,21 @@ export const deleteArticleAction = createAsyncThunk(
 			})
 		}
 		const response = await thunkAPI.extra.api({ method: 'delete', url: `article/${articleId}` })
-		const responseUserArticles = await thunkAPI.extra.api({ method: 'get', url: `article/filter/${username}` })
+		const responseUserArticles = await thunkAPI.extra.api({ method: 'get', url: `article/filter/${username}?page=1&limit=10` })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: response.status >= 400 ? response.data as unknown as string : 'Article was deleted'
+			message: response.status >= 400 ? response.data.message : 'Article was deleted'
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<null>
 		}	else {
 			navigate(`/userinfo/${username}?tab=articles-content`)
-
 			return {
 				...responseUserArticles,
-				userArticles: responseUserArticles.data,
+				data: {
+					username,
+					articles: responseUserArticles.data
+				}
 			}
 			return response
 		}
@@ -527,9 +529,20 @@ export const articleSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(deleteArticleAction.fulfilled, (state, action) => {
-				const {userArticles, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserArticle<IArticle>>>action?.payload ?? {}
 				state.data = null
-				state.userArticles = userArticles
+				state.userArticles = [
+					...(state.userArticles ?? []).filter(userArticle => userArticle.username !== data.username),
+					{
+						username: data.username,
+						articles: 	{
+							items: (data?.articles?.items ?? []).map(article => ({
+								...article, 
+								content: `${article?.content}`.split(/\r\n|\n/g)
+							})),
+							meta: data?.articles?.meta,
+						}
+					}],
 				state.error = null
 				state.status = status
 				state.statusText = statusText
