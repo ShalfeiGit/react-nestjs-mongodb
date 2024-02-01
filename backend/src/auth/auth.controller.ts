@@ -34,6 +34,7 @@ export class AuthController {
     if (refresh_token) {
       accessTokenData = await this.authService.updateTokens(refresh_token);
       const user = await this.userService.getUser(accessTokenData.username);
+
       if (!user) {
         throw new BadRequestException('Username or password incorrect');
       }
@@ -47,7 +48,7 @@ export class AuthController {
         signed: true,
       });
       const { pass: userPassword, ...enrichedUser } = user;
-      await this.userService.updateUser(user.username, {
+      await this.userService.updateUser({
         ...user,
         refresh_token: `${accessTokenData.refresh_token}`,
       });
@@ -71,7 +72,7 @@ export class AuthController {
         signed: true,
       });
       const { pass: userPassword, ...enrichedUser } = user;
-      await this.userService.updateUser(user.username, {
+      await this.userService.updateUser({
         ...user,
         refresh_token: `${accessTokenData.refresh_token}`,
       });

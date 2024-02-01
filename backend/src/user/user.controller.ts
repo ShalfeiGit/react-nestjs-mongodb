@@ -79,7 +79,7 @@ export class UserController {
       username,
       pass: searchedUser.pass,
     });
-    await this.userService.updateUser(username, entity);
+    await this.userService.updateUser(entity);
     const updatedUser = await this.userService.getUser(username);
     const { pass, ...currentUser } = updatedUser;
     return currentUser;

@@ -133,7 +133,7 @@ export class UserController {
     return searchedArticle;
   }
 
-  @Put('like/:id/username/:username')
+  @Post('like/:id/username/:username')
   @UseGuards(AuthGuard)
   async likeArticle(
     @Param('username') username,
@@ -147,15 +147,20 @@ export class UserController {
     const article = await this.articleService.getArticleById(id);
     const entity = Object.assign(new User(), {
       ...searchedUser,
-      liked: searchedUser.likedArticle.some(
-        (article) => `${article.id}` === `${id}`,
-      )
-        ? searchedUser.likedArticle.filter(
-            (article) => `${article.id}` !== `${id}`,
-          )
-        : [...searchedUser.likedArticle, article],
+      likedArticle:
+        `${article.likes}` > `${dto}`
+          ? [
+              ...(searchedUser.likedArticle ?? []).filter(
+                (article) => `${article.id}` !== `${id}`,
+              ),
+            ]
+          : (searchedUser.likedArticle ?? []).some(
+                (article) => `${article.id}` === `${id}`,
+              )
+            ? [...(searchedUser.likedArticle ?? [])]
+            : [...(searchedUser.likedArticle ?? []), article],
     });
-    await this.userService.updateUser(username, entity);
+    await this.userService.updateUser(entity);
     await this.articleService.updateArticle(id, dto);
     const { pass, updatedAt, createdAt, refresh_token, ...currentUser } =
       entity;

@@ -45,7 +45,7 @@ const PopularTags: React.FC<IPopularTags> = ({page, limit}) => {
 			<div className="popular-tags__content">
 				{popularTags.map(({tag, title}, i) => 
 					(<Button 
-						danger={groupArticles.some(groupArticle => groupArticle.tag === tag)} 
+						danger={(groupArticles ?? []).some(groupArticle => groupArticle.tag === tag)} 
 						className="popular-tags__tag" 
 						key={i} 
 						onClick={handleSelectTag(tag)}

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { RootState, useAppDispatch } from '@app/store/store'
 import { IUserInfo } from '@app/store/slices/userInfo'
 import '@app/pages/home/components/feedArticles.scss'
-import { loadAllArticlesAction, loadGroupArticlesAction } from '@app/store/slices/article'
+import { likeArticleAction, loadAllArticlesAction, loadGroupArticlesAction } from '@app/store/slices/article'
 
 const {Title, Text, Link} = Typography
 
@@ -46,6 +46,7 @@ interface IProps {
 const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
+	const userInfo = useSelector((state: RootState) => state.userInfo.data)
 
 	const handlePaginationFeeds = (page) => {
 		dispatch(tag === 'global'
@@ -54,6 +55,18 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 	}
 	const handleReadArticle = (slug) => () => {
 		navigate(`/article/preview/${slug}`)
+	}
+	const handleLikeArticle = (feedArticle) => () => {
+		if(!userInfo) return
+		dispatch(likeArticleAction({
+			username:userInfo?.username,
+			articleId: feedArticle?.articleId,
+			likes: (userInfo.likedArticle ?? []).some(article => article.id === feedArticle?.articleId) 
+				? feedArticle?.likes - 1
+				: feedArticle?.likes + 1,
+			tag,
+			page: pagination.currentPage,
+			limit: pagination.itemsPerPage}))
 	}
 
 	return (
@@ -70,11 +83,11 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 								<Text type="secondary">Date: {feedArticle?.createdAt}</Text>
 							</div>
 						</div>
-						<div className='feed-articles__grade'>
-							<span className={`feed-articles__stars${feedArticle.liked ? '_liked' : '' }`} onClick={() => {}}>
+						<Button disabled={!userInfo} onClick={handleLikeArticle(feedArticle)}>
+							<span className={`feed-articles__stars${feedArticle.liked ? '_liked' : '' }`}>
 								<IconText icon={StarOutlined} text={`${feedArticle.likes}`} key="list-vertical-star-o" />
 							</span>
-						</div>
+						</Button>
 					</div>
 					<Title level={4}>{feedArticle.title}</Title>
 					<div className='feed-articles__article'>

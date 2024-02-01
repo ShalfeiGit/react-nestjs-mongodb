@@ -26,7 +26,6 @@ export enum TagArticle {
 @Entity()
 export class Article {
   @PrimaryGeneratedColumn()
-  @OneToMany(() => User, (user) => user.likedArticle, { cascade: true })
   id: number;
 
   @Column({
@@ -53,6 +52,9 @@ export class Article {
   @Column({ type: 'int', default: 0 })
   likes: number;
 
-  @ManyToOne(() => User, (user) => user.articles, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.articles, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   user: User;
 }

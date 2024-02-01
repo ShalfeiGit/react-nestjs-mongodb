@@ -13,6 +13,7 @@ export interface IUserInfo {
 	createdAt: number;
 	updatedAt: number;
 	refresh_token?: string;
+	likedArticle: IArticle[];
 }
 
 export interface ISignIn {
@@ -105,12 +106,10 @@ export const signUpAction = createAsyncThunk(
 			})
 		}
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo })
-		debugger
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
 			message: response.status >= 400 ? response.data.message : 'Article was deleted'
 		})
-		debugger
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	else {

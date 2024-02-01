@@ -281,19 +281,22 @@ export const deleteArticleAction = createAsyncThunk(
 export const likeArticleAction = createAsyncThunk(
 	'article/likeArticle',
 	async (data: Pick<IUserInfo, 'username'> & IArticleRequestData
-		& Pick<IArticle, 'content' | 'title' | 'tag'>
+		& Pick<IArticle, 'likes' | 'tag'>
+		& IPaginationInfo
 		& INotificationAction 
 		& INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo> & ILikeArticleResponse & IAxiosErrorResponse>) => {
-		const {username, articleId, content, title, tag} = data
-		const responseUserInfo = await thunkAPI.extra.api({ method: 'post', url: `article/like/${articleId}/username/${username}`, data: {tag, title, content} })
-		const responseGroupArticles = await thunkAPI.extra.api({ method: 'get', url: `article/group/${tag}` })
+		const {username, articleId, likes, tag, page, limit} = data
+		const responseUserInfo = await thunkAPI.extra.api({ method: 'post', url: `article/like/${articleId}/username/${username}`, data: { likes } })
+		const responseGroupArticles = await thunkAPI.extra.api({ method: 'get', url: `article/${tag === 'global' ? 'global/all' : `group/${tag}`}?page=${page}&limit=${limit}` })
 		if(responseUserInfo.status >= 400){
 			return thunkAPI.rejectWithValue(responseUserInfo) as unknown as IAxiosResponse<null>
 		}	else {
 			return {
-				...responseUserInfo,
+				...responseGroupArticles,
 				user: responseUserInfo.data,
-				groupArticles: responseGroupArticles.data,
+				data: { tag,
+					articles: responseGroupArticles.data
+				} ,
 			}
 		}
 	}
@@ -310,8 +313,6 @@ export const articleSlice = createSlice({
 			})
 			.addCase(loadArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle>>action?.payload ?? {}
-				const m = state.data = {...data,
-					content: `${data?.content}`.split(/\r\n|\n/g)}
 				state.data = {...data,
 					content: `${data?.content}`.split(/\r\n|\n/g)},
 				state.error = null
@@ -565,9 +566,20 @@ export const articleSlice = createSlice({
 				state.loading = true
 			})
 			.addCase(likeArticleAction.fulfilled, (state, action) => {
-				const {groupArticles, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo & ILikeArticleResponse>action?.payload ?? {}
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IGroupArticle<IArticle>>>action?.payload ?? {}
 				state.error = null
-				state.groupArticles =groupArticles
+				state.groupArticles = [
+					...(state.groupArticles ?? []).filter(groupArticle => groupArticle.tag !== data.tag),
+					{
+						tag: data.tag,
+						articles: 	{
+							items: (data?.articles?.items ?? []).map(article => ({
+								...article, 
+								content: `${article?.content}`.split(/\r\n|\n/g)
+							})),
+							meta: data?.articles?.meta,
+						}
+					}],
 				state.status = status
 				state.statusText = statusText
 				state.headers = headers
@@ -575,8 +587,8 @@ export const articleSlice = createSlice({
 				state.loading = false
 			})
 			.addCase(likeArticleAction.rejected,  (state, action) => {
-				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
-				state.tags = null
+				const {data, status, statusText, headers, config}  = <IAxiosResponse<IGroupArticle<IArticle>>>action?.payload ?? {}
+				state.groupArticles = []
 				state.error = data as unknown as string
 				state.status = status
 				state.statusText = statusText

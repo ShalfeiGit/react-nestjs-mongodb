@@ -4,6 +4,8 @@
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Article } from '../article/article.entity';
 
@@ -65,6 +67,9 @@ export class User {
   @OneToMany(() => Article, (article) => article.user, { cascade: true })
   articles: Article[];
 
-  @ManyToOne(() => Article, (article) => article.id, { onDelete: 'CASCADE' })
+  @ManyToMany(() => Article, (article) => article.id, {
+    cascade: true,
+  })
+  @JoinTable()
   likedArticle: Article[];
 }

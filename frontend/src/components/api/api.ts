@@ -15,7 +15,6 @@ const  makeRequest = async ({ method, url, data = null, responseType = 'json' }:
 		}
 	}).catch(async err => {
 		if(err.response.status === 401){
-			debugger
 			const refreshToken = localStorage.getItem('refresh_token')
 			//запрос обновления cookie
 			const responseAuth = await axios.request({

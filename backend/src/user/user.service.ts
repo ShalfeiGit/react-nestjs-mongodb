@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { createUserDto } from './dtos/createUserDto';
 import { updateUserDto } from './dtos/updateUserDto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Article } from 'src/article/article.entity';
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,7 @@ export class UserService {
   async getUser(username: string): Promise<User> {
     return await this.userRepository
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.likedArticle', 'article')
       .where('user.username = :username', { username })
       .getOne();
   }
@@ -28,15 +30,14 @@ export class UserService {
       .execute();
   }
 
-  async updateUser(
-    username: string,
-    dto: updateUserDto,
-  ): Promise<UpdateResult> {
-    return this.userRepository
+  async updateUser(entity: User): Promise<UpdateResult> {
+    const { likedArticle, ...user } = entity;
+    return await this.userRepository
       .createQueryBuilder()
-      .update(User)
-      .set({ ...dto, updatedAt: Date.now() })
-      .where('username = :username', { username })
+      .insert()
+      .into(User)
+      .values([{ ...entity, updatedAt: Date.now() }])
+      .orUpdate([...Object.keys(user)], ['likedArticle'])
       .execute();
   }
 
