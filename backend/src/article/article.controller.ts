@@ -138,7 +138,7 @@ export class UserController {
   async likeArticle(
     @Param('username') username,
     @Param('id') id,
-    @Body() dto: Omit<updateArticleDto, 'likes'>,
+    @Body() dto: Pick<updateArticleDto, 'likes'>,
   ): Promise<Omit<User, 'pass' | 'updatedAt' | 'createdAt' | 'refresh_token'>> {
     const searchedUser = await this.userService.getUser(username);
     if (!searchedUser) {
@@ -148,7 +148,7 @@ export class UserController {
     const entity = Object.assign(new User(), {
       ...searchedUser,
       likedArticle:
-        `${article.likes}` > `${dto}`
+        `${article.likes}` > `${dto.likes}`
           ? [
               ...(searchedUser.likedArticle ?? []).filter(
                 (article) => `${article.id}` !== `${id}`,
@@ -160,7 +160,7 @@ export class UserController {
             ? [...(searchedUser.likedArticle ?? [])]
             : [...(searchedUser.likedArticle ?? []), article],
     });
-    await this.userService.updateUser(entity);
+    await this.userService.likeUser(entity);
     await this.articleService.updateArticle(id, dto);
     const { pass, updatedAt, createdAt, refresh_token, ...currentUser } =
       entity;

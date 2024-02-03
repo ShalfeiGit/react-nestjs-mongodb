@@ -34,11 +34,17 @@ export class UserService {
     const { likedArticle, ...user } = entity;
     return await this.userRepository
       .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values([{ ...entity, updatedAt: Date.now() }])
-      .orUpdate([...Object.keys(user)], ['likedArticle'])
+      .update(User)
+      .set({
+        ...user,
+        updatedAt: Date.now(),
+      })
+      .where('username = :username', { username: entity?.username })
       .execute();
+  }
+
+  async likeUser(entity: User): Promise<User> {
+    return await this.userRepository.save({ ...entity });
   }
 
   async deleteUser(username: string): Promise<DeleteResult> {

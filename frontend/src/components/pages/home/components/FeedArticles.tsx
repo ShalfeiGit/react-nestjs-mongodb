@@ -58,10 +58,13 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 	}
 	const handleLikeArticle = (feedArticle) => () => {
 		if(!userInfo) return
+		const likes = (userInfo.likedArticle ?? []).some(article => `${article.id}` === `${feedArticle?.articleId}`) 
+			? feedArticle?.likes - 1
+			: feedArticle?.likes + 1
 		dispatch(likeArticleAction({
-			username:userInfo?.username,
+			username: userInfo?.username,
 			articleId: feedArticle?.articleId,
-			likes: (userInfo.likedArticle ?? []).some(article => article.id === feedArticle?.articleId) 
+			likes: (userInfo.likedArticle ?? []).some(article => `${article.id}` === `${feedArticle?.articleId}`) 
 				? feedArticle?.likes - 1
 				: feedArticle?.likes + 1,
 			tag,

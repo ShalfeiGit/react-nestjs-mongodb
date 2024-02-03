@@ -41,8 +41,9 @@ const ArticleContent: React.FC<IProps> = (props) => {
 
 	const pagination = (useSelector((state: RootState) => state.article.userArticles.find(userArticle => userArticle?.username === username)?.articles?.meta))
 	const dispatch = useAppDispatch()
+
 	useEffect(() => {
-		if(userInfo?.username){
+		if(userInfo?.username === username){
 			dispatch(loadUserArticlesAction({username: userInfo?.username, page: 1, limit: 10}))
 		}
 	}, [userInfo])
@@ -65,7 +66,7 @@ const ArticleContent: React.FC<IProps> = (props) => {
 	}
 
 	const handleChangeArticlePagination = (page) =>{
-		dispatch(loadUserArticlesAction({username: userInfo?.username, page, limit: 10}))
+		dispatch(loadUserArticlesAction({username, page, limit: 10}))
 	}
 	const columns: TableProps<DataType>['columns'] = [
 		{
