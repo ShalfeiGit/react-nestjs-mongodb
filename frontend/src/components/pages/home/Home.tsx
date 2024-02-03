@@ -4,6 +4,7 @@ import { Col, Row, Typography } from 'antd'
 import '@app/pages/home/home.scss'
 import Feeds from './components/Feeds'
 import PopularTags from './components/PopularTags'
+import Footer from '@app/shared/footer/Footer'
 
 const { Text } = Typography
 
@@ -23,6 +24,9 @@ const Home: React.FC = () => {
 				<Col span={16}><Feeds/></Col>
 				<Col span={1}></Col>
 				<Col span={6}><PopularTags page={1} limit={10}/></Col>
+			</Row>
+			<Row justify="end">
+				<Col span={24}><Footer /></Col>
 			</Row>
 		</div>
 	)

@@ -63,5 +63,8 @@
 	"lint-staged": {
 		"*.js": "npm run lint",
 		"*.{js,css,md,html,json}": "npm run format"
+	},
+	"dependencies": {
+		"react-svg-loader": "^3.0.3"
 	}
 }

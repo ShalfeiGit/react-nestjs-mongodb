@@ -14,5 +14,6 @@
 			"@app/*": ["components/*"],
 			"@pages/*": ["components/pages/*"]
 		}
-	}
+	},
+	"include": ["src/components", "custom.d.ts"]
 }

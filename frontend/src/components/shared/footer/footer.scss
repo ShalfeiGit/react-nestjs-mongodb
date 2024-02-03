@@ -1,0 +1,17 @@
+﻿@import '@app/app.scss';
+
+.footer{
+  margin-top: 40px;
+  background-color: $blue-color;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  &__wrapper{
+    align-self: center;
+  }
+  &__text{
+    color: $white-color;
+  }
+}
