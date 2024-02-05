@@ -72,8 +72,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 			page: pagination.currentPage,
 			limit: pagination.itemsPerPage}))
 	}
-	const m = feedArticles
-	debugger
+
 	return (
 		<div className='feed-articles'>
 			{feedArticles.map((feedArticle, i) => (
