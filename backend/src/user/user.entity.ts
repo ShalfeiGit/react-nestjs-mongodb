@@ -64,6 +64,9 @@ export class User {
   @Column({ default: null })
   refresh_token: string;
 
+  @Column({ default: null })
+  avatarUrl: string;
+
   @OneToMany(() => Article, (article) => article.user, { cascade: true })
   articles: Article[];
 

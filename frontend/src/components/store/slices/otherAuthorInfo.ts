@@ -8,6 +8,7 @@ export interface IOtherAuthorInfo {
   bio: string;
   age: number;
 	gender: string;
+	avatarUrl: string;
 }
 
 const initialState: IInitialState<IOtherAuthorInfo> = {

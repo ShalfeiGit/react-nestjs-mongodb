@@ -13,6 +13,7 @@ import { IArticle, IGroupArticle, IUserArticle } from '@app/store/slices/article
 export interface IFeedArticle {
 	articleId: number;
   authorName: string;
+  authorId: number;
   authorAvatar: string;
   createdAt: string;
   title: string;
@@ -49,7 +50,8 @@ const Feeds: React.FC = () => {
 		feedArticles: (groupArticle.articles?.items ?? []).map((article, i) => ({
 			articleId: article?.id,
 			authorName: article?.user?.username,
-			authorAvatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
+			authorId: article?.user?.id,
+			authorAvatar: article?.user?.avatarUrl,
 			createdAt: `${moment(article?.updatedAt ? Number(article?.updatedAt): Number( article?.createdAt)).format('MMMM DD YYYY')}`,
 			title: article?.title,
 			content: article?.content,

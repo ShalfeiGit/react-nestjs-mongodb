@@ -13,6 +13,8 @@ export interface IUserInfo {
 	createdAt: number;
 	updatedAt: number;
 	refresh_token?: string;
+	imageUrl: string;
+	avatarUrl: string;
 	likedArticle: IArticle[];
 }
 
@@ -27,6 +29,11 @@ export interface ISignUp {
 	username: string
 	email: string
 	pass: string
+}
+
+export interface IFormData {
+	formData: FormData
+	cb?(): void,
 }
 
 export interface ISignInResponse extends IUserInfo {
@@ -45,8 +52,8 @@ const initialState: IInitialState<IUserInfo> = {
 
 export const updateUserInfoAction = createAsyncThunk(
 	'userInfo/updateUserInfo',
-	async (data: IUserInfo & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo>>) => {
-		const {openNotification, navigate, ...userInfo} = data
+	async (data: IUserInfo & IFormData & INotificationAction & INavigateAction, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo>>) => {
+		const {openNotification, navigate, formData, ...userInfo} = data
 		const callNotification = ({type, message}: ICallNotificationAction ) => {
 			openNotification({
 				content: message,
@@ -54,7 +61,7 @@ export const updateUserInfoAction = createAsyncThunk(
 			})
 		}
 		const {username, ...dataUserInfo} = userInfo
-		const response = await thunkAPI.extra.api({ method: 'put', url: `user/${username}`, data: dataUserInfo })
+		const response = await thunkAPI.extra.api({ method: 'put', url: `user/${username}`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
 			message: response.status >= 400 ? response.data as unknown as string : `${response.data.username} was updated`
@@ -62,6 +69,32 @@ export const updateUserInfoAction = createAsyncThunk(
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
 		}	
+		return response
+	}
+)
+
+export const savePreviewUserAvatarAction = createAsyncThunk(
+	'userInfo/savePreviewUserAvatar',
+	async (data: Pick<IUserInfo, 'username'> & IFormData, thunkAPI: IThunkApi<IAxiosResponse<IUserInfo>>) => {
+		const {formData, username, cb} = data
+		const response = await thunkAPI.extra.api({ method: 'put', url: `user/${username}/avatar`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })
+	
+		if(response.status >= 400){
+			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
+		}	
+		if(cb){
+			cb()
+		}
+		return response
+	}
+)
+
+
+export const deletePreviewUserAvatarAction = createAsyncThunk(
+	'userInfo/deletePreviewUserAvatarAction',
+	async (data: Pick<IUserInfo, 'username'> & {formData}, thunkAPI: IThunkApi<IAxiosResponse<void>>) => {
+		const {formData,   ...userInfo } = data
+		const response = await thunkAPI.extra.api({ method: 'delete', url: `user/${userInfo?.username}/avatar` , data: formData, headers: {  'Content-Type': 'multipart/form-data' } })
 		return response
 	}
 )
@@ -108,7 +141,7 @@ export const signUpAction = createAsyncThunk(
 		const response = await thunkAPI.extra.api({ method: 'post', url: 'user', data: userInfo })
 		callNotification({
 			type: response.status >= 400 ? 'error' : 'success',
-			message: response.status >= 400 ? response.data.message : 'Article was deleted'
+			message: response.status >= 400 ? response.data.message : `${userInfo.username} was created`
 		})
 		if(response.status >= 400){
 			return thunkAPI.rejectWithValue(response) as unknown as IAxiosResponse<IUserInfo>
@@ -142,6 +175,8 @@ export const deleteUserInfoAction = createAsyncThunk(
 		return response
 	}
 )
+
+
 
 export const userInfoSlice = createSlice({
 	name: 'userInfo',

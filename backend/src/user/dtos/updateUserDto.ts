@@ -2,6 +2,9 @@
 import { UserGender } from '../user.entity';
 
 export class updateUserDto {
+  readonly avatar?: string;
+  readonly avatarDate?: string;
+  readonly ext?: string;
   readonly email?: string;
   readonly bio?: string;
   readonly age?: number;

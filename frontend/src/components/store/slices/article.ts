@@ -39,7 +39,7 @@ export interface IArticle {
   updatedAt: number;
  	createdAt: number;
   likes: number;
-  user: Pick<IUserInfo, 'username'>;
+  user: Pick<IUserInfo, 'username' | 'id' | 'avatarUrl'>;
 }
 
 export interface IPagnationMeta {

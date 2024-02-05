@@ -26,7 +26,7 @@ export class ArticleService {
       .where('article.id = :id', { id })
       .leftJoinAndSelect('article.user', 'user')
       .select(['article'])
-      .addSelect(['user.username', 'user.id'])
+      .addSelect(['user.username', 'user.id', 'user.avatarUrl'])
       .getOne();
   }
 
@@ -39,7 +39,7 @@ export class ArticleService {
       .where('article.tag = :tag', { tag })
       .leftJoinAndSelect('article.user', 'user')
       .select(['article'])
-      .addSelect(['user.username', 'user.id'])
+      .addSelect(['user.username', 'user.id', 'user.avatarUrl'])
       .getMany();
     return paginate<Article>(queryBuilder, options);
   }
@@ -51,7 +51,7 @@ export class ArticleService {
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.user', 'user')
       .select(['article'])
-      .addSelect(['user.username', 'user.id']);
+      .addSelect(['user.username', 'user.id', 'user.avatarUrl']);
     queryBuilder.getMany();
     return paginate<Article>(queryBuilder, options);
   }

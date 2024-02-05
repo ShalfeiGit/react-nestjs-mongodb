@@ -53,7 +53,9 @@ const Menu: React.FC<IProps> = ({openNotification}) => {
 				<Col span={9} className='menu__login'>
 					{userInfo 
 						? (<Button className={'menu__button'} type="link" title="User info" onClick={handleRedirectUserInfoModal((userInfo as IUserInfo)?.username)}>
-							<Avatar style={{ backgroundColor: '#1677ff' }} icon={<UserOutlined/>} /><span className={'menu__greetings'}>{`Hi, ${(userInfo as IUserInfo)?.username}`}</span>
+							<Avatar 
+								src={userInfo?.avatarUrl ? `http://localhost:3000${userInfo?.avatarUrl}` : `https://api.dicebear.com/7.x/miniavs/svg?seed=${userInfo?.id}`} 
+							/><span className={'menu__greetings'}>{`Hi, ${(userInfo as IUserInfo)?.username}`}</span>
 						</Button>) 
 						: (
 							<Button className={'menu__button'} type="link" title="Sign in" onClick={handleRedirectSignInModal}>

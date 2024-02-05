@@ -24,6 +24,7 @@ interface IFeedArticle {
 	articleId: number;
 	authorName: string;
 	authorAvatar: string;
+	authorId: number
 	createdAt: string;
 	title: string;
 	content: string[];
@@ -71,14 +72,15 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 			page: pagination.currentPage,
 			limit: pagination.itemsPerPage}))
 	}
-
+	const m = feedArticles
+	debugger
 	return (
 		<div className='feed-articles'>
 			{feedArticles.map((feedArticle, i) => (
 				<div key={i} className='feed-articles__item'>
 					<div className='feed-articles__header'>
 						<div className='feed-articles__userinfo'>
-							<div><Avatar shape="circle" src={<Image preview={false} src={feedArticle.authorAvatar}/>} /></div>
+							<div><Avatar shape="circle" src={feedArticle?.authorAvatar ? `http://localhost:3000${feedArticle?.authorAvatar}` : `https://api.dicebear.com/7.x/miniavs/svg?seed=${feedArticle?.authorId}`} /></div>
 							<div className='feed-articles__userinfo-content'>
 								<NavLink to={`/userinfo/${feedArticle.authorName}`}  >
 									{feedArticle.authorName}

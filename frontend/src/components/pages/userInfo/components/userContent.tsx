@@ -1,13 +1,15 @@
-import React, { useEffect }from 'react'
+import React, { useEffect, useState }from 'react'
 import { useSelector } from 'react-redux'
-import { Form, Input, Button, Typography, InputNumber, Select, Flex, Tabs, TabsProps, Popconfirm } from 'antd'
+import { Form, Input, Button, Typography, InputNumber, Select, Flex, Popconfirm, Upload, UploadFile, Modal } from 'antd'
 import { useOutletContext, useNavigate, useParams } from 'react-router-dom'
 
 import { RootState, useAppDispatch } from '@app/store/store'
-import { updateUserInfoAction, IUserInfo } from '@app/store/slices/userInfo'
+import { updateUserInfoAction, IUserInfo, savePreviewUserAvatarAction } from '@app/store/slices/userInfo'
 import { getOtherAuthorInfoAction, IOtherAuthorInfo } from '@app/store/slices/otherAuthorInfo'
-import { resetUserInfoAction, deleteUserInfoAction } from '@app/store/slices/userInfo'
+import { resetUserInfoAction, deleteUserInfoAction, deletePreviewUserAvatarAction } from '@app/store/slices/userInfo'
 import { loadUserArticlesAction } from '@app/store/slices/article'
+import { PlusOutlined } from '@ant-design/icons'
+import { INotification } from '@app/shared/layout/types'
 
 const { TextArea } = Input
 
@@ -37,31 +39,50 @@ const tailFormItemLayout = {
 	}
 }
 
+// type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
 const UserContent: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const userInfo = useSelector((state: RootState) => state.userInfo.data as IUserInfo)
 	const otherAuthorInfo = useSelector((state: RootState) => state.otherAuthorInfo.data as IOtherAuthorInfo)
 	const {username} = useParams()
-	const openNotification = useOutletContext()
+	const openNotification = useOutletContext<(data: INotification) => void>()
 	const [form] = Form.useForm()
 	const navigate = useNavigate()
+	const [uploadOptions, setUploadOptions] = useState({
+		title: '',
+		image: '',
+		open: false,
+		showPreview: true,
+		fileInfo: null,
+		fileList: []
+	})
 
-	const handleSubmitForm = () => {
-		form.validateFields().then((values) => {
-			dispatch(updateUserInfoAction({...values, openNotification, navigate }))
-		})
-	}
+
 
 	useEffect(() => {
 		form.resetFields()
 		if(userInfo?.username !== username){
 			dispatch(getOtherAuthorInfoAction({username}))
 			dispatch(loadUserArticlesAction({username, page: 1, limit: 10}))
-		}
+		} 
 	}, [username])
 
 	useEffect(() => {
-		form.setFieldsValue(userInfo?.username === username ? userInfo : otherAuthorInfo )
+		const user = userInfo?.username === username ? userInfo : otherAuthorInfo
+		form.setFieldsValue(user)
+		if(user?.avatarUrl) {
+			setUploadOptions({
+				...uploadOptions,
+				image: `http://localhost:3000${user?.avatarUrl}`,
+				showPreview: true,
+				fileList: [	{
+					uid: `${username}`,
+					name: `${userInfo?.avatarUrl}`.replace('/avatars/', ''),
+					status: 'done',
+					url: `http://localhost:3000${user?.avatarUrl}`,
+				}]})
+		}
 	}, [userInfo, otherAuthorInfo])
 
 	const handleEmailValidator = (rule: { required: boolean }, value: string) => {
@@ -83,6 +104,19 @@ const UserContent: React.FC = () => {
 		{label: 'others', value: 'others'}
 	]
 
+	const handleSubmitForm = () => {
+		form.validateFields().then((values) => {
+			const formData = new FormData()
+			if(uploadOptions.fileInfo){
+				formData.append('avatar', uploadOptions.fileInfo?.preview)
+				formData.append('ext', uploadOptions.fileInfo?.ext)
+				formData.append('avatarDate', uploadOptions.fileInfo?.avatarDate)
+			}
+			Object.keys(values).map(key => formData.append(key, values[key]))
+			dispatch(updateUserInfoAction({...values, formData, openNotification, navigate }))
+		})
+	}
+
 	const handleLogOutUser = () => {
 		dispatch(resetUserInfoAction({navigate}))
 	}
@@ -91,9 +125,96 @@ const UserContent: React.FC = () => {
 		dispatch(deleteUserInfoAction({navigate, username}))
 	}
 
+	const handleUploadAvatarEvent = async options => {
+		const { onSuccess, onError, file } = options
+		if(/(jpg|jpeg|png)$/.test(file.name)){
+			onSuccess('Ok')
+		}else{
+			onError({ err: `Unsupported file type ${file.type}` })
+		}
+	}
+
+	const handleLoadAvatar = async ({ file, fileList, event }) => {
+		if(file.status === 'removed') return 
+		if(file.status === 'error') return
+		const fileMatch = file.name.match(/(jpg|jpeg|png)$/) 
+		if(fileMatch){
+			const getBase64 = (file): Promise<string> =>
+				new Promise((resolve, reject) => {
+					const reader = new FileReader()
+					reader.readAsDataURL(file)
+					reader.onload = () => resolve(reader.result as string)
+					reader.onerror = (error) => reject(error)
+				})
+			const formData = new FormData()
+			const avatarDate = Date.now().toString()
+			const fileInfo = {
+				preview: await getBase64(file.originFileObj),
+				ext: fileMatch[0],
+				avatarDate 
+			}
+			formData.append('avatar', fileInfo.preview)
+			formData.append('ext', fileInfo.ext)
+			formData.append('avatarDate', avatarDate)
+			const cb = () => {
+				setUploadOptions({
+					...uploadOptions,
+					fileInfo,
+					image: `http://localhost:3000/avatars/${username}-${avatarDate}.${fileInfo.ext}`,
+					showPreview: true,
+					fileList: [	{
+						uid: `${username}`,
+						name: `${username}.${fileInfo.ext}`,
+						status: 'done',
+						url: `http://localhost:3000/avatars/${username}-${avatarDate}.${fileInfo.ext}`,
+					}]})
+			}
+			dispatch(savePreviewUserAvatarAction({username, formData, cb}))
+		}
+	}
+	
+	const handleCancelAvatar = () => {
+		const formData = new FormData()
+		formData.append('avatarDate', uploadOptions.fileInfo.avatarDate)
+		dispatch(deletePreviewUserAvatarAction({username, formData}))
+		setUploadOptions({...uploadOptions, fileInfo: [], fileList: [], showPreview: false})
+		return 
+	}
+
+	const handleClosePreviewAvatar = () => setUploadOptions({...uploadOptions, open: false})
+	const handleShowPreviewAvatar = async (file: UploadFile) => {
+		setUploadOptions({...uploadOptions, open: true, title: file.name})
+	}
+
 	return (
 		<div className="user-content">
 			<Title className={'user-content__text'}>User Info</Title>
+			<div className='user-content__avatar'>
+				<Upload
+					accept="image/*"
+					listType="picture-circle"
+					maxCount={1}
+					customRequest={handleUploadAvatarEvent}
+					onChange={handleLoadAvatar}
+					onRemove={handleCancelAvatar}
+					onPreview={handleShowPreviewAvatar}
+					showUploadList={uploadOptions.showPreview}
+					fileList={uploadOptions.fileList}
+					defaultFileList={uploadOptions.fileList}
+					disabled={userInfo?.username !== username}
+					className="image-upload-grid"
+				>
+					{uploadOptions.fileList.length >= 1 
+							 ? null
+							 : (<div className='user-content__upload'>
+							<div><PlusOutlined /></div>
+							<div>Upload</div>
+							 </div>)}
+				</Upload>
+				<Modal open={uploadOptions.open} title={uploadOptions.title} footer={null} onCancel={handleClosePreviewAvatar}>
+					<img style={{ width: '100%' }} src={uploadOptions.image} />
+				</Modal>
+			</div>
 			<Form
 				form={form}
 				name="user-content"

@@ -59,7 +59,7 @@ const PreviewArticle: React.FC = () => {
 					<div className="preview-article__meta">
 						<div  className="preview-article__meta-block">
 							<div className="preview-article__avatar">
-								<Avatar shape="circle" src={<Image preview={false} src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${article?.id}`}/>} />
+								<Avatar shape="circle" src={article?.user?.avatarUrl ? `http://localhost:3000${article?.user?.avatarUrl}` : `https://api.dicebear.com/7.x/miniavs/svg?seed=${article?.user?.id}`} />
 							</div>
 						</div>
 						<div  className="preview-article__meta-block">
