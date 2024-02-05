@@ -66,17 +66,22 @@ const UserContent: React.FC = () => {
 			dispatch(getOtherAuthorInfoAction({username}))
 			dispatch(loadUserArticlesAction({username, page: 1, limit: 10}))
 		}
-		if(userInfo?.username === username) {
-			setUploadOptions({
-				...uploadOptions,
-				image: `http://localhost:3000${userInfo?.avatarUrl}`,
-				showPreview: true,
-				fileList: [	{
-					uid: `${username}`,
-					name: `${userInfo?.avatarUrl}`.replace('/avatars/', ''),
-					status: 'done',
-					url: `http://localhost:3000${userInfo?.avatarUrl}`,
-				}]})
+		if(userInfo?.username === username ) {
+			if(userInfo?.avatarUrl){
+				setUploadOptions({
+					...uploadOptions,
+					image: `http://localhost:3000${userInfo?.avatarUrl}`,
+					showPreview: true,
+					fileList: [{
+						uid: `${username}`,
+						name: `${userInfo?.avatarUrl}`.replace('/avatars/', ''),
+						status: 'done',
+						url: `http://localhost:3000${userInfo?.avatarUrl}`,
+					}]})
+			}else {
+				setUploadOptions({...uploadOptions, fileInfo: null, fileList: [], showPreview: false})
+			}
+		
 		}
 	}, [username])
 
@@ -193,13 +198,13 @@ const UserContent: React.FC = () => {
 	}
 	
 	const handleCancelAvatar = () => {
-		setUploadOptions({...uploadOptions, fileInfo: null, fileList: [], showPreview: false})
+		setUploadOptions({...uploadOptions, fileInfo: null, fileList: [],  showPreview: false})
 		return 
 	}
 
 	const handleClosePreviewAvatar = () => setUploadOptions({...uploadOptions, open: false})
 	const handleShowPreviewAvatar = async (file: UploadFile) => {
-		setUploadOptions({...uploadOptions, open: true, title: file.name})
+		setUploadOptions({...uploadOptions, open: true, title: userInfo?.username === username ? userInfo.username : otherAuthorInfo.username})
 	}
 
 	return (
