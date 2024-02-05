@@ -116,17 +116,6 @@ export class UserController {
         .toFile(`${uploadPath}/${username}-${avatarDate}.${ext}`);
     }
 
-    if (!avatar && !ext && avatarDate) {
-      const paths = Array.from(
-        ['jpg', 'png', 'jpeg'],
-        (ext) => `${uploadPath}/${username}-${avatarDate}.${ext}`,
-      );
-      const existsPath = paths.find((path) => existsSync(path));
-      if (existsPath) {
-        unlinkSync(existsPath);
-      }
-    }
-
     if (!searchedUser) {
       throw new BadRequestException(`Not found ${searchedUser.username}`);
     }
@@ -185,6 +174,11 @@ export class UserController {
     @UploadedFile() bio: Express.Multer.File,
     @Body() body: updateUserDto,
   ): Promise<string> {
+    const searchedUser = await this.userService.getUser(username);
+    if (!searchedUser) {
+      throw new BadRequestException(`Already has ${searchedUser.username}`);
+    }
+
     const { avatarDate } = body;
     const uploadPath = resolve(__dirname, '../../../frontend//dist/avatars');
 
@@ -196,6 +190,12 @@ export class UserController {
     if (existsPath) {
       unlinkSync(existsPath);
     }
+
+    const entity = Object.assign(new User(), {
+      ...searchedUser,
+      avatarUrl: null,
+    });
+    await this.userService.updateUser(entity);
 
     return 'Avatar success deleted';
   }

@@ -34,7 +34,7 @@ const Menu: React.FC<IProps> = ({openNotification}) => {
 	}
 
 	const handleRedirectUserInfoModal = (username) => () => {
-		navigate(`/userinfo/${username}`)
+		navigate(`/userinfo/${username}?tab=user-content`)
 	}
 
 	return (

@@ -65,7 +65,19 @@ const UserContent: React.FC = () => {
 		if(userInfo?.username !== username){
 			dispatch(getOtherAuthorInfoAction({username}))
 			dispatch(loadUserArticlesAction({username, page: 1, limit: 10}))
-		} 
+		}
+		if(userInfo?.username === username) {
+			setUploadOptions({
+				...uploadOptions,
+				image: `http://localhost:3000${userInfo?.avatarUrl}`,
+				showPreview: true,
+				fileList: [	{
+					uid: `${username}`,
+					name: `${userInfo?.avatarUrl}`.replace('/avatars/', ''),
+					status: 'done',
+					url: `http://localhost:3000${userInfo?.avatarUrl}`,
+				}]})
+		}
 	}, [username])
 
 	useEffect(() => {
@@ -111,9 +123,16 @@ const UserContent: React.FC = () => {
 				formData.append('avatar', uploadOptions.fileInfo?.preview)
 				formData.append('ext', uploadOptions.fileInfo?.ext)
 				formData.append('avatarDate', uploadOptions.fileInfo?.avatarDate)
+				Object.keys(values).map(key => formData.append(key, values[key]))
+				dispatch(updateUserInfoAction({...values, formData, openNotification, navigate }))
+			}else{
+				formData.append('avatarDate', uploadOptions.fileInfo?.avatarDate 
+					? uploadOptions.fileInfo.avatarDate 
+					: `${userInfo?.avatarUrl}`.replace(`/avatars/${userInfo?.username}-`, '').replace(/\.\w+$/g, ''))
+				dispatch(deletePreviewUserAvatarAction({username, formData}))
+				Object.keys(values).map(key => formData.append(key, values[key]))
+				dispatch(updateUserInfoAction({...values, formData, openNotification, navigate }))
 			}
-			Object.keys(values).map(key => formData.append(key, values[key]))
-			dispatch(updateUserInfoAction({...values, formData, openNotification, navigate }))
 		})
 	}
 
@@ -174,10 +193,7 @@ const UserContent: React.FC = () => {
 	}
 	
 	const handleCancelAvatar = () => {
-		const formData = new FormData()
-		formData.append('avatarDate', uploadOptions.fileInfo.avatarDate)
-		dispatch(deletePreviewUserAvatarAction({username, formData}))
-		setUploadOptions({...uploadOptions, fileInfo: [], fileList: [], showPreview: false})
+		setUploadOptions({...uploadOptions, fileInfo: null, fileList: [], showPreview: false})
 		return 
 	}
 
