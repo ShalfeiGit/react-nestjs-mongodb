@@ -10,21 +10,9 @@
   Put,
   UploadedFile,
   UseInterceptors,
-  Res,
 } from '@nestjs/common';
-import { diskStorage } from 'multer';
-import { saveAs } from 'file-saver';
-import {
-  accessSync,
-  createReadStream,
-  createWriteStream,
-  mkdirSync,
-  existsSync,
-  unlinkSync,
-  writeFile,
-  writeFileSync,
-} from 'fs';
-import { extname, resolve } from 'path';
+import { mkdirSync, existsSync, unlinkSync, readdirSync } from 'fs';
+import { resolve } from 'path';
 import * as sharp from 'sharp';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -95,14 +83,16 @@ export class UserController {
     const { avatar, ext, avatarDate, ...userInfo } = body;
     const uploadPath = resolve(__dirname, '../../../frontend//dist/avatars');
     if (avatar && ext && avatarDate) {
-      const paths = Array.from(
-        ['jpg', 'png', 'jpeg'],
-        (ext) => `${uploadPath}/${username}.${ext}`,
-      );
-      const existsPath = paths.find((path) => existsSync(path));
-      if (existsPath) {
-        unlinkSync(existsPath);
-      }
+      readdirSync(uploadPath)
+        .filter((path) => {
+          if (`${path}`.indexOf(`${searchedUser.username}-`) >= 0) {
+            return true;
+          }
+          return false;
+        })
+        .forEach((path) => {
+          unlinkSync(`${uploadPath}/${path}`);
+        });
       const base64Image = body.avatar;
       const matches = base64Image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
       const response = { type: null, data: null };
@@ -143,15 +133,22 @@ export class UserController {
     @Body() body: updateUserDto,
   ): Promise<string> {
     const { avatar, ext, avatarDate } = body;
-    const uploadPath = resolve(__dirname, '../../../frontend//dist/avatars');
-    const paths = Array.from(
-      ['jpg', 'png', 'jpeg'],
-      (ext) => `${uploadPath}/${username}.${ext}`,
-    );
-    const existsPath = paths.find((path) => existsSync(path));
-    if (existsPath) {
-      unlinkSync(existsPath);
-    }
+    const searchedUser = await this.userService.getUser(username);
+    const uploadPath = resolve(__dirname, '../../../frontend/dist/avatars');
+    readdirSync(uploadPath)
+      .filter((path) => {
+        if (`${searchedUser?.avatarUrl}`.replace('/avatars/', '') === path) {
+          return false;
+        }
+        if (`${path}`.indexOf(`${searchedUser.username}-`) >= 0) {
+          return true;
+        }
+        return false;
+      })
+      .forEach((path) => {
+        unlinkSync(`${uploadPath}/${path}`);
+      });
+
     const base64Image = body.avatar;
     const matches = base64Image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     const response = { type: null, data: null };
@@ -182,14 +179,16 @@ export class UserController {
     const { avatarDate } = body;
     const uploadPath = resolve(__dirname, '../../../frontend//dist/avatars');
 
-    const paths = Array.from(
-      ['jpg', 'png', 'jpeg'],
-      (ext) => `${uploadPath}/${username}-${avatarDate}.${ext}`,
-    );
-    const existsPath = paths.find((path) => existsSync(path));
-    if (existsPath) {
-      unlinkSync(existsPath);
-    }
+    readdirSync(uploadPath)
+      .filter((path) => {
+        if (`${path}`.indexOf(`${searchedUser.username}-`) >= 0) {
+          return true;
+        }
+        return false;
+      })
+      .forEach((path) => {
+        unlinkSync(`${uploadPath}/${path}`);
+      });
 
     const entity = Object.assign(new User(), {
       ...searchedUser,
