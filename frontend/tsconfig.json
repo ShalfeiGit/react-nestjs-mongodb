@@ -15,5 +15,5 @@
 			"@pages/*": ["components/pages/*"]
 		}
 	},
-	"include": ["src/components", "custom.d.ts"]
+	"include": ["src/*", "custom.d.ts"]
 }
