@@ -19,7 +19,16 @@ async function bootstrap() {
     res.locals.csrfToken = token;
     next();
   });
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+          'img-src': ["'self'", 'api.dicebear.com'],
+        },
+      },
+    }),
+  );
   app.setGlobalPrefix('api');
   await app.listen(3000);
 }
