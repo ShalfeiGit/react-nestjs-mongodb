@@ -561,7 +561,6 @@ export const articleSlice = createSlice({
 				state.config = config 
 				state.loading = false
 			})
-		// доделать тут
 			.addCase(likeArticleAction.pending, state => {
 				state.loading = true
 			})
