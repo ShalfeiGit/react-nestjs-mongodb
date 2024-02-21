@@ -19,14 +19,14 @@ const Home: React.FC = () => {
 					<Text>A place to share your knowledge.</Text>
 				</div>
 			</div>
-			<Row justify="end">
+			<Row justify="end" >
 				<Col span={1}></Col>
 				<Col span={16}><Feeds/></Col>
 				<Col span={1}></Col>
 				<Col span={6}><PopularTags page={1} limit={10}/></Col>
 			</Row>
 			<Row justify="end">
-				<Col span={24}><Footer /></Col>
+				<Col span={24} className='home__footer'><Footer /></Col>
 			</Row>
 		</div>
 	)
