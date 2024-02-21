@@ -3,6 +3,7 @@ import { message } from 'antd'
 import { Outlet } from 'react-router-dom'
 
 import Menu from '@app/shared/menu/Menu'
+import Footer from '@app/shared/footer/Footer'
 import { INotification } from './types'
 
 const Layout: React.FC = () =>{
@@ -20,6 +21,7 @@ const Layout: React.FC = () =>{
 			{contextHolder}
 			<Menu openNotification={openNotification}/>
 			<Outlet context={openNotification} />
+			<Footer />
 		</>
 	)
 } 

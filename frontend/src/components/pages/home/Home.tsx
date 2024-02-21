@@ -25,9 +25,6 @@ const Home: React.FC = () => {
 				<Col span={1}></Col>
 				<Col span={6}><PopularTags page={1} limit={10}/></Col>
 			</Row>
-			<Row justify="end">
-				<Col span={24} className='home__footer'><Footer /></Col>
-			</Row>
 		</div>
 	)
 }
