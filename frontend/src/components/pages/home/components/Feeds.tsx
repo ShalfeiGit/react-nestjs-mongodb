@@ -59,10 +59,10 @@ const Feeds: React.FC = () => {
 			liked: false,
 		}))
 	})).sort(first => first?.id === 'global' ? -1 : 1)
-	return (
+	return ( 
 		<Tabs
 			accessKey={activeKey}
-			style={{ height: 220 }}
+			style={{ height: 220, marginTop:1 }}
 			items={currentTabs.map((tab) => {
 				const {tabName, feedArticles, id, pagination } = tab
 				return {
