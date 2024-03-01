@@ -104,7 +104,6 @@ const SignUp: React.FC = () => {
 				form={form}
 				name="signup"
 				{...formItemLayout}
-				initialValues={{ remember: true }}
 				onFinish={handleSubmitForm}
 				autoComplete="off"
 			>
@@ -130,7 +129,7 @@ const SignUp: React.FC = () => {
 
 				<Form.Item 
 					hasFeedback
-					label="Pass" 
+					label="Password" 
 					name="pass" 
 					validateDebounce={1000}
 					rules={[{ required: true, validator: handlePasswordValidator }]}

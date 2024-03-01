@@ -89,7 +89,7 @@ export class UserController {
   @Get('options/tag')
   async getTagOptions(): Promise<{ label: string; value: string }[]> {
     return (
-      Object.values(JSON.parse(JSON.stringify(TagArticle)) ?? {}) as string[]
+      Object.values(JSON.parse(JSON.stringify(TagArticle ?? {}))) as string[]
     ).map((item) => ({ label: item, value: item }));
   }
 

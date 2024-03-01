@@ -1,6 +1,6 @@
 ﻿import React from 'react'
 import { message } from 'antd'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation  } from 'react-router-dom'
 
 import Menu from '@app/shared/menu/Menu'
 import Footer from '@app/shared/footer/Footer'
@@ -15,13 +15,14 @@ const Layout: React.FC = () =>{
 			content: <>{content}</>,
 		})
 	}
+	const location = useLocation()
 
 	return (
 		<>
 			{contextHolder}
 			<Menu openNotification={openNotification}/>
 			<Outlet context={openNotification} />
-			<Footer />
+			{location.pathname === '/' ? (<Footer />) : null }
 		</>
 	)
 } 

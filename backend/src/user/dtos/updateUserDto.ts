@@ -5,6 +5,7 @@ export class updateUserDto {
   readonly avatar?: string;
   readonly avatarDate?: string;
   readonly ext?: string;
+  readonly avatarUrl?: string;
   readonly email?: string;
   readonly bio?: string;
   readonly age?: number;

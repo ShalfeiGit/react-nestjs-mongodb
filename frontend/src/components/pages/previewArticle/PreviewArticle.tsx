@@ -1,18 +1,16 @@
 ﻿import React, { useEffect } from 'react'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { Input, Typography, Avatar, Image, Row, Col } from 'antd'
+import { Input, Typography, Avatar, Row, Col } from 'antd'
 import { useParams, NavLink } from 'react-router-dom'
 const {Text, Title} = Typography
 
 import '@app/pages/previewArticle/previewArticle.scss'
 import { RootState, useAppDispatch } from '@app/store/store'
 import {
-	loadTagOptionsAction,
 	loadArticleAction,
 	IArticle,
 } from '@app/store/slices/article'
-import Paragraph from 'antd/es/typography/Paragraph'
 
 const { TextArea } = Input
 
@@ -43,6 +41,7 @@ const tailFormItemLayout = {
 const PreviewArticle: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const article = useSelector((state: RootState) => state.article.data as IArticle)
+	debugger
 	const { slug } = useParams()
 
 	useEffect(() => {
@@ -78,7 +77,7 @@ const PreviewArticle: React.FC = () => {
 						<Title>{article?.title}</Title>
 					</div>
 					<div className="preview-article__content">
-						{(article?.content ?? []).map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+						{(article?.content.split('\n') ?? []).map((paragraph, i) => <p key={i}>{paragraph}</p>)}
 					</div>
 				</Col>
 				<Col span={6}></Col>

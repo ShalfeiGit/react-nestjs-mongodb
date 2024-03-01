@@ -9,7 +9,7 @@ export interface IFeedArticles {
 	authorAvatar: string,
 	createdAt: number,
 	title: string,
-	content: string[],
+	content: string,
 	likes: number,
 	liked: boolean,
 }
@@ -34,7 +34,7 @@ export interface ITagOption {
 export interface IArticle {
 	id: number;
   title: string;
-  content: string[];
+  content: string;
   tag: string
   updatedAt: number;
  	createdAt: number;
@@ -314,7 +314,7 @@ export const articleSlice = createSlice({
 			.addCase(loadArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle>>action?.payload ?? {}
 				state.data = {...data,
-					content: `${data?.content}`.split(/\r\n|\n/g)},
+					content: `${data?.content}`},
 				state.error = null
 				state.status = status
 				state.statusText = statusText
@@ -346,7 +346,7 @@ export const articleSlice = createSlice({
 						articles: 	{
 							items: (data?.articles?.items ?? []).map(article => ({
 								...article, 
-								content: `${article?.content}`.split(/\r\n|\n/g)
+								content: `${article?.content}`
 							})),
 							meta: data?.articles?.meta,
 						}
@@ -382,7 +382,7 @@ export const articleSlice = createSlice({
 						articles: 	{
 							items: (data?.articles?.items ?? []).map(article => ({
 								...article, 
-								content: `${article?.content}`.split(/\r\n|\n/g)
+								content: `${article?.content}`
 							})),
 							meta: data?.articles?.meta,
 						}
@@ -426,7 +426,7 @@ export const articleSlice = createSlice({
 						articles: 	{
 							items: (data?.articles?.items ?? []).map(article => ({
 								...article, 
-								content: `${article?.content}`.split(/\r\n|\n/g)
+								content: `${article?.content}`
 							})),
 							meta: data?.articles?.meta,
 						}
@@ -481,7 +481,7 @@ export const articleSlice = createSlice({
 			.addCase(createArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
 				state.data =  {...data,
-					content: `${data?.content}`.split(/\r\n|\n/g)}
+					content: `${data?.content}`}
 				state.error = null
 				state.status = status
 				state.statusText = statusText
@@ -507,7 +507,7 @@ export const articleSlice = createSlice({
 			.addCase(updateArticleAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IArticle> & IAdditionalArticleInfo>action?.payload ?? {}
 				state.data = {...data,
-					content: `${data?.content}`.split(/\r\n|\n/g)}
+					content: `${data?.content}`}
 				state.error = null
 				state.status = status
 				state.statusText = statusText
@@ -539,7 +539,7 @@ export const articleSlice = createSlice({
 						articles: 	{
 							items: (data?.articles?.items ?? []).map(article => ({
 								...article, 
-								content: `${article?.content}`.split(/\r\n|\n/g)
+								content: `${article?.content}`
 							})),
 							meta: data?.articles?.meta,
 						}
@@ -574,7 +574,7 @@ export const articleSlice = createSlice({
 						articles: 	{
 							items: (data?.articles?.items ?? []).map(article => ({
 								...article, 
-								content: `${article?.content}`.split(/\r\n|\n/g)
+								content: `${article?.content}`
 							})),
 							meta: data?.articles?.meta,
 						}

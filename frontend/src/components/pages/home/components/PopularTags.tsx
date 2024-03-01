@@ -25,7 +25,6 @@ const PopularTags: React.FC<IPopularTags> = ({page, limit}) => {
 		dispatch(loadAllArticlesAction({page, limit}))
 	}, [])
 
-	const navigate = useNavigate()
 	const popularTags = (tagOptions ?? []).map(tagOption => ({
 		tag: tagOption.value, 
 		title: tagOption.label,

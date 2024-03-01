@@ -27,7 +27,7 @@ interface IFeedArticle {
 	authorId: number
 	createdAt: string;
 	title: string;
-	content: string[];
+	content: string;
 	likes: number;
 	liked: boolean;
 }
@@ -65,9 +65,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 		dispatch(likeArticleAction({
 			username: userInfo?.username,
 			articleId: feedArticle?.articleId,
-			likes: (userInfo.likedArticle ?? []).some(article => `${article.id}` === `${feedArticle?.articleId}`) 
-				? feedArticle?.likes - 1
-				: feedArticle?.likes + 1,
+			likes,
 			tag,
 			page: pagination.currentPage,
 			limit: pagination.itemsPerPage}))
@@ -96,7 +94,7 @@ const FeedArticles: React.FC<IProps> = ({feedArticles, pagination, tag}) => {
 					<Title level={4}>{feedArticle.title}</Title>
 					<div className='feed-articles__article'>
 						<div className='feed-articles__article_gradient' />
-						<Text>{feedArticle.content.map((text, i) => <p className='feed-articles__article_text' key={i}>{text}</p>)}</Text>
+						<Text>{feedArticle.content.split('\n').map((text, i) => <p className='feed-articles__article_text' key={i}>{text}</p>)}</Text>
 					</div>
 					<Button className='feed-articles__read-more' type="text" onClick={handleReadArticle(feedArticle.articleId)}>
 						Read more...

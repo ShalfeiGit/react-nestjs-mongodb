@@ -10,34 +10,6 @@ import UserContent from './components/userContent'
 import ArticlesContent from './components/articleContent'
 import { INotificationAction } from '@app/shared/layout/types'
 
-const { TextArea } = Input
-
-const { Title } = Typography
-
-const formItemLayout = {
-	labelCol: {
-		xs: { span: 24 },
-		sm: { span: 4 }
-	},
-	wrapperCol: {
-		xs: { span: 24 },
-		sm: { span: 16 }
-	}
-}
-
-const tailFormItemLayout = {
-	wrapperCol: {
-		xs: {
-			span: 24,
-			offset: 0
-		},
-		sm: {
-			span: 16,
-			offset: 4
-		}
-	}
-}
-
 const UserInfo: React.FC = () => {
 	const navigate = useNavigate()
 	const {username} = useParams()

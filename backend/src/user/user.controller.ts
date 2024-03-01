@@ -80,8 +80,8 @@ export class UserController {
     @Body() body: updateUserDto,
   ): Promise<Omit<User, 'pass'>> {
     const searchedUser = await this.userService.getUser(username);
-    const { avatar, ext, avatarDate, ...userInfo } = body;
-    const uploadPath = resolve(__dirname, '../../../frontend//dist/avatars');
+    const { avatar, ext, avatarDate, avatarUrl, ...userInfo } = body;
+    const uploadPath = resolve(__dirname, '../../../frontend/dist/avatars');
     if (avatar && ext && avatarDate) {
       readdirSync(uploadPath)
         .filter((path) => {
@@ -114,7 +114,9 @@ export class UserController {
       avatarUrl:
         avatar && ext && avatarDate
           ? `/avatars/${username}-${avatarDate}.${ext}`
-          : null,
+          : avatarUrl
+            ? avatarUrl
+            : null,
       username,
       pass: searchedUser.pass,
     });

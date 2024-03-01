@@ -41,15 +41,15 @@ const  makeRequest = async ({ method, url, data = null, responseType = 'json' }:
 						'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
 					}
 				})
-				return JSON.parse(JSON.stringify(repeatResponse))
+				return JSON.parse(JSON.stringify(repeatResponse ?? {}))
 			}
 			const message = responseAuth?.data?.message
 			return ({...JSON.parse(JSON.stringify(responseAuth ?? {})), data: message})
 		}
-		return JSON.parse(JSON.stringify(err.response))
+		return JSON.parse(JSON.stringify(err.response ?? {}))
 	})
 
-	return JSON.parse(JSON.stringify(response))
+	return JSON.parse(JSON.stringify(response ?? {}))
 }
 
 

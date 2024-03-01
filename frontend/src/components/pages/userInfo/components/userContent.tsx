@@ -58,8 +58,6 @@ const UserContent: React.FC = () => {
 		fileList: []
 	})
 
-
-
 	useEffect(() => {
 		form.resetFields()
 		if(userInfo?.username !== username){
@@ -134,7 +132,11 @@ const UserContent: React.FC = () => {
 				formData.append('avatarDate', uploadOptions.fileInfo?.avatarDate 
 					? uploadOptions.fileInfo.avatarDate 
 					: `${userInfo?.avatarUrl}`.replace(`/avatars/${userInfo?.username}-`, '').replace(/\.\w+$/g, ''))
-				dispatch(deletePreviewUserAvatarAction({username, formData}))
+				if(uploadOptions.fileList.length < 1){
+					dispatch(deletePreviewUserAvatarAction({username, formData}))
+				} else {
+					formData.append('avatarUrl', userInfo.avatarUrl)
+				}
 				Object.keys(values).map(key => formData.append(key, values[key]))
 				dispatch(updateUserInfoAction({...values, formData, openNotification, navigate }))
 			}
@@ -240,7 +242,6 @@ const UserContent: React.FC = () => {
 				form={form}
 				name="user-content"
 				{...formItemLayout}
-				initialValues={{ remember: true }}
 				onFinish={handleSubmitForm}
 				autoComplete="off"
 			>
@@ -259,7 +260,7 @@ const UserContent: React.FC = () => {
 					rules={[{ required: true, validator:handleEmailValidator }]}
 					initialValue={userInfo?.email}
 				>
-					<Input disabled={username && userInfo?.username !== username} />
+					<Input disabled={username && userInfo?.username !== username} placeholder="Input email"/>
 				</Form.Item>
 
 				<Form.Item 

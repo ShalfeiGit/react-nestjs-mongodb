@@ -21,7 +21,6 @@ export interface IUserInfo {
 export interface ISignIn {
 	username?: string
 	pass?: string
-	remember?: boolean
 	refresh_token?: string;
 }
 
@@ -212,7 +211,13 @@ export const userInfoSlice = createSlice({
 			})
 			.addCase(signInAction.fulfilled, (state, action) => {
 				const {data, status, statusText, headers, config}  = <IAxiosResponse<IUserInfo>>action?.payload ?? {}
-				const {refresh_token, ...updatedDate}  = data
+				let updatedDate
+				if(data?.refresh_token){
+					const {refresh_token, ...payloadUpdatedDate}  = data
+					updatedDate = payloadUpdatedDate
+				} else {
+					updatedDate = data
+				}
 				state.data = updatedDate
 				state.error = null
 				state.status = status

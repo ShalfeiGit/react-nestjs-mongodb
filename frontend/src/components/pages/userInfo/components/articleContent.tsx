@@ -14,7 +14,7 @@ import { getOtherAuthorInfoAction } from '@app/store/slices/otherAuthorInfo'
 interface DataType {
   key: string;
   title: string;
-  content: string[];
+  content: string;
   tag: string;
   likes: number;
 }
@@ -30,8 +30,8 @@ const ArticleContent: React.FC<IProps> = (props) => {
 	useEffect(() => {
 		if(userInfo?.username !== username){
 			dispatch(getOtherAuthorInfoAction({username}))
-			dispatch(loadUserArticlesAction({username, page: 1, limit: 10}))
 		}
+		dispatch(loadUserArticlesAction({username, page: 1, limit: 10}))
 	}, [username])
 	
 	const data: DataType[] = (useSelector((state: RootState) => state.article.userArticles.find(userArticle => userArticle?.username === username)?.articles?.items) ?? []).map(article => ({
@@ -41,12 +41,6 @@ const ArticleContent: React.FC<IProps> = (props) => {
 
 	const pagination = (useSelector((state: RootState) => state.article.userArticles.find(userArticle => userArticle?.username === username)?.articles?.meta))
 	const dispatch = useAppDispatch()
-
-	useEffect(() => {
-		if(userInfo?.username === username){
-			dispatch(loadUserArticlesAction({username: userInfo?.username, page: 1, limit: 10}))
-		}
-	}, [userInfo])
 
 	const handleAddArticle = () => {
 		navigate('/article/create')
@@ -81,7 +75,7 @@ const ArticleContent: React.FC<IProps> = (props) => {
 			render: content => (
 				<div className={'feed-articles__article'}>
 					<div className='feed-articles__article_gradient' />
-					{content.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+					{content.split('\n').map((paragraph, i) => <p key={i}>{paragraph}</p>)}
 				</div>
 			)
 		},

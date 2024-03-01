@@ -75,7 +75,7 @@ const Article: React.FC = () => {
 					updateArticleAction({
 						articleId: slug,
 						title: values?.title,
-						content: Array.isArray(values?.content) ? values?.content.join('\n').trim() : (values?.content ?? ''),
+						content: values?.content,
 						tag: values?.tag,
 						username: userInfo?.username,
 						navigate,
@@ -130,7 +130,7 @@ const Article: React.FC = () => {
 				</Form.Item>
 
 				<Form.Item label="Content" name="content" rules={[{ validator: handleContentValidator }]}>
-					<TextArea rows={20} />
+					<TextArea rows={20} style={{whiteSpace: 'pre-line'}}/>
 				</Form.Item>
 
 				<Form.Item {...tailFormItemLayout}>

@@ -97,7 +97,7 @@ const Signin: React.FC = () => {
 
 				<Form.Item 
 					hasFeedback
-					label="Pass" 
+					label="Password" 
 					name="pass" 
 					validateDebounce={1000}
 					rules={[{ required: true, validator: handlePasswordValidator }]}

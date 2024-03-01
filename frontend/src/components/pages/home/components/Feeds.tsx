@@ -17,7 +17,7 @@ export interface IFeedArticle {
   authorAvatar: string;
   createdAt: string;
   title: string;
-  content: string[];
+  content: string;
   likes: number;
   liked: boolean;
 }
